@@ -1,86 +1,86 @@
 ---
-description: Design Doc compliance validation with optional auto-fixes
+description: Design Doc準拠検証と必要に応じた自動修正
 ---
 
-**Command Context**: Post-implementation quality assurance command
+**コマンドコンテキスト**: 実装完了後の品質保証専用コマンド
 
-## Execution Method
+## 実行方法
 
-- Compliance validation → performed by code-reviewer
-- Fix implementation → performed by task-executor
-- Quality checks → performed by quality-fixer
-- Re-validation → performed by code-reviewer
+- 準拠検証 → code-reviewerが実行
+- 修正実装 → task-executorが実行
+- 品質チェック → quality-fixerが実行
+- 再検証 → code-reviewerが実行
 
-Orchestrator invokes sub-agents and passes structured JSON between them.
+オーケストレーターはサブエージェントを呼び出し、構造化JSONを渡します。
 
-Design Doc (uses most recent if omitted): $ARGUMENTS
+Design Doc（省略時は直近のもの）: $ARGUMENTS
 
-Understand the essence of compliance validation and execute the following steps:
+準拠検証の本質を理解し、以下のステップで実行:
 
-## Execution Flow
+## 実行フロー
 
-### 1. Prerequisite Check
+### 1. 前提確認
 ```bash
-# Identify Design Doc
+# Design Docの特定
 ls docs/design/*.md | grep -v template | tail -1
 
-# Check implementation files
+# 実装ファイル確認
 git diff --name-only main...HEAD
 ```
 
-### 2. Execute code-reviewer
-Validate Design Doc compliance:
-- Acceptance criteria fulfillment
-- Code quality check
-- Implementation completeness assessment
+### 2. code-reviewer実行
+Design Doc準拠率を検証:
+- 受入条件の充足確認
+- コード品質チェック
+- 実装完全性の評価
 
-### 3. Verdict and Response
+### 3. 判定と対応
 
-**Criteria (considering project stage)**:
-- Prototype: Pass at 70%+
-- Production: 90%+ recommended
-- Critical items (security, etc.): Required regardless of rate
+**判定基準（プロジェクト段階を考慮）**:
+- プロトタイプ: 70%以上で合格
+- 本番実装: 90%以上推奨
+- 重要項目（セキュリティ等）: 準拠率に関わらず必須
 
-**Compliance-based response**:
+**準拠率に基づく対応**:
 
-For low compliance (production <90%):
+準拠率が低い場合（本番で90%未満）:
 ```
-Validation Result: [X]% compliance
-Unfulfilled items:
-- [item list]
+検証結果: 準拠率 [X]%
+未充足項目:
+- [項目リスト]
 
-Execute fixes? (y/n): 
-```
-
-If user selects `y`:
-
-#### Fix Execution Steps
-**Required**: `TodoWrite → task-executor → quality-fixer`
-
-1. **Update TodoWrite**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Create task file following task template (see documentation-criteria skill) -> `docs/plans/tasks/review-fixes-YYYYMMDD.md`
-2. **Execute task-executor**: Staged auto-fixes (stops at 5 files)
-3. **Execute quality-fixer**: Confirm quality gate passage
-4. **Re-validate**: Measure improvement with code-reviewer
-
-### 4. Final Report
-```
-Initial compliance: [X]%
-Final compliance: [Y]% (if fixes executed)
-Improvement: [Y-X]%
-
-Remaining issues:
-- [items requiring manual intervention]
+修正を実行しますか？ (y/n):
 ```
 
-## Auto-fixable Items
-- Simple unimplemented acceptance criteria
-- Error handling additions
-- Type definition fixes
-- Function splitting (length/complexity improvements)
+ユーザーが `y` を選択した場合:
 
-## Non-fixable Items
-- Fundamental business logic changes
-- Architecture-level modifications
-- Design Doc deficiencies
+#### 修正実行手順
+**必須**: `TodoWrite → task-executor → quality-fixer`
 
-**Scope**: Design Doc compliance validation and auto-fixes.
+1. **TodoWrite更新**: 作業ステップを登録。必ず含める: 最初に「スキル制約の確認」、最後に「スキル忠実度の検証」。タスクテンプレート（documentation-criteriaスキル参照）に従いタスクファイル作成 → `docs/plans/tasks/review-fixes-YYYYMMDD.md`
+2. **task-executor実行**: 自動修正を段階的実行（5ファイル超過で停止）
+3. **quality-fixer実行**: 品質ゲート通過を確認
+4. **再検証**: code-reviewerで改善度を測定
+
+### 4. 最終レポート
+```
+初回準拠率: [X]%
+最終準拠率: [Y]%（修正実行時）
+改善度: [Y-X]%
+
+残存課題:
+- [手動対応が必要な項目]
+```
+
+## 自動修正可能な項目
+- 単純な未実装の受入条件
+- エラーハンドリング追加
+- 型定義の修正
+- 関数分割（長さ・複雑度の改善）
+
+## 自動修正不可能な項目
+- ビジネスロジックの根本的変更
+- アーキテクチャレベルの修正
+- Design Doc自体の不備
+
+**スコープ**: Design Doc準拠検証と自動修正まで。

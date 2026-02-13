@@ -1,74 +1,74 @@
 ---
-description: Synchronize skill metadata and optimize rule-advisor precision after skill edits
+description: スキル修正後のメタデータ同期とrule-advisor精度最適化
 ---
 
-**Command Context**: Post-editing maintenance workflow for skill files
+**コマンドコンテキスト**: スキルファイル編集後のメンテナンス作業
 
-## Essential Purpose
+## 本質的な目的
 
-Not mere consistency maintenance, but rule-advisor selection accuracy enhancement. Metadata optimization as the final step of skill editing workflow.
+単なる整合性維持ではなく、rule-advisorの選択精度向上。スキル編集作業の仕上げとしてのメタデータ最適化。
 
-## Execution Process
+## 実行プロセス
 
-Register the following steps in TodoWrite and proceed systematically.
+以下のステップをTodoWriteに登録し、順番に進行する。
 
-### Step 1: Scan Skill Files
+### Step 1: スキルファイルのスキャン
 
-- Glob: `.claude/skills/*/SKILL.md` to retrieve all skill files
-- Read: `.claude/skills/task-analyzer/references/skills-index.yaml`
+- Glob: `.claude/skills/*/SKILL.md` で全スキルファイルを取得
+- Read: `.claude/skills/task-analyzer/references/skills-index.yaml` を読み込み
 
-### Step 2: Synchronize and Optimize Metadata
+### Step 2: メタデータ同期と最適化
 
-Verify the following for each skill:
+各スキルについて以下を検証：
 
-| Metadata | Verification |
-|----------|-------------|
-| sections | 100% match with `## ` sections in SKILL.md |
-| tags | Accurately reflect file content keywords |
-| typical-use | Specify concrete usage scenarios |
-| key-references | Cover current methodologies |
+| メタデータ | 検証内容 |
+|-----------|---------|
+| sections | SKILL.mdの`## `セクションと100%一致するか |
+| tags | ファイル内容のキーワードと適切に一致するか |
+| typical-use | 具体的な利用場面を明示しているか |
+| key-references | 最新の手法を網羅しているか |
 
-### Step 3: Change Necessity Evaluation
+### Step 3: 変更要否の判断
 
-**EVALUATION SEQUENCE**:
-- IF sections achieve 100% synchronization → OUTPUT "Synchronization verified. No updates required." THEN TERMINATE
-- IF content-to-tag mapping shows zero mismatches → DETERMINE no_changes_needed = true THEN TERMINATE
-- IF AND ONLY IF measurable improvements exist → GENERATE specific modification proposals WITH exact before/after values
+**評価シーケンス**:
+- IF sections 100%同期済み → 「同期確認完了、更新不要」と報告して終了
+- IF 内容とタグのミスマッチがゼロ → 更新不要と判断して終了
+- IF AND ONLY IF 測定可能な改善が存在 → 具体的な修正提案（before/after値を含む）を生成
 
-**NOTE**: You MUST NOT force changes. When no improvements are detected, you SHALL report "No modifications necessary" and STOP execution.
+**注意**: 変更を強制しない。改善が検出されない場合は「修正不要」と報告して終了。
 
-### Step 4: User Approval and Application
+### Step 4: ユーザー承認と適用
 
-Present proposals to user and apply after approval:
+提案をユーザーに提示し、承認後に適用：
 
 ```
 [1/N] typescript-rules
-  ✅ sections: synchronized
-  💡 tags proposed: +[functional-programming]
-  💡 typical-use: "old description" → "new description"
+  ✅ sections: 同期完了
+  💡 tags提案: +[functional-programming]
+  💡 typical-use: "旧記述" → "新記述"
 ```
 
-## Completion Criteria
+## 完了条件
 
-- [ ] Scanned all skill files
-- [ ] Verified consistency with skills-index.yaml
-- [ ] Evaluated change necessity (if none needed, reported and terminated)
-- [ ] If changes exist, obtained user approval
-- [ ] Applied changes
+- [ ] 全スキルファイルをスキャンした
+- [ ] skills-index.yamlとの整合性を検証した
+- [ ] 変更要否を判断した（不要なら報告して終了）
+- [ ] 変更がある場合、ユーザー承認を取得した
+- [ ] 変更を適用した
 
-## Error Handling
+## エラーハンドリング
 
-| Error | Action |
-|-------|--------|
-| skills-index.yaml not found | Verify path, report and terminate if not found |
-| SKILL.md parse error | Skip affected skill, continue with others |
-| Large number of inconsistencies detected | Propose staged approach starting from highest priority |
+| エラー | アクション |
+|--------|-----------|
+| skills-index.yaml未発見 | パスを確認し、見つからない場合は報告して終了 |
+| SKILL.mdのパースエラー | 該当スキルをスキップし、他を継続 |
+| 大量の不整合検出 | 優先度の高いものから段階的に対応を提案 |
 
-## Execution Timing
+## 実行タイミング
 
-- After skill file edits (mandatory)
-- When adding new skill files
-- After major skill revisions
-- When rule-advisor selection accuracy appears degraded
+- スキルファイル編集後（必須）
+- 新しいスキルファイル追加時
+- 大規模なスキル改訂後
+- rule-advisorの選択精度が低下したと感じた時
 
-**Scope**: Post-edit skill metadata synchronization and rule-advisor precision optimization.
+**スコープ**: スキル修正作業後のメタデータ同期とrule-advisor精度最適化。

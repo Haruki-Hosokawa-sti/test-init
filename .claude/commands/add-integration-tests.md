@@ -1,128 +1,128 @@
 ---
-description: Add integration/E2E tests to existing backend codebase using Design Doc
+description: Design Docを使用して既存バックエンドコードベースに統合/E2Eテストを追加
 ---
 
-**Command Context**: Test addition workflow for existing backend implementations
+**コマンドコンテキスト**: 既存バックエンド実装へのテスト追加ワークフロー
 
-**Scope**: Backend only (acceptance-test-generator supports backend only)
+**スコープ**: バックエンドのみ（acceptance-test-generatorはバックエンドのみ対応）
 
-## Orchestrator Definition
+## オーケストレーター定義
 
-**Core Identity**: "I am not a worker. I am an orchestrator."
+**コアアイデンティティ**: 「私は作業者ではない。オーケストレーターである。」
 
-**First Action**: Register Steps 0-8 to TodoWrite before any execution.
+**初動アクション**: ステップ0-8をTodoWriteに登録してから実行を開始。
 
-**Why Delegate**: Orchestrator's context is shared across all steps. Direct implementation consumes context needed for review and quality check phases. Task files create context boundaries. Subagents work in isolated context.
+**委譲理由**: オーケストレーターとして、レビュー・品質チェックを含む全てのステップを完遂させるために、必要なコンテキストを維持する必要がある。タスクファイルをコンテキスト境界とし、全ての作業をサブエージェントが担うことでこれを実現する。
 
-**Execution Method**:
-- Skeleton generation → delegate to acceptance-test-generator
-- Task file creation → orchestrator creates directly (minimal context usage)
-- Test implementation → delegate to task-executor
-- Test review → delegate to integration-test-reviewer
-- Quality checks → delegate to quality-fixer
+**実行方法**:
+- スケルトン生成 → acceptance-test-generatorに委譲
+- タスクファイル作成 → オーケストレーターが作成（テスト、設計書の最小限情報のみ）
+- テスト実装 → task-executorに委譲
+- テストレビュー → integration-test-reviewerに委譲
+- 品質チェック → quality-fixerに委譲
 
-Design Doc path: $ARGUMENTS
+Design Docパス: $ARGUMENTS
 
-## Prerequisites
-- Design Doc must exist (created manually or via reverse-engineer)
-- Existing implementation to test
+## 前提条件
+- Design Docが存在すること（手動またはreverse-engineerで作成）
+- テスト対象の既存実装があること
 
-## Execution Flow
+## 実行フロー
 
-### Step 0: Execute Skill
+### ステップ0: スキル実行
 
-Execute Skill: documentation-criteria (for task file template in Step 3)
+スキル実行: documentation-criteria（ステップ3のタスクファイルテンプレート用）
 
-### Step 1: Validate Design Doc
+### ステップ1: Design Doc検証
 
 ```bash
-# Verify Design Doc exists
+# Design Docの存在確認
 ls $ARGUMENTS || ls docs/design/*.md | grep -v template | tail -1
 ```
 
-### Step 2: Skeleton Generation
+### ステップ2: スケルトン生成
 
-Invoke acceptance-test-generator using Task tool:
+Taskツールでacceptance-test-generatorを呼び出す:
 - `subagent_type`: "acceptance-test-generator"
-- `description`: "Generate test skeletons"
-- `prompt`: "Generate test skeletons from Design Doc at [path from Step 1]"
+- `description`: "テストスケルトン生成"
+- `prompt`: "[ステップ1のパス]のDesign Docからテストスケルトンを生成"
 
-**Expected output**: `generatedFiles` containing integration and e2e paths
+**期待される出力**: `generatedFiles`（統合テストとE2Eのパスを含む）
 
-### Step 3: Create Task File [GATE]
+### ステップ3: タスクファイル作成 [GATE]
 
-Create task file at: `docs/plans/tasks/integration-tests-YYYYMMDD.md`
+タスクファイル作成先: `docs/plans/tasks/integration-tests-YYYYMMDD.md`
 
-**Template**:
+**テンプレート**:
 ```markdown
 ---
-name: Implement integration tests for [feature name]
+name: [機能名]の統合テスト実装
 type: test-implementation
 ---
 
-## Objective
+## 目的
 
-Implement test cases defined in skeleton files.
+スケルトンファイルに定義されたテストケースを実装する。
 
-## Target Files
+## 対象ファイル
 
-- Skeleton: [path from Step 2 generatedFiles]
-- Design Doc: [path from Step 1]
+- スケルトン: [ステップ2のgeneratedFilesのパス]
+- Design Doc: [ステップ1のパス]
 
-## Tasks
+## タスク
 
-- [ ] Implement each test case in skeleton
-- [ ] Verify all tests pass
-- [ ] Ensure coverage meets requirements
+- [ ] スケルトンの各テストケースを実装
+- [ ] 全テストがパスすることを確認
+- [ ] カバレッジが要件を満たすことを確認
 
-## Acceptance Criteria
+## 受入条件
 
-- All skeleton test cases implemented
-- All tests passing
-- No quality issues
+- 全スケルトンテストケースが実装済み
+- 全テストがパス
+- 品質チェック全項目パス
 ```
 
-**Output**: "Task file created at [path]. Ready for Step 4."
+**出力**: "タスクファイルを[パス]に作成しました。ステップ4へ進む準備完了。"
 
-### Step 4: Test Implementation
+### ステップ4: テスト実装
 
-Invoke task-executor using Task tool:
+Taskツールでtask-executorを呼び出す:
 - `subagent_type`: "task-executor"
-- `description`: "Implement integration tests"
-- `prompt`: "Task file: docs/plans/tasks/integration-tests-YYYYMMDD.md. Implement tests following the task file."
+- `description`: "統合テスト実装"
+- `prompt`: "タスクファイル: docs/plans/tasks/integration-tests-YYYYMMDD.md。タスクファイルに従ってテストを実装。"
 
-**Expected output**: `status`, `testsAdded`
+**期待される出力**: `status`, `testsAdded`
 
-### Step 5: Test Review
+### ステップ5: テストレビュー
 
-Invoke integration-test-reviewer using Task tool:
+Taskツールでintegration-test-reviewerを呼び出す:
 - `subagent_type`: "integration-test-reviewer"
-- `description`: "Review test quality"
-- `prompt`: "Review test quality. Test files: [paths from Step 4 testsAdded]. Skeleton files: [paths from Step 2 generatedFiles]"
+- `description`: "テスト品質レビュー"
+- `prompt`: "テスト品質をレビュー。テストファイル: [ステップ4のtestsAdded]。スケルトンファイル: [ステップ2のgeneratedFiles]"
 
-**Expected output**: `status` (approved/needs_revision), `requiredFixes`
+**期待される出力**: `status` (approved/needs_revision), `requiredFixes`
 
-### Step 6: Apply Review Fixes
+### ステップ6: レビュー修正の適用
 
-Check Step 5 result:
-- `status: approved` → Mark complete, proceed to Step 7
-- `status: needs_revision` → Invoke task-executor with requiredFixes, then return to Step 5
+ステップ5の結果を確認:
+- `status: approved` → 完了としてマーク、ステップ7へ進む
+- `status: needs_revision` → requiredFixesでtask-executorを呼び出し、ステップ5に戻る
 
-Invoke task-executor using Task tool:
+Taskツールでtask-executorを呼び出す:
 - `subagent_type`: "task-executor"
-- `description`: "Fix review findings"
-- `prompt`: "Fix the following issues in test files: [requiredFixes from Step 5]"
+- `description`: "レビュー指摘の修正"
+- `prompt`: "テストファイルの以下の問題を修正: [ステップ5のrequiredFixes]"
 
-### Step 7: Quality Check
+### ステップ7: 品質チェック
 
-Invoke quality-fixer using Task tool:
+Taskツールでquality-fixerを呼び出す:
 - `subagent_type`: "quality-fixer"
-- `description`: "Final quality assurance"
-- `prompt`: "Final quality assurance for test files added in this workflow. Run all tests and verify coverage."
+- `description`: "最終品質保証"
+- `prompt`: "このワークフローで追加されたテストファイルの最終品質保証。全テストを実行しカバレッジを確認。"
 
-**Expected output**: `approved` (true/false)
+**期待される出力**: `approved` (true/false)
 
-### Step 8: Commit
+### ステップ8: コミット
 
-On `approved: true` from quality-fixer:
-- Commit test files with appropriate message using Bash
+quality-fixerから`approved: true`の場合:
+- Bashで適切なメッセージを付けてテストファイルをコミット

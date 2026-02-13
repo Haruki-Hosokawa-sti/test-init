@@ -1,190 +1,190 @@
 ---
-description: Investigate problem, verify findings, and derive solutions
+description: 問題を調査し、検証を経て解決策を導出する
 ---
 
-**Command Context**: Diagnosis flow to identify root cause and present solutions
+**コマンドコンテキスト**: 問題の根本原因を特定し、解決策を提示するための診断フロー
 
-Target problem: $ARGUMENTS
+対象問題: $ARGUMENTS
 
-**Role**: Orchestrator
+**Role**: オーケストレーター
 
-**Execution Method**:
-- Investigation → performed by investigator
-- Verification → performed by verifier
-- Solution derivation → performed by solver
+**実行方法**:
+- 調査 → investigatorに委譲
+- 検証 → verifierに委譲
+- 解決策導出 → solverに委譲
 
-Orchestrator invokes sub-agents and passes structured JSON between them.
+オーケストレーターがサブエージェントを呼び出し、構造化JSONを受け渡します。
 
-**TodoWrite Registration**: Register execution steps in TodoWrite and proceed systematically
+**TodoWrite登録**: 実行ステップをTodoWriteに登録し、計画的にタスクを進める
 
-## Step 0: Problem Structuring (Before investigator invocation)
+## ステップ0: 問題の構造化（investigator呼び出し前）
 
-### 0.1 Problem Type Determination
+### 0.1 問題タイプの判定
 
-| Type | Criteria |
-|------|----------|
-| Change Failure | Indicates some change occurred before the problem appeared |
-| New Discovery | No relation to changes is indicated |
+| タイプ | 判断基準 |
+|--------|---------|
+| 変更失敗 | 問題発生の前に何らかの変更があったことが示唆されている |
+| 新規発見 | 変更との関連が示唆されていない |
 
-If uncertain, ask the user whether any changes were made right before the problem occurred.
+判断に迷う場合は「問題発生の直前に何か変更しましたか？」とユーザーに確認。
 
-### 0.2 Information Supplementation for Change Failures
+### 0.2 変更失敗の場合の情報補完
 
-If the following are unclear, **ask with AskUserQuestion** before proceeding:
-- What was changed (cause change)
-- What broke (affected area)
-- Relationship between both (shared components, etc.)
+以下が不明な場合、**AskUserQuestionで質問**してから次に進む：
+- 何を変更したか（原因変更）
+- 何が壊れたか（影響箇所）
+- 両者の関係（共通コンポーネント等）
 
-### 0.3 Problem Essence Understanding
+### 0.3 問題の本質理解
 
-Invoke rule-advisor using Task tool:
+Taskツールでrule-advisorを呼び出す:
 - `subagent_type`: "rule-advisor"
-- `description`: "Identify problem essence"
-- `prompt`: "Identify the essence and required skills for this problem: [Problem reported by user]"
+- `description`: "問題の本質特定"
+- `prompt`: "以下の問題について、本質と必要なスキルを特定してください: [ユーザーが報告した問題]"
 
-Confirm from rule-advisor output:
-- `taskAnalysis.mainFocus`: Primary focus of the problem
-- `mandatoryChecks.taskEssence`: Root problem beyond surface symptoms
-- `selectedSkills`: Applicable skill sections
-- `warningPatterns`: Patterns to avoid
+rule-advisorの出力から以下を確認：
+- `taskAnalysis.mainFocus`: 問題の主要な焦点
+- `mandatoryChecks.taskEssence`: 表面的な症状でなく根本的な問題
+- `selectedSkills`: 適用すべきスキルセクション
+- `warningPatterns`: 回避すべきパターン
 
-### 0.4 Reflecting in investigator Prompt
+### 0.4 investigatorプロンプトへの反映
 
-**Include the following in investigator prompt**:
-1. Problem essence (taskEssence)
-2. Key applicable skills summary (from selectedSkills)
-3. Investigation focus (investigationFocus): Convert warningPatterns to "points prone to confusion or oversight in this investigation"
-4. **For change failures, additionally include**:
-   - Detailed analysis of the change content
-   - Commonalities between cause change and affected area
-   - Determination of whether the change is a "correct fix" or "new bug" with comparison baseline selection
+**以下をinvestigatorプロンプトに含める**：
+1. 問題の本質（taskEssence）
+2. 適用すべきスキルの要約（selectedSkillsから重要なセクション）
+3. 調査観点（investigationFocus）: warningPatternsを「この問題の調査で混同・見落としやすいポイント」に変換したもの
+4. **変更失敗の場合、追加で以下を含める**：
+   - 原因変更の内容を詳細に分析
+   - 原因変更と影響箇所の共通点を特定
+   - 原因変更が正しい修正か新たなバグかを判定し、判定結果に基づいて比較基準を選択
 
-## Diagnosis Flow Overview
+## 診断フロー概要
 
 ```
-Problem → investigator → verifier → solver ─┐
-                 ↑                          │
-                 └── confidence < high ─────┘
-                      (max 2 iterations)
+問題 → investigator → verifier → solver ─┐
+                 ↑                        │
+                 └── 信頼度high未達 ──────┘
+                      (最大2回)
 
-confidence=high reached → Report
+信頼度high達成 → レポート
 ```
 
-**Context Separation**: Pass only structured JSON output to each step. Each step starts fresh with the JSON data only.
+**コンテキスト分離**: 各ステップには構造化JSON出力のみを渡す。思考過程は引き継がない。
 
-## Execution Steps
+## 実行ステップ
 
-Register the following in TodoWrite and execute:
+以下をTodoWriteに登録して実行：
 
-### Step 1: Investigation (investigator)
+### ステップ1: 調査（investigator）
 
-Invoke investigator using Task tool:
+Taskツールでinvestigatorを呼び出す:
 - `subagent_type`: "investigator"
-- `description`: "Collect problem information"
-- `prompt`: "Comprehensively collect information related to the following phenomenon. Phenomenon: [Problem reported by user]"
+- `description`: "問題情報の収集"
+- `prompt`: "以下の現象について、関連する情報を網羅的に収集してください。現象: [ユーザーが報告した問題]"
 
-**Expected output**: Evidence matrix, comparison analysis results, causal tracking results, list of unexplored areas, investigation limitations
+**期待される出力**: 証拠マトリクス、比較分析結果、因果追跡結果、未探索領域のリスト、調査の限界
 
-### Step 2: Investigation Quality Check
+### ステップ2: 調査品質判定
 
-Review investigation output:
+調査出力を確認：
 
-**Quality Check** (verify JSON output contains the following):
+**品質チェック**（出力JSONに以下が含まれているか）:
 - [ ] comparisonAnalysis
-- [ ] causalChain for each hypothesis (reaching stop condition)
-- [ ] causeCategory for each hypothesis
-- [ ] Investigation covering investigationFocus items (when provided)
+- [ ] 各仮説にcausalChain（停止条件に到達）
+- [ ] 各仮説にcauseCategory
+- [ ] investigationFocusに対応する調査が含まれているか（渡された場合）
 
-**If quality insufficient**: Re-run investigator specifying missing items
+**品質不足の場合**: 不足項目を指定してinvestigatorを再実行
 
-**design_gap Escalation**:
+**design_gap検出時のエスカレーション**:
 
-When investigator output contains `causeCategory: design_gap` or `recurrenceRisk: high`:
-1. **Insert user confirmation before verifier execution**
-2. Use AskUserQuestion:
-   "A design-level issue was detected. How should we proceed?"
-   - A: Attempt fix within current design
-   - B: Include design reconsideration
-3. If user selects B, pass `includeRedesign: true` to solver
+investigatorの出力で`causeCategory: design_gap`または`recurrenceRisk: high`の場合：
+1. verifier実行前に**ユーザー確認を挿入**
+2. AskUserQuestionで以下を確認：
+   「設計レベルの問題が検出されました。以下のどちらで進めますか？」
+   - A: 現状の設計内で修正を試みる
+   - B: 設計の見直しを含めて検討する
+3. ユーザーがBを選択した場合、solverに`includeRedesign: true`を渡す
 
-Proceed to verifier once quality is satisfied.
+品質を満たしたらverifierに進む。
 
-### Step 3: Verification (verifier)
+### ステップ3: 検証（verifier）
 
-Invoke verifier using Task tool:
+Taskツールでverifierを呼び出す:
 - `subagent_type`: "verifier"
-- `description`: "Verify investigation results"
-- `prompt`: "Verify the following investigation results. Investigation results: [Investigation JSON output]"
+- `description`: "調査結果の検証"
+- `prompt`: "以下の調査結果を検証してください。調査結果: [調査のJSON出力]"
 
-**Expected output**: Alternative hypotheses (at least 3), Devil's Advocate evaluation, final conclusion, confidence
+**期待される出力**: 代替仮説（最低3つ）、Devil's Advocate評価、最終結論、信頼度
 
-**Confidence Criteria**:
-- **high**: No uncertainty affecting solution selection or implementation
-- **medium**: Uncertainty exists but resolvable with additional investigation
-- **low**: Fundamental information gap exists
+**信頼度の判定基準**:
+- **high**: 解決策の選択・実装に影響する不確実性がない
+- **medium**: 不確実性があるが、追加調査で解消可能
+- **low**: 根本的な情報不足がある
 
-### Step 4: Solution Derivation (solver)
+### ステップ4: 解決策導出（solver）
 
-Invoke solver using Task tool:
+Taskツールでsolverを呼び出す:
 - `subagent_type`: "solver"
-- `description`: "Derive solutions"
-- `prompt`: "Derive solutions based on the following verified conclusion. Causes: [verifier's conclusion.causes]. Causes relationship: [causesRelationship: independent/dependent/exclusive]. Confidence: [high/medium/low]"
+- `description`: "解決策の導出"
+- `prompt`: "以下の検証済み結論に基づいて、解決策を導出してください。原因: [verifierのconclusion.causes]。原因の関係性: [causesRelationship: independent/dependent/exclusive]。信頼度: [high/medium/low]"
 
-**Expected output**: Multiple solutions (at least 3), tradeoff analysis, recommendation and implementation steps, residual risks
+**期待される出力**: 複数の解決策（最低3つ）、トレードオフ分析、推奨案と実装ステップ、残存リスク
 
-**Completion condition**: confidence=high
+**完了条件**: 信頼度がhigh
 
-**When not reached**:
-1. Return to Step 1 with uncertainties identified by solver as investigation targets
-2. Maximum 2 additional investigation iterations
-3. After 2 iterations without reaching high, present user with options:
-   - Continue additional investigation
-   - Execute solution at current confidence level
+**未達の場合**:
+1. solverが特定した不確実性を調査対象としてステップ1に戻る
+2. 追加調査は最大2回まで
+3. 2回の追加調査後も未達の場合、ユーザーに選択肢を提示：
+   - 追加調査を継続
+   - 現在の信頼度で解決策を実行
 
-### Step 5: Final Report Creation
+### ステップ5: 最終レポート作成
 
-**Prerequisite**: confidence=high achieved
+**前提**: 信頼度highを達成している
 
-After diagnosis completion, report to user in the following format:
+診断完了後、以下の形式でユーザーに報告：
 
 ```
-## Diagnosis Result Summary
+## 診断結果サマリー
 
-### Identified Causes
-[Cause list from verification results]
-- Causes relationship: [independent/dependent/exclusive]
+### 特定された原因
+[検証結果の原因リスト]
+- 原因の関係性: [independent/dependent/exclusive]
 
-### Verification Process
-- Investigation scope: [Scope confirmed in investigation]
-- Additional investigation iterations: [0/1/2]
-- Alternative hypotheses count: [Number generated in verification]
+### 検証プロセス
+- 調査範囲: [調査で確認した範囲]
+- 追加調査回数: [0/1/2回]
+- 代替仮説数: [検証で生成した数]
 
-### Recommended Solution
-[Solution derivation recommendation]
+### 推奨する解決策
+[解決策導出の推奨案]
 
-Rationale: [Selection rationale]
+理由: [選定理由]
 
-### Implementation Steps
-1. [Step 1]
-2. [Step 2]
+### 実装ステップ
+1. [ステップ1]
+2. [ステップ2]
 ...
 
-### Alternatives
-[Alternative description]
+### 代替案
+[代替案の説明]
 
-### Residual Risks
-[solver's residualRisks]
+### 残存リスク
+[solverのresidualRisks]
 
-### Post-Resolution Verification Items
-- [Verification item 1]
-- [Verification item 2]
+### 解決後の確認事項
+- [確認事項1]
+- [確認事項2]
 ```
 
-## Completion Criteria
+## 完了条件
 
-- [ ] Executed investigator and obtained evidence matrix, comparison analysis, and causal tracking
-- [ ] Performed investigation quality check and re-ran if insufficient
-- [ ] Executed verifier and obtained confidence level
-- [ ] Executed solver
-- [ ] Achieved confidence=high (or obtained user approval after 2 additional iterations)
-- [ ] Presented final report to user
+- [ ] investigatorを実行し、証拠マトリクス・比較分析・因果追跡を取得した
+- [ ] 調査品質チェックを行い、不足があれば再実行した
+- [ ] verifierを実行し、信頼度を取得した
+- [ ] solverを実行した
+- [ ] 信頼度highを達成した（または2回の追加調査後にユーザー承認を得た）
+- [ ] 最終レポートをユーザーに提示した

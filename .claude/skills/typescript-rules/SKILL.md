@@ -1,97 +1,97 @@
 ---
 name: typescript-rules
-description: Applies type safety and error handling rules. Enforces no-any policy and type guards. Use when implementing TypeScript or reviewing types.
+description: 型安全性とエラーハンドリングルールを適用。any禁止、型ガード必須。TypeScript実装、型定義レビュー時に使用。
 ---
 
-# TypeScript Development Rules
+# TypeScript 開発ルール
 
-## Type Safety in Backend Implementation
+## Backend実装における型安全性
 
-**Type Safety in Data Flow**
-Input Layer (`unknown`) -> Type Guard -> Business Layer (Type Guaranteed) -> Output Layer (Serialization)
+**データフローでの型安全性**
+入力層（`unknown`） → 型ガード → ビジネス層（型保証） → 出力層（シリアライズ）
 
-**Backend-Specific Type Scenarios**:
-- **API Communication**: Always receive responses as `unknown`, validate with type guards
-- **Form Input**: External input as `unknown`, type determined after validation
-- **Legacy Integration**: Stepwise assertion like `window as unknown as LegacyWindow`
-- **Test Code**: Always define types for mocks, utilize `Partial<T>` and `vi.fn<[Args], Return>()`
+**Backend固有の型シナリオ**:
+- **API通信**: レスポンスは必ず`unknown`で受け、型ガードで検証
+- **フォーム入力**: 外部入力は`unknown`、バリデーション後に型確定
+- **レガシー統合**: `window as unknown as LegacyWindow`のように段階的アサーション
+- **テストコード**: モックも必ず型定義、`Partial<T>`や`vi.fn<[Args], Return>()`活用
 
-## Coding Conventions
+## コーディング規約
 
-**Class Usage Criteria**
-- **Recommended: Implementation with Functions and Interfaces**
-  - Rationale: Improves testability and flexibility of function composition
-- **Classes Allowed**:
-  - Framework requirements (NestJS Controller/Service, TypeORM Entity, etc.)
-  - Custom error class definitions
-  - When state and business logic are tightly coupled (e.g., ShoppingCart, Session, StateMachine)
-- **Decision Criterion**: If "Does this data have behavior?" is Yes, consider using a class
+**クラス使用の判断基準**
+- **推奨：関数とinterfaceでの実装**
+  - 背景: テスタビリティと関数合成の柔軟性が向上
+- **クラス使用を許可**:
+  - フレームワーク要求時（NestJSのController/Service、TypeORMのEntity等）
+  - カスタムエラークラス定義時
+  - 状態とビジネスロジックが密結合している場合（例: ShoppingCart、Session、StateMachine）
+- **判断基準**: 「このデータは振る舞いを持つか？」がYesならクラス検討
   ```typescript
-  // Functions and interfaces
+  // 関数とinterface
   interface UserService { create(data: UserData): User }
   const userService: UserService = { create: (data) => {...} }
   ```
 
-**Function Design**
-- **0-2 parameters maximum**: Use object for 3+ parameters
+**関数設計**
+- **引数は0-2個まで**: 3個以上はオブジェクト化
   ```typescript
-  // Object parameter
+  // オブジェクト引数
   function createUser({ name, email, role }: CreateUserParams) {}
   ```
 
-**Dependency Injection**
-- **Inject external dependencies as parameters**: Ensure testability and modularity
+**依存性注入**
+- **外部依存は引数で注入**: テスト可能性とモジュール性確保
   ```typescript
-  // Receive dependency as parameter
+  // 依存性を引数で受け取る
   function createService(repository: Repository) { return {...} }
   ```
 
-**Asynchronous Processing**
-- Promise Handling: Always use `async/await`
-- Error Handling: Always handle with `try-catch`
-- Type Definition: Explicitly define return value types (e.g., `Promise<Result>`)
+**非同期処理**
+- Promise処理: 必ず`async/await`を使用
+- エラーハンドリング: 必ず`try-catch`でハンドリング
+- 型定義: 戻り値の型は明示的に定義（例: `Promise<Result>`）
 
-**Format Rules**
-- Semicolon omission (follow Biome settings)
-- Types in `PascalCase`, variables/functions in `camelCase`
-- Imports use absolute paths (`src/`)
+**フォーマット規則**
+- セミコロン省略（Biomeの設定に従う）
+- 型は`PascalCase`、変数・関数は`camelCase`
+- インポートは絶対パス（`src/`）
 
-**Clean Code Principles**
-- Delete unused code immediately
-- Delete debug `console.log()`
-- No commented-out code (manage history with version control)
-- Comments explain "why" (not "what")
+**クリーンコード原則**
+- 使用されていないコードは即座に削除
+- デバッグ用`console.log()`は削除
+- コメントアウトされたコード禁止（バージョン管理で履歴管理）
+- コメントは「なぜ」を説明（「何」ではなく）
 
-## Error Handling
+## エラーハンドリング
 
-**Absolute Rule**: Error suppression prohibited. All errors must have log output and appropriate handling.
+**絶対ルール**: エラーの握りつぶし禁止。すべてのエラーは必ずログ出力と適切な処理を行う。
 
-**Fail-Fast Principle**: Fail quickly on errors to prevent continued processing in invalid states
+**Fail-Fast原則**: エラー時は速やかに失敗させ、不正な状態での処理継続を防ぐ
 ```typescript
-// Prohibited: Unconditional fallback
+// 禁止: 無条件フォールバック
 catch (error) {
-  return defaultValue // Hides error
+  return defaultValue // エラーを隠蔽
 }
 
-// Required: Explicit failure
+// 必須: 明示的な失敗
 catch (error) {
-  logger.error('Processing failed', error)
-  throw error // Handle appropriately at higher layer
+  logger.error('処理失敗', error)
+  throw error // 上位層で適切に処理
 }
 ```
 
-**Result Type Pattern**: Express errors with types for explicit handling
+**Result型パターン**: エラーを型で表現し、明示的に処理
 ```typescript
 type Result<T, E> = { ok: true; value: T } | { ok: false; error: E }
 
-// Example: Express error possibility with types
+// 使用例：エラーの可能性を型で表現
 function parseUser(data: unknown): Result<User, ValidationError> {
   if (!isValid(data)) return { ok: false, error: new ValidationError() }
   return { ok: true, value: data as User }
 }
 ```
 
-**Custom Error Classes**
+**カスタムエラークラス**
 ```typescript
 export class AppError extends Error {
   constructor(message: string, public readonly code: string, public readonly statusCode = 500) {
@@ -99,23 +99,23 @@ export class AppError extends Error {
     this.name = this.constructor.name
   }
 }
-// Purpose-specific: ValidationError(400), BusinessRuleError(400), DatabaseError(500), ExternalServiceError(502)
+// 用途別: ValidationError(400), BusinessRuleError(400), DatabaseError(500), ExternalServiceError(502)
 ```
 
-**Layer-Specific Error Handling (Backend)**
-- API Layer: Convert to HTTP response, log output excluding sensitive information
-- Service Layer: Detect business rule violations, propagate AppError as-is
-- Repository Layer: Convert technical errors to domain errors
+**層別エラー処理**
+- API層: HTTPレスポンスに変換、機密情報を除外してログ出力
+- サービス層: ビジネスルール違反を検出、AppErrorはそのまま伝播
+- リポジトリ層: 技術的エラーをドメインエラーに変換
 
-**Structured Logging and Sensitive Information Protection**
-Never include sensitive information (password, token, apiKey, secret, creditCard) in logs
+**構造化ログと機密情報保護**
+機密情報（password, token, apiKey, secret, creditCard）は絶対にログに含めない
 
-**Asynchronous Error Handling**
-- Global handler setup mandatory: `unhandledRejection`, `uncaughtException`
-- Use try-catch with all async/await
-- Always log and re-throw errors
+**非同期エラーハンドリング**
+- グローバルハンドラー設定必須: `unhandledRejection`, `uncaughtException`
+- すべてのasync/awaitでtry-catch使用
+- エラーは必ずログと再スロー
 
-## Performance Optimization
+## パフォーマンス最適化
 
-- Streaming Processing: Process large datasets with streams
-- Memory Leak Prevention: Explicitly release unnecessary objects
+- ストリーミング処理: 大きなデータセットはストリームで処理
+- メモリリーク防止: 不要なオブジェクトは明示的に解放

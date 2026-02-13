@@ -1,84 +1,84 @@
-# Claude Code Development Rules
+# Claude Code 開発ルール
 
-Core rules for maximizing AI execution accuracy. All instructions must follow this file.
+AI実行精度最大化のための中核ルール。全ての指示はこのファイルに従う。
 
-## Most Important Principle: Research OK, Implementation STOP
+## 最重要原則：調査OK、実装STOP
 
-**User approval is mandatory before using any Edit/Write/MultiEdit tools**
+**すべてのEdit/Write/MultiEditツール使用前にユーザー承認が必須**
 
-- Before editing, use AskUserQuestion to present planned changes and obtain explicit approval
-- Research, reading, and analysis do not require approval
+- 編集作業の前にAskUserQuestionで変更計画を提示し、明示的な承認を得ること
+- 調査・読み込み・分析は承認不要
 
-## Quality Standard: Never Compromise Technically
+## 品質基準：技術的な妥協をしない
 
-- "Just works" vs "Correct implementation" → Choose correct
-- Best practice requires significant cost → Propose to user with trade-offs
-- Best practices are obtained from rule-advisor (Step 1)
+- 「とりあえず動く」vs「正しい実装」→ 正しい実装を選択
+- ベストプラクティスに大きなコストがかかる場合 → トレードオフをユーザーに提示
+- ベストプラクティスはrule-advisor（Step 1）から取得
 
-## Mandatory Execution Process
+## 必須実行プロセス
 
-### Session Initialization
+### セッション初期化
 
-**Trigger**: Before responding to the first user message in a session
+**トリガー**: セッション開始時、最初のユーザーメッセージに応答する前
 
-- [ ] Run `date` command to confirm current date/time
-- [ ] Execute `project-context` skill (using Skill tool) to understand project prerequisites
+- [ ] `date`コマンドで現在日時を確認
+- [ ] `project-context`スキル（Skillツール使用）を実行してプロジェクトの前提を把握
 
-### Step 1: Task Preparation
+### Step 1: タスク準備
 
-**Trigger**: When starting work that involves Edit/Write/MultiEdit tools
+**トリガー**: Edit/Write/MultiEditツールを使う作業の開始時
 
-- [ ] Execute rule-advisor subagent (using Task tool)
-- [ ] Update TodoWrite
-  - Record taskEssence as completion criteria
-  - Reflect firstActionGuidance as first action
-  - Record warningPatterns as checkpoints during execution
+- [ ] rule-advisorサブエージェントを実行（Taskツール使用）
+- [ ] TodoWriteを更新
+  - taskEssenceを完了判断基準として記録
+  - firstActionGuidanceを初動アクションとして反映
+  - warningPatternsを実行中の確認項目として記録
 
-### Step 2: Implementation Planning
+### Step 2: 実装計画
 
-- [ ] Investigate impact scope and identify related files
-- [ ] Present implementation approach to user
-- [ ] Use AskUserQuestion to obtain explicit approval before editing
+- [ ] 影響範囲を調査し、関連ファイルを特定
+- [ ] 実装アプローチをユーザーに提示
+- [ ] AskUserQuestionで編集前に明示的な承認を取得
 
-### Step 3: Implementation Execution
+### Step 3: 実装実行
 
-- [ ] Execute Edit/Write/MultiEdit following approved approach
-- [ ] Update TodoWrite every 3 file edits (confirm progress and direction)
+- [ ] 承認されたアプローチに従いEdit/Write/MultiEditを実行
+- [ ] 3ファイル編集ごとにTodoWriteを更新（進捗と方向性を確認）
 
-### Step 4: Quality Verification
+### Step 4: 品質検証
 
-- [ ] For implementation tasks: Execute quality-fixer subagent (using Task tool)
-- [ ] For non-implementation tasks: Verify against principles provided by rule-advisor
-- [ ] Confirm zero errors and report completion
+- [ ] 実装タスクの場合：quality-fixerサブエージェントを実行（Taskツール使用）
+- [ ] 実装以外の場合：rule-advisorが提供した原則に基づき検証
+- [ ] エラー0を確認し、完了を報告
 
-## Auto-stop Triggers
+## 自動停止トリガー
 
-Pause work and report status when these conditions occur:
+以下の条件発生時、作業を中断しステータスを報告：
 
-| Condition | Action |
-|-----------|--------|
-| 5+ file changes detected | Report impact scope to user |
-| Same error occurs twice | Re-run rule-advisor, root cause analysis |
-| 5 Edit tool uses | Create impact report |
-| 3 edits to same file | Consider refactoring |
+| 条件 | アクション |
+|------|-----------|
+| 5ファイル以上の変更を検出 | 影響範囲をユーザーに報告 |
+| 同じエラーが2回発生 | rule-advisor再実行、根本原因分析 |
+| Editツール5回使用 | 影響範囲レポートを作成 |
+| 同一ファイルを3回編集 | リファクタリングを検討 |
 
-## Error Handling Flow
+## エラー対処フロー
 
-1. Pause
-2. Re-run rule-advisor
-3. Root cause analysis (5 Whys)
-4. Present action plan to user
-5. Execute fix after approval
+1. 一時停止
+2. rule-advisor再実行
+3. 根本原因分析（5 Whys）
+4. 対処計画をユーザーに提示
+5. 承認後に修正を実行
 
-## User Confirmation Required
+## ユーザー確認必須
 
-Obtain user confirmation before implementation in these situations:
+以下の状況では実装前にユーザー確認を取得：
 
-- Architecture changes (adding new layers, changing responsibilities)
-- Adding external dependencies (npm packages, external APIs)
-- Breaking changes (existing APIs, data structures)
-- Multiple implementation approaches with unclear superiority
+- アーキテクチャ変更（新レイヤー追加、責務変更）
+- 外部依存の追加（npmパッケージ、外部API）
+- 破壊的変更（既存API、データ構造の変更）
+- 複数の実装方法があり優劣が判断できない場合
 
-## Working File Management
+## 作業ファイル管理
 
-Create temporary work files in `./tmp/` directory (under project root). Delete upon completion.
+作業中の一時ファイルは`./tmp/`ディレクトリ（プロジェクトルート配下）に作成。完了時に削除。

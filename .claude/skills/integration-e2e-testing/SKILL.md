@@ -1,77 +1,77 @@
 ---
 name: integration-e2e-testing
-description: Designs integration and E2E tests with mock boundaries and behavior verification rules. Use when writing E2E or integration tests.
+description: 統合テストとE2Eテストを設計。モック境界と振る舞い検証ルールを適用。E2Eテスト、統合テスト作成時に使用。
 ---
 
-# Integration Test & E2E Test Design/Implementation Rules
+# 統合テスト・E2Eテスト設計・実装ルール
 
-## Test Types and Limits
+## テスト種別と上限
 
-| Type | Purpose | File Format | Limit |
-|------|---------|-------------|-------|
-| Integration Test | Component interaction verification | `*.int.test.ts` | 3 per feature |
-| E2E Test | Critical user journey verification | `*.e2e.test.ts` | 1-2 per feature |
+| 種別 | 目的 | ファイル形式 | 上限 |
+|------|------|-------------|------|
+| 統合テスト | コンポーネント間連携検証 | `*.int.test.ts` | 機能あたり3件 |
+| E2Eテスト | クリティカルユーザージャーニー検証 | `*.e2e.test.ts` | 機能あたり1-2件 |
 
-**Critical User Journey**: Features with revenue impact, legal requirements, or daily use by majority of users
+**クリティカルユーザージャーニー**: 収益影響・法的要件・大多数のユーザーが日常的に利用する機能
 
-## Behavior-First Principle
+## 振る舞い優先の原則
 
-### Observability Check (All YES = Include)
+### 観測可能性チェック（全てYESで対象）
 
-| Check | Question | If NO |
-|-------|----------|-------|
-| Observable | Can user observe the result? | Exclude |
-| System Context | Does it require integration of multiple components? | Exclude |
-| Automatable | Can it run stably in CI environment? | Exclude |
+| チェック | 質問 | NOの場合 |
+|---------|------|----------|
+| 観測可能 | ユーザーが結果を観測できるか？ | 除外 |
+| システム文脈 | 複数コンポーネントの統合が必要か？ | 除外 |
+| 自動化可能 | CI環境で安定実行できるか？ | 除外 |
 
-### Include/Exclude Criteria
+### Include/Exclude基準
 
-**Include**: Business logic accuracy, data integrity, user-visible features, error handling
-**Exclude**: External live connections, performance metrics, implementation details, UI layout
+**Include**: ビジネスロジック正確性、データ整合性、ユーザー可視機能、エラーハンドリング
+**Exclude**: 外部実接続、パフォーマンス指標、実装詳細、UIレイアウト
 
-## Skeleton Specification
+## スケルトン仕様
 
-### Required Comment Format
+### 必須コメント形式
 
 ```typescript
-// AC: "[Acceptance criteria original text]"
-// ROI: [0-100] | Business Value: [0-10] | Frequency: [0-10]
-// Behavior: [Trigger] -> [Process] -> [Observable Result]
+// AC: "[受入条件原文]"
+// ROI: [0-100] | ビジネス価値: [0-10] | 頻度: [0-10]
+// 振る舞い: [トリガー] → [処理] → [観測可能な結果]
 // @category: core-functionality | integration | edge-case | ux | e2e
-// @dependency: none | [component name] | full-system
+// @dependency: none | [コンポーネント名] | full-system
 // @complexity: low | medium | high
-it.todo('[AC number]: [Test name]')
+it.todo('[AC番号]: [テスト名]')
 ```
 
-### Property Annotations
+### Property注釈
 
 ```typescript
-// Property: `[Verification expression]`
-// fast-check: fc.property(fc.[arbitrary], (input) => [invariant])
-it.todo('[AC number]-property: [Invariant description]')
+// Property: `[検証式]`
+// fast-check: fc.property(fc.[arbitrary], (input) => [不変条件])
+it.todo('[AC番号]-property: [不変条件記述]')
 ```
 
-### ROI Calculation
+### ROI計算
 
 ```
-ROI = (Business Value x Frequency + Legal Requirement x 10 + Defect Detection) / Total Cost
+ROI = (ビジネス価値 × 頻度 + 法的要件 × 10 + 欠陥検出) / 総コスト
 ```
 
-| Type | Total Cost | E2E Generation Condition |
-|------|------------|-------------------------|
-| Integration | 11 | - |
+| 種別 | 総コスト | E2E生成条件 |
+|------|---------|------------|
+| 統合 | 11 | - |
 | E2E | 38 | ROI > 50 |
 
-## Implementation Rules
+## 実装ルール
 
-### Property-Based Test Implementation
+### Property-Based Test実装
 
-When Property annotation exists, fast-check library is required:
+Property注釈がある場合、fast-checkライブラリ必須:
 
 ```typescript
 import fc from 'fast-check'
 
-it('AC2-property: Model name is always gemini-3-pro-image-preview', () => {
+it('AC2-property: モデル名は常にgemini-3-pro-image-preview', () => {
   fc.assert(
     fc.property(fc.string(), (prompt) => {
       const result = client.generate(prompt)
@@ -81,66 +81,66 @@ it('AC2-property: Model name is always gemini-3-pro-image-preview', () => {
 })
 ```
 
-**Requirements**:
-- Write in `fc.assert(fc.property(...))` format
-- Reflect skeleton's `// fast-check:` comment directly in implementation
-- When failure case discovered, add as concrete unit test (regression prevention)
+**必須事項**:
+- `fc.assert(fc.property(...))` 形式で記述
+- スケルトンの`// fast-check:`コメントをそのまま実装に反映
+- 失敗ケース発見時は具体的なユニットテストとして追加（リグレッション防止）
 
-### Behavior Verification Implementation
+### 振る舞い検証の実装
 
-**Behavior Description Verification Levels**:
+**振る舞い記述の検証レベル**:
 
-| Step Type | Verification Target | Example |
-|-----------|--------------------| --------|
-| Trigger | Reproduce in Arrange | API failure -> mockResolvedValue({ ok: false }) |
-| Process | Intermediate state or call | Function call, state change |
-| Observable Result | Final output value | Return value, error message, log output |
+| ステップ種別 | 検証対象 | 例 |
+|-------------|---------|-----|
+| トリガー | Arrangeで再現 | API障害 → mockResolvedValue({ ok: false }) |
+| 処理 | 中間状態または呼び出し | 関数呼び出し、状態変更 |
+| 観測可能な結果 | 最終出力の値 | 戻り値、エラーメッセージ、ログ出力 |
 
-**Pass Criteria**: Pass if "observable result" is verified as **return value or mock call argument** of test target
+**判定基準**: 「観測可能な結果」がテスト対象の**戻り値またはモックの呼び出し引数**として検証されていれば合格
 
-### Verification Item Determination Rules
+### 検証項目の決定ルール
 
-| Skeleton State | Verification Item Determination Method |
-|----------------|---------------------------------------|
-| `// Verification items:` listed | Implement all listed items with expect |
-| No `// Verification items:` | Derive from "observable result" in "Behavior" description |
-| Both present | Prioritize verification items, use behavior as supplement |
+| スケルトンの状態 | 検証項目の決定方法 |
+|-----------------|-------------------|
+| `// 検証項目:` が列挙されている | 列挙された全項目をexpectで実装 |
+| `// 検証項目:` がない | 「振る舞い」記述の「観測可能な結果」から導出 |
+| 両方ある | 検証項目を優先、振る舞いは補足として使用 |
 
-### Integration Test Mock Boundaries
+### 統合テストのモック境界
 
-| Judgment Criteria | Mock | Actual |
-|-------------------|------|--------|
-| Part of test target? | No -> Can mock | Yes -> Actual required |
-| Is call verification target of test? | No -> Can mock | Yes -> Actual or verifiable mock |
-| External network communication? | Yes -> Mock required | No -> Actual recommended |
+| 判断基準 | モック | 実物 |
+|---------|--------|------|
+| テスト対象の一部か？ | No → モック可 | Yes → 実物必須 |
+| 呼び出しがテストの検証対象か？ | No → モック可 | Yes → 実物または検証可能なモック |
+| 外部ネットワーク通信か？ | Yes → モック必須 | No → 実物推奨 |
 
-**Judgment Flow**:
-1. External API (HTTP communication) -> Mock required
-2. Component interaction under test -> Actual required
-3. Log output verification needed -> Use verifiable mock (vi.fn())
-4. Log output verification not needed -> Actual or ignore
+**判定フロー**:
+1. 外部API（HTTP通信）→ モック必須
+2. テスト対象のコンポーネント間連携 → 実物必須
+3. ログ出力の検証が必要 → 検証可能なモック（vi.fn()）を使用
+4. ログ出力の検証が不要 → 実物または無視
 
-### E2E Test Execution Conditions
+### E2Eテストの実行条件
 
-- Execute only after all components are implemented
-- Do not use mocks (`@dependency: full-system`)
+- 全コンポーネント実装完了後に実行
+- モック禁止（`@dependency: full-system`）
 
-## Review Criteria
+## レビュー基準
 
-### Skeleton and Implementation Consistency
+### スケルトンと実装の整合性
 
-| Check | Failure Condition |
-|-------|-------------------|
-| Property Verification | Property annotation exists but fast-check not used |
-| Behavior Verification | No expect for "observable result" |
-| Verification Item Coverage | Listed verification items not included in expect |
-| Mock Boundary | Internal components mocked in integration test |
+| チェック | 不合格条件 |
+|---------|-----------|
+| Property検証 | Property注釈があるのにfast-check未使用 |
+| 振る舞い検証 | 「観測可能な結果」に対応するexpectがない |
+| 検証項目網羅 | 列挙された検証項目がexpectに含まれていない |
+| モック境界 | 統合テストで内部コンポーネントをモック化 |
 
-### Implementation Quality
+### 実装品質
 
-| Check | Failure Condition |
-|-------|-------------------|
-| AAA Structure | Arrange/Act/Assert separation unclear |
-| Independence | State sharing between tests, execution order dependency |
-| Reproducibility | Depends on date/random, results vary |
-| Readability | Test name and verification content don't match |
+| チェック | 不合格条件 |
+|---------|-----------|
+| AAA構造 | Arrange/Act/Assertの区切りが不明確 |
+| 独立性 | テスト間で状態共有、実行順序依存 |
+| 再現性 | 日時・乱数に依存し結果が変動 |
+| 可読性 | テスト名と検証内容が一致しない |

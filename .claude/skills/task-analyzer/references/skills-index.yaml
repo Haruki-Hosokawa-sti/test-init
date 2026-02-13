@@ -1,130 +1,121 @@
-# Skills Metadata Index
-# Used to select appropriate skills based on task analysis
+# スキルメタデータインデックス
+# タスク分析に基づいて適切なスキルを選択するために使用
 
 skills:
   coding-standards:
     skill: "coding-standards"
-    tags: [universal, anti-patterns, refactoring, type-safety, testing, code-deletion, rule-of-three, fail-fast, impact-analysis]
-    typical-use: "Universal coding principles applicable across all domains, foundational standards for all developers"
+    tags: [anti-patterns, technical-judgment, debugging, rule-of-three, implementation, type-safety, refactoring, code-reading, best-practices, impact-analysis, unused-code, code-deletion, testing, tdd]
+    typical-use: "全ドメイン共通の技術的判断基準、アンチパターン検出、デバッグ手法、実装時のベストプラクティス、影響範囲調査、未使用コード削除、テスト設計原則"
     size: large
     key-references:
       - "Rule of Three - Martin Fowler"
-      - "Single Responsibility Principle - Clean Code"
-      - "DRY Principle - The Pragmatic Programmer"
-      - "YAGNI Principle - Kent Beck"
-      - "5 Whys - Toyota Production System"
+      - "5 Whys - トヨタ生産方式"
+      - "DRY原則 - The Pragmatic Programmer"
+      - "単一責任原則（SRP） - Clean Code"
+      - "YAGNI原則 - Extreme Programming"
+      - "Avoiding fallback in distributed systems - AWS Builders' Library"
+      - "Test-Driven Development - Kent Beck"
       - "Red-Green-Refactor - Kent Beck"
-      - "AAA Pattern - Arrange-Act-Assert"
+      - "AAAパターン - Arrange-Act-Assert"
     sections:
-      - "Technical Anti-patterns (Red Flag Patterns)"
-      - "Basic Principles"
-      - "Comment Writing Rules"
-      - "Error Handling Fundamentals"
-      - "Rule of Three - Criteria for Code Duplication"
-      - "Common Failure Patterns and Avoidance Methods"
-      - "Debugging Techniques"
-      - "Type Safety Fundamentals"
-      - "Refactoring Techniques"
-      - "Situations Requiring Technical Decisions"
-      - "Continuous Improvement Mindset"
-      - "Implementation Completeness Assurance"
-      - "Red-Green-Refactor Process (Test-First Development)"
-      - "Test Design Principles"
-      - "Test Helper Utilization Rules"
-      - "Test Granularity Principles"
-      - "Continuity Test Scope"
+      - "技術的アンチパターン（赤信号パターン）"
+      - "基本原則"
+      - "コメント記述ルール"
+      - "エラーハンドリングの基本原則"
+      - "Rule of Three - コード重複の判断基準"
+      - "よくある失敗パターンと回避方法"
+      - "デバッグ手法"
+      - "型安全性の基礎"
+      - "リファクタリング手法"
+      - "技術的判断が必要な場面"
+      - "継続的改善のマインドセット"
+      - "実装作業の完全性担保"
+      - "Red-Green-Refactorプロセス（テストファースト開発）"
+      - "テスト設計原則"
+      - "テストヘルパーの活用ルール"
+      - "テストの粒度原則"
+      - "継続性テストの範囲"
 
   typescript-rules:
     skill: "typescript-rules"
-    tags: [implementation, type-safety, async, refactoring, coding-style, functional-programming, dependency-injection, branded-types, backend]
-    typical-use: "Backend TypeScript code creation, modification, refactoring, modern type features utilization"
+    tags: [implementation, type-safety, async, coding-style, functional-programming, dependency-injection, backend]
+    typical-use: "バックエンドTypeScriptコードの作成・修正、クラス使用判断、DI実装"
     size: small
     key-references:
-      - "YAGNI Principle - Kent Beck"
-      - "Clean Code - Robert C. Martin"
-      - "DRY Principle - The Pragmatic Programmer"
-      - "Refactoring - Martin Fowler"
-      - "TypeScript 4.9 satisfies Operator - Microsoft"
-      - "Branded Types - TypeScript Community"
-      - "Effect-TS / fp-ts - Functional Programming"
       - "Dependency Injection - Martin Fowler"
-      - "Avoiding fallback in distributed systems - AWS Builders' Library"
     sections:
-      - "Type Safety in Backend Implementation"
-      - "Coding Conventions"
-      - "Error Handling"
-      - "Performance Optimization"
+      - "Backend実装における型安全性"
+      - "コーディング規約"
+      - "エラーハンドリング"
+      - "パフォーマンス最適化"
 
   typescript-testing:
     skill: "typescript-testing"
-    tags: [quality, testing, tdd, coverage, vitest, implementation, debugging, refactoring, backend]
-    typical-use: "Backend test creation, quality checks, test quality criteria, development steps for code/bug fixes, refactoring, and new feature implementation"
+    tags: [quality, testing, coverage, vitest, backend, implementation]
+    typical-use: "バックエンドテスト作成、Vitest設定、70%カバレッジ要件、テスト品質基準"
     size: small
     key-references:
-      - "Test-Driven Development - Kent Beck"
-      - "Rule of Three - Martin Fowler"
-      - "Red-Green-Refactor - Kent Beck"
-      - "AAA Pattern - Arrange-Act-Assert"
+      - "Vitest公式ドキュメント"
     sections:
-      - "Test Framework"
-      - "Basic Testing Policy"
-      - "Test Implementation Conventions"
-      - "Test Quality Criteria"
-      - "Mock Type Safety Enforcement"
-      - "Basic Vitest Example"
+      - "テストフレームワーク"
+      - "テストの基本方針"
+      - "テストの実装規約"
+      - "テスト品質基準"
+      - "モックの型安全性"
+      - "Vitestの基本例"
 
   technical-spec:
     skill: "technical-spec"
     tags: [architecture, design, documentation, environment, data-flow, implementation, quality-commands, testing, build]
-    typical-use: "Technical design, environment configuration, documentation creation process, implementation policy decisions, quality check commands, build and test execution"
+    typical-use: "技術設計、環境設定、ドキュメント作成プロセス、実装方針決定、品質チェックコマンド、ビルドとテスト実行"
     size: medium
     key-references:
-      - "ADR Format - Michael Nygard"
-      - "Single Data Source Principle - Single Source of Truth"
+      - "ADRフォーマット - Michael Nygard"
+      - "単一データソース原則 - Single Source of Truth"
     sections:
-      - "Basic Technology Stack Policy"
-      - "Environment Variable Management and Security"
-      - "Architecture Design"
-      - "Architecture Patterns"
-      - "Unified Data Flow Principles"
-      - "Build and Testing"
+      - "技術スタックの基本方針"
+      - "環境変数管理とセキュリティ"
+      - "アーキテクチャ設計"
+      - "パターン適用の一貫性"
+      - "データフロー統一原則"
+      - "ビルドとテスト"
 
   project-context:
     skill: "project-context"
     tags: [context, project-specific, implementation]
-    typical-use: "Project-specific information, understanding implementation principles"
+    typical-use: "プロジェクト固有情報、実装原則の理解"
     size: small
     key-references:
-      - "Project-specific (empirical)"
+      - "プロジェクト固有（経験則）"
     sections:
-      - "Basic Configuration"
-      - "Implementation Principles"
-      - "Customization Guide"
+      - "基本設定"
+      - "実装原則"
+      - "カスタマイズガイド"
 
   documentation-criteria:
     skill: "documentation-criteria"
-    tags: [documentation, adr, prd, design-doc, work-plan, decision-matrix]
-    typical-use: "Implementation start scale assessment, document creation decisions, ADR/PRD/Design Doc/work plan creation criteria"
+    tags: [documentation, decision-making, adr, prd, design-doc, planning, process]
+    typical-use: "実装開始時の規模判定、ドキュメント作成判定、ADR/PRD/Design Doc/作業計画書の作成基準"
     size: medium
     key-references:
-      - "ADR Methodology - Michael Nygard"
-      - "Design Doc Culture - Google Engineering Practices"
+      - "ADR手法 - Michael Nygard"
+      - "Design Doc文化 - Google Engineering Practices"
       - "Single Source of Truth"
     sections:
-      - "Creation Decision Matrix"
-      - "ADR Creation Conditions (Required if Any Apply)"
-      - "Detailed Document Definitions"
-      - "Creation Process"
-      - "Storage Locations"
-      - "ADR Status"
-      - "AI Automation Rules"
-      - "Diagram Requirements"
-      - "Common ADR Relationships"
+      - "作成判定マトリクス"
+      - "ADR作成条件（いずれか該当で必須）"
+      - "各ドキュメントの詳細定義"
+      - "作成プロセス"
+      - "保存場所"
+      - "ADRステータス"
+      - "AI自動化ルール"
+      - "図表作成要件"
+      - "共通ADRとの関係性"
 
   implementation-approach:
     skill: "implementation-approach"
     tags: [architecture, implementation, task-decomposition, strategy-patterns, strangler-pattern, facade-pattern, design, planning, confirmation-levels]
-    typical-use: "Implementation strategy selection, task decomposition, design decisions, large-scale change planning"
+    typical-use: "実装戦略の選択、タスク分解、設計判断、大規模変更の計画"
     size: medium
     key-references:
       - "Strangler Fig Pattern - Martin Fowler"
@@ -132,94 +123,89 @@ skills:
       - "Walking Skeleton - Alistair Cockburn"
       - "Facade Pattern - Gang of Four"
     sections:
-      - "Meta-cognitive Strategy Selection Process"
-      - "Verification Level Definitions"
-      - "Integration Point Definitions"
-      - "Anti-patterns"
-      - "Guidelines for Meta-cognitive Execution"
+      - "メタ認知的戦略選択プロセス"
+      - "確認レベル定義"
+      - "統合ポイントの定義"
+      - "アンチパターン"
+      - "メタ認知的実行のための指針"
 
   integration-e2e-testing:
     skill: "integration-e2e-testing"
     tags: [testing, integration-test, e2e-test, property-based-testing, fast-check, test-skeleton, test-review, quality]
-    typical-use: "Integration and E2E test skeleton generation, test implementation, test review, Property-Based Test implementation"
+    typical-use: "統合テスト・E2Eテストのスケルトン生成、テスト実装、テストレビュー、Property-Based Test実装"
     size: small
     key-references:
       - "fast-check - Property-based testing for TypeScript"
       - "Node.js Testing Best Practices - Yoni Goldberg"
       - "Property-Based Testing - 2025 Practices"
     sections:
-      - "Test Types and Limits"
-      - "Behavior-First Principle"
-      - "Skeleton Specification"
-      - "Implementation Rules"
-      - "Review Criteria"
+      - "テスト種別と上限"
+      - "振る舞い優先の原則"
+      - "スケルトン仕様"
+      - "実装ルール"
+      - "レビュー基準"
 
   subagents-orchestration-guide:
     skill: "subagents-orchestration-guide"
     tags: [orchestration, subagents, workflow, scale-determination, document-requirements, autonomous-execution]
-    typical-use: "Coordinating subagents through implementation workflows, scale determination, document requirements"
+    typical-use: "サブエージェントのワークフロー調整、規模判定、ドキュメント要件"
     size: medium
     key-references:
-      - "Workflow Orchestration Patterns"
-      - "Agent Coordination Patterns"
+      - "ワークフロー調整パターン"
+      - "エージェント連携パターン"
     sections:
-      - "Scale Determination"
-      - "Document Requirements"
-      - "Stop Points"
-      - "Autonomous Execution Mode"
+      - "規模判定"
+      - "ドキュメント要件"
+      - "停止ポイント"
+      - "自律実行モード"
 
-  # Frontend-specific Skills
+  # フロントエンド固有スキル
   frontend/typescript-rules:
     skill: "frontend/typescript-rules"
-    tags: [frontend, react, implementation, type-safety, function-components, props-driven, async, refactoring, coding-style]
-    typical-use: "React component creation, Props type definitions, frontend TypeScript development"
+    tags: [frontend, react, implementation, type-safety, props-driven, hooks, component-design, vite, error-boundary]
+    typical-use: "React/Viteでのフロントエンド開発、コンポーネント設計、Props設計、環境変数管理"
     size: small
     key-references:
-      - "React Function Components - React Official"
-      - "Props-driven Design - React Best Practices"
-      - "YAGNI Principle - Kent Beck"
-      - "Clean Code - Robert C. Martin"
-      - "TypeScript satisfies Operator - Microsoft"
+      - "React公式ドキュメント - Function Components"
+      - "Props-driven開発 - React Patterns"
     sections:
-      - "Frontend-Specific Anti-patterns"
-      - "Type Safety in Frontend Implementation"
-      - "Coding Conventions"
-      - "Error Handling"
-      - "Performance Optimization"
+      - "フロントエンド固有のアンチパターン"
+      - "Frontend実装における型安全性"
+      - "コーディング規約"
+      - "エラーハンドリング"
+      - "パフォーマンス最適化"
 
   frontend/typescript-testing:
     skill: "frontend/typescript-testing"
-    tags: [frontend, react, quality, testing, tdd, coverage, vitest, react-testing-library, msw, implementation]
-    typical-use: "React component testing, React Testing Library tests, MSW API mocking, frontend test creation"
+    tags: [frontend, react, quality, testing, coverage, vitest, react-testing-library, msw, component-testing, implementation]
+    typical-use: "Reactコンポーネントのテスト作成、React Testing Library、MSW、60%カバレッジ要件、Co-location"
     size: small
     key-references:
       - "React Testing Library - Kent C. Dodds"
-      - "MSW (Mock Service Worker) - MSW Team"
-      - "Test-Driven Development - Kent Beck"
-      - "Red-Green-Refactor - Kent Beck"
-      - "User-Observable Behavior Testing - Testing Library"
+      - "MSW (Mock Service Worker) - API Mocking"
+      - "ADR-0002 Co-location原則"
     sections:
-      - "Test Framework"
-      - "Basic Testing Policy"
-      - "Test Implementation Conventions"
-      - "Mock Type Safety Enforcement"
-      - "Basic React Testing Library Example"
+      - "テストフレームワーク"
+      - "テストの基本方針"
+      - "テストの実装規約"
+      - "モックの型安全性の徹底"
+      - "React Testing Libraryの基本例"
 
   frontend/technical-spec:
     skill: "frontend/technical-spec"
-    tags: [frontend, react, vite, architecture, design, environment, data-flow, implementation, performance]
-    typical-use: "React technical design, Vite configuration, frontend environment setup, component architecture decisions"
+    tags: [frontend, react, architecture, design, documentation, environment, data-flow, implementation, vite, security, client-side, state-management, context-api, hooks, lighthouse, bundle-size, non-functional-requirements]
+    typical-use: "フロントエンド技術設計、環境変数管理（Vite）、セキュリティ制約、アーキテクチャ設計、状態管理パターン、実装方針決定、非機能要件の確認"
     size: medium
     key-references:
-      - "React Official Documentation"
-      - "Build Tool Best Practices"
-      - "Single Source of Truth"
+      - "Vite公式ドキュメント - Environment Variables"
+      - "React公式ドキュメント - State Management"
+      - "Single Source of Truth - データフロー原則"
+      - "Immutable Update Patterns - React"
+      - "Lighthouse - Google Web Performance"
+      - "Web.dev - Performance Best Practices"
     sections:
-      - "Basic Technology Stack Policy"
-      - "Environment Variable Management and Security"
-      - "Architecture Design"
-      - "Unified Data Flow Principles"
-      - "Build and Testing"
-      - "Quality Check Requirements"
-      - "Coverage Requirements"
-      - "Non-functional Requirements"
+      - "技術スタックの基本方針"
+      - "環境変数管理とセキュリティ"
+      - "アーキテクチャ設計"
+      - "データフロー統一原則"
+      - "ビルドとテスト"

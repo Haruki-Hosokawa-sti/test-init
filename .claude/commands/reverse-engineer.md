@@ -1,193 +1,193 @@
 ---
-description: Generate PRD and Design Docs from existing codebase through discovery, generation, verification, and review workflow
+description: 既存コードベースからPRDとDesign Docを生成するリバースエンジニアリングワークフロー
 ---
 
-**Command Context**: Reverse engineering workflow to create documentation from existing code
+**コマンドコンテキスト**: 既存コードからドキュメントを作成するリバースエンジニアリングワークフロー
 
-Target: $ARGUMENTS
+対象: $ARGUMENTS
 
-**TodoWrite**: Register phases first, then steps within each phase as you enter it.
+**TodoWrite登録**: まずフェーズをTodoWriteに登録し、各フェーズ開始時に詳細ステップを追加登録する。
 
-## Step 0: Initial Configuration
+## ステップ0: 初期設定
 
-### 0.1 Scope Confirmation
+### 0.1 スコープ確認
 
-Use AskUserQuestion to confirm:
-1. **Target path**: Which directory/module to document
-2. **Depth**: PRD only, or PRD + Design Docs
-3. **Reference Architecture**: layered / mvc / clean / hexagonal / none
-4. **Human review**: Yes (recommended) / No (fully autonomous)
+AskUserQuestionで以下を確認:
+1. **対象パス**: どのディレクトリ/モジュールをドキュメント化するか
+2. **深度**: PRDのみ、またはPRD + Design Doc
+3. **参照アーキテクチャ**: layered / mvc / clean / hexagonal / none
+4. **人間レビュー**: あり（推奨） / なし（自律実行）
 
-### 0.2 Output Configuration
+### 0.2 出力設定
 
-- PRD output: `docs/prd/` or existing PRD directory
-- Design Doc output: `docs/design/` or existing design directory
-- Verify directories exist, create if needed
+- PRD出力先: `docs/prd/` または既存PRDディレクトリ
+- Design Doc出力先: `docs/design/` または既存Design Docディレクトリ
+- ディレクトリの存在確認、必要に応じて作成
 
-## Workflow Overview
+## ワークフロー概要
 
 ```
-Phase 1: PRD Generation
-  Step 1: Scope Discovery (all units)
-  Step 2-5: Per-unit loop (Generation → Verification → Review → Revision)
+フェーズ1: PRD生成
+  ステップ1: スコープ発見（全ユニット）
+  ステップ2-5: ユニット毎ループ（生成 → 検証 → レビュー → 修正）
 
-Phase 2: Design Doc Generation (if requested)
-  Step 6: Scope Discovery (all components per PRD)
-  Step 7-10: Per-component loop (Generation → Verification → Review → Revision)
+フェーズ2: Design Doc生成（要求された場合）
+  ステップ6: スコープ発見（PRD毎の全component）
+  ステップ7-10: component毎ループ（生成 → 検証 → レビュー → 修正）
 ```
 
-**Context Passing**: Pass structured JSON output between steps. Use `$STEP_N_OUTPUT` placeholder notation.
+**コンテキスト伝達**: ステップ間で構造化JSON出力を受け渡す。`$STEP_N_OUTPUT`プレースホルダー記法を使用。
 
-## Phase 1: PRD Generation
+## フェーズ1: PRD生成
 
-**Register in TodoWrite**:
-- Step 1: PRD Scope Discovery
-- Per-unit processing (Steps 2-5 for each unit)
+**TodoWrite登録**:
+- ステップ1: PRDスコープ発見
+- ユニット毎の処理（各ユニットに対してステップ2-5）
 
-### Step 1: PRD Scope Discovery
+### ステップ1: PRDスコープ発見
 
-**Task invocation**:
+**Task呼び出し**:
 ```
 subagent_type: scope-discoverer
 prompt: |
-  Discover PRD targets in the codebase.
+  コードベースからPRD対象を発見する。
 
   scope_type: prd
   target_path: $USER_TARGET_PATH
   reference_architecture: $USER_RA_CHOICE
-  focus_area: $USER_FOCUS_AREA (if specified)
+  focus_area: $USER_FOCUS_AREA (指定時)
 ```
 
-**Store output as**: `$STEP_1_OUTPUT`
+**出力を保存**: `$STEP_1_OUTPUT`
 
-**Quality Gate**:
-- At least one PRD unit discovered → proceed
-- No units discovered → ask user for hints
+**品質ゲート**:
+- 1つ以上のPRDユニットが発見された → 続行
+- ユニットが発見されない → ユーザーにヒントを求める
 
-**Human Review Point** (if enabled): Present discovered units for confirmation.
+**人間レビューポイント**（有効時）: 発見されたユニットを確認用に提示。
 
-### Step 2-5: Per-Unit Processing
+### ステップ2-5: ユニット毎の処理
 
-**Complete Steps 2→3→4→5 for each unit before proceeding to the next unit.**
+**各ユニットについてステップ2→3→4→5を完了してから次のユニットへ進む。**
 
-#### Step 2: PRD Generation
+#### ステップ2: PRD生成
 
-**Task invocation**:
+**Task呼び出し**:
 ```
 subagent_type: prd-creator
 prompt: |
-  Create reverse-engineered PRD for the following feature.
+  以下の機能のリバースエンジニアリングPRDを作成する。
 
-  Operation Mode: reverse-engineer
+  動作モード: reverse-engineer
   External Scope Provided: true
 
-  Feature: $UNIT_NAME (from $STEP_1_OUTPUT)
-  Description: $UNIT_DESCRIPTION
-  Related Files: $UNIT_RELATED_FILES
-  Entry Points: $UNIT_ENTRY_POINTS
+  機能: $UNIT_NAME ($STEP_1_OUTPUTより)
+  説明: $UNIT_DESCRIPTION
+  関連ファイル: $UNIT_RELATED_FILES
+  エントリーポイント: $UNIT_ENTRY_POINTS
 
-  Skip independent scope discovery. Use provided scope data.
-  Create final version PRD based on code investigation within specified scope.
+  独自のスコープ発見をスキップ。提供されたスコープデータを使用。
+  指定スコープ内でのコード調査に基づき最終版PRDを作成。
 ```
 
-**Store output as**: `$STEP_2_OUTPUT` (PRD path)
+**出力を保存**: `$STEP_2_OUTPUT`（PRDパス）
 
-#### Step 3: Code Verification
+#### ステップ3: コード検証
 
-**Task invocation**:
+**Task呼び出し**:
 ```
 subagent_type: code-verifier
 prompt: |
-  Verify consistency between PRD and code implementation.
+  PRDとコード実装の整合性を検証する。
 
   doc_type: prd
   document_path: $STEP_2_OUTPUT
-  code_paths: $UNIT_RELATED_FILES (from $STEP_1_OUTPUT)
+  code_paths: $UNIT_RELATED_FILES ($STEP_1_OUTPUTより)
   verbose: false
 ```
 
-**Store output as**: `$STEP_3_OUTPUT`
+**出力を保存**: `$STEP_3_OUTPUT`
 
-**Quality Gate**:
-- consistencyScore >= 70 → proceed to review
-- consistencyScore < 70 → flag for detailed review
+**品質ゲート**:
+- consistencyScore >= 70 → レビューへ進む
+- consistencyScore < 70 → 詳細レビュー用にフラグ
 
-#### Step 4: Review
+#### ステップ4: レビュー
 
-**Required Input**: $STEP_3_OUTPUT (verification JSON from Step 3)
+**必須入力**: $STEP_3_OUTPUT（ステップ3からの検証JSON）
 
-**Task invocation**:
+**Task呼び出し**:
 ```
 subagent_type: document-reviewer
 prompt: |
-  Review the following PRD considering code verification findings.
+  コード検証結果を考慮してPRDをレビューする。
 
   doc_type: PRD
   target: $STEP_2_OUTPUT
   mode: composite
 
-  ## Code Verification Results
+  ## コード検証結果
   $STEP_3_OUTPUT
 
-  ## Additional Review Focus
-  - Alignment between PRD claims and verification evidence
-  - Resolution recommendations for each discrepancy
-  - Completeness of undocumented feature coverage
+  ## 追加レビュー観点
+  - PRD主張と検証evidenceの整合性
+  - 各不整合に対する解決推奨
+  - 未ドキュメント機能カバレッジの完全性
 ```
 
-**Store output as**: `$STEP_4_OUTPUT`
+**出力を保存**: `$STEP_4_OUTPUT`
 
-#### Step 5: Revision (conditional)
+#### ステップ5: 修正（条件付き）
 
-**Trigger Conditions** (any one of the following):
-- Review status is "Needs Revision" or "Rejected"
-- Critical discrepancies exist in `$STEP_3_OUTPUT`
+**トリガー条件**（以下のいずれか）:
+- レビューステータスが「Needs Revision」または「Rejected」
+- `$STEP_3_OUTPUT`にクリティカルな不整合が存在
 - consistencyScore < 70
 
-**Task invocation**:
+**Task呼び出し**:
 ```
 subagent_type: prd-creator
 prompt: |
-  Update PRD based on review feedback.
+  レビューフィードバックに基づきPRDを更新する。
 
-  Operation Mode: update
-  Existing PRD: $STEP_2_OUTPUT
+  動作モード: update
+  既存PRD: $STEP_2_OUTPUT
 
-  ## Review Feedback
+  ## レビューフィードバック
   $STEP_4_OUTPUT
 
-  ## Discrepancies to Address
-  (Extract critical and major discrepancies from $STEP_3_OUTPUT)
+  ## 対処すべき不整合
+  （$STEP_3_OUTPUTからcriticalとmajorの不整合を抽出）
 
-  Apply corrections and improvements.
+  修正と改善を適用する。
 ```
 
-**Loop Control**: Maximum 2 revision cycles. After 2 cycles, flag for human review regardless of status.
+**ループ制御**: 最大2回の修正サイクル。2サイクル後はステータスに関わらず人間レビュー用にフラグ。
 
-#### Unit Completion
+#### ユニット完了
 
-- [ ] Review status is "Approved" or "Approved with Conditions"
-- [ ] Human review passed (if enabled in Step 0)
+- [ ] レビューステータスが「Approved」または「Approved with Conditions」
+- [ ] 人間レビュー通過（ステップ0で有効化時）
 
-**Next**: Proceed to next unit. After all units → Phase 2.
+**次へ**: 次のユニットへ進む。全ユニット完了後 → フェーズ2。
 
-## Phase 2: Design Doc Generation
+## フェーズ2: Design Doc生成
 
-*Execute only if Design Docs were requested in Step 0*
+*ステップ0でDesign Docが要求された場合のみ実行*
 
-**Register in TodoWrite**:
-- Step 6: Design Doc Scope Discovery
-- Per-component processing (Steps 7-10 for each component)
+**TodoWrite登録**:
+- ステップ6: Design Docスコープ発見
+- component毎の処理（各componentに対してステップ7-10）
 
-### Step 6: Design Doc Scope Discovery
+### ステップ6: Design Docスコープ発見
 
-For each approved PRD:
+承認済みPRD毎に:
 
-**Task invocation**:
+**Task呼び出し**:
 ```
 subagent_type: scope-discoverer
 prompt: |
-  Discover Design Doc targets within PRD scope.
+  PRDスコープ内でDesign Doc対象を発見する。
 
   scope_type: design-doc
   existing_prd: $APPROVED_PRD_PATH
@@ -195,46 +195,46 @@ prompt: |
   reference_architecture: $USER_RA_CHOICE
 ```
 
-**Store output as**: `$STEP_6_OUTPUT`
+**出力を保存**: `$STEP_6_OUTPUT`
 
-**Quality Gate**:
-- At least one component discovered → proceed
-- No components → ask user for hints
+**品質ゲート**:
+- 1つ以上のcomponentが発見された → 続行
+- componentなし → ユーザーにヒントを求める
 
-### Step 7-10: Per-Component Processing
+### ステップ7-10: component毎の処理
 
-**Complete Steps 7→8→9→10 for each component before proceeding to the next component.**
+**各componentについてステップ7→8→9→10を完了してから次のcomponentへ進む。**
 
-#### Step 7: Design Doc Generation
+#### ステップ7: Design Doc生成
 
-**Task invocation**:
+**Task呼び出し**:
 ```
 subagent_type: technical-designer
 prompt: |
-  Create Design Doc for the following component based on existing code.
+  既存コードに基づき以下のcomponentのDesign Docを作成する。
 
-  Operation Mode: create
+  動作モード: create
 
-  Component: $COMPONENT_NAME (from $STEP_6_OUTPUT)
-  Responsibility: $COMPONENT_RESPONSIBILITY
-  Primary Files: $COMPONENT_PRIMARY_FILES
-  Public Interfaces: $COMPONENT_PUBLIC_INTERFACES
-  Dependencies: $COMPONENT_DEPENDENCIES
+  component: $COMPONENT_NAME ($STEP_6_OUTPUTより)
+  責務: $COMPONENT_RESPONSIBILITY
+  主要ファイル: $COMPONENT_PRIMARY_FILES
+  public interface: $COMPONENT_PUBLIC_INTERFACES
+  依存関係: $COMPONENT_DEPENDENCIES
 
-  Parent PRD: $APPROVED_PRD_PATH
+  親PRD: $APPROVED_PRD_PATH
 
-  Document current architecture. Do not propose changes.
+  現在のアーキテクチャをドキュメント化する。変更提案は行わない。
 ```
 
-**Store output as**: `$STEP_7_OUTPUT`
+**出力を保存**: `$STEP_7_OUTPUT`
 
-#### Step 8: Code Verification
+#### ステップ8: コード検証
 
-**Task invocation**:
+**Task呼び出し**:
 ```
 subagent_type: code-verifier
 prompt: |
-  Verify consistency between Design Doc and code implementation.
+  Design Docとコード実装の整合性を検証する。
 
   doc_type: design-doc
   document_path: $STEP_7_OUTPUT
@@ -242,59 +242,59 @@ prompt: |
   verbose: false
 ```
 
-**Store output as**: `$STEP_8_OUTPUT`
+**出力を保存**: `$STEP_8_OUTPUT`
 
-#### Step 9: Review
+#### ステップ9: レビュー
 
-**Required Input**: $STEP_8_OUTPUT (verification JSON from Step 8)
+**必須入力**: $STEP_8_OUTPUT（ステップ8からの検証JSON）
 
-**Task invocation**:
+**Task呼び出し**:
 ```
 subagent_type: document-reviewer
 prompt: |
-  Review the following Design Doc considering code verification findings.
+  コード検証結果を考慮してDesign Docをレビューする。
 
   doc_type: DesignDoc
   target: $STEP_7_OUTPUT
   mode: composite
 
-  ## Code Verification Results
+  ## コード検証結果
   $STEP_8_OUTPUT
 
-  ## Parent PRD
+  ## 親PRD
   $APPROVED_PRD_PATH
 
-  ## Additional Review Focus
-  - Technical accuracy of documented interfaces
-  - Consistency with parent PRD scope
-  - Completeness of component boundary definitions
+  ## 追加レビュー観点
+  - ドキュメント化されたinterfaceの技術的正確性
+  - 親PRDスコープとの整合性
+  - component境界定義の完全性
 ```
 
-**Store output as**: `$STEP_9_OUTPUT`
+**出力を保存**: `$STEP_9_OUTPUT`
 
-#### Step 10: Revision (conditional)
+#### ステップ10: 修正（条件付き）
 
-Same logic as Step 5, using technical-designer with update mode.
+ステップ5と同様のロジック。updateモードでtechnical-designerを使用。
 
-#### Component Completion
+#### component完了
 
-- [ ] Review status is "Approved" or "Approved with Conditions"
-- [ ] Human review passed (if enabled in Step 0)
+- [ ] レビューステータスが「Approved」または「Approved with Conditions」
+- [ ] 人間レビュー通過（ステップ0で有効化時）
 
-**Next**: Proceed to next component. After all components → Final Report.
+**次へ**: 次のcomponentへ進む。全component完了後 → 最終レポート。
 
-## Final Report
+## 最終レポート
 
-Output summary including:
-- Generated documents table (Type, Name, Consistency Score, Review Status)
-- Action items (critical discrepancies, undocumented features, flagged items)
-- Next steps checklist
+以下を含むサマリを出力:
+- 生成ドキュメント表（タイプ、名前、整合性スコア、レビューステータス）
+- アクション項目（クリティカルな不整合、未ドキュメント機能、フラグ項目）
+- 次のステップチェックリスト
 
-## Error Handling
+## エラーハンドリング
 
-| Error | Action |
-|-------|--------|
-| Discovery finds nothing | Ask user for project structure hints |
-| Generation fails | Log failure, continue with other units, report in summary |
-| consistencyScore < 50 | Flag for mandatory human review, do not auto-approve |
-| Review rejects after 2 revisions | Stop loop, flag for human intervention |
+| エラー | アクション |
+|--------|-----------|
+| 発見で何も見つからない | ユーザーにプロジェクト構造のヒントを求める |
+| 生成が失敗 | 失敗をログ、他のユニットで続行、サマリで報告 |
+| consistencyScore < 50 | 必須人間レビュー用にフラグ、自動承認しない |
+| 2回の修正後もレビューが却下 | ループ停止、人間介入用にフラグ |

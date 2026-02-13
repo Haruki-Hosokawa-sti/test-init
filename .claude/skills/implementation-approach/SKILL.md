@@ -1,141 +1,141 @@
 ---
 name: implementation-approach
-description: Selects implementation strategy (vertical slice, horizontal, or hybrid) with risk assessment. Use when planning feature implementation.
+description: 実装戦略（垂直スライス、水平、ハイブリッド）をリスク評価で選択。機能の実装計画時に使用。
 ---
 
-# Implementation Strategy Selection Framework (Meta-cognitive Approach)
+# 実装戦略選択フレームワーク（メタ認知的アプローチ）
 
-## Meta-cognitive Strategy Selection Process
+## メタ認知的戦略選択プロセス
 
-### Phase 1: Comprehensive Current State Analysis
+### Phase 1: 現状の包括的分析
 
-**Core Question**: "What does the existing implementation look like?"
+**核心質問**: 「既存の実装はどうなっているのか？」
 
-#### Analysis Framework
+#### 分析フレームワーク
 ```yaml
-Architecture Analysis: Responsibility separation, data flow, dependencies, technical debt
-Implementation Quality Assessment: Code quality, test coverage, performance, security
-Historical Context Understanding: Current form rationale, past decision validity, constraint changes, requirement evolution
+アーキテクチャ分析: 責務分離、データフロー、依存関係、技術的負債
+実装品質評価: コード品質、テストカバレッジ、パフォーマンス、セキュリティ
+歴史的文脈理解: 現在の形の理由、過去判断の妥当性、制約の変化、要求の進化
 ```
 
-#### Meta-cognitive Question List
-- What is the true responsibility of this implementation?
-- Which parts are business essence and which derive from technical constraints?
-- What dependencies or implicit preconditions are unclear from the code?
-- What benefits and constraints does the current design bring?
+#### メタ認知質問リスト
+- この実装の真の責務は何か？
+- どの部分がビジネス本質で、どの部分が技術的制約由来か？
+- コードから明確でない依存関係や暗黙の前提条件は何か？
+- 現在の設計がもたらしている利点と制約は？
 
-### Phase 2: Strategy Exploration and Creation
+### Phase 2: 戦略探索と創造
 
-**Core Question**: "When determining before -> after, what implementation patterns or strategies should be referenced?"
+**核心質問**: 「before → after を判断する時に、参考にすべき実装パターンや戦略は何なのか？」
 
-#### Strategy Discovery Process
+#### 戦略発見プロセス
 ```yaml
-Research and Exploration: Tech stack examples (WebSearch), similar projects, OSS references, literature/blogs
-Creative Thinking: Strategy combinations, constraint-based design, phase division, extension point design
+調査・探索: 技術スタック事例（WebSearch活用）、同種プロジェクト、OSS実装、文献・ブログ
+創造的思考: 戦略組み合わせ、制約前提設計、フェーズ分け、拡張ポイント設計
 ```
 
-#### Reference Strategy Patterns (Creative Combinations Encouraged)
+#### 参考戦略パターン（創造的組み合わせを推奨）
 
-**Legacy Handling Strategies**:
-- Strangler Pattern: Gradual migration through phased replacement
-- Facade Pattern: Complexity hiding through unified interface
-- Adapter Pattern: Bridge with existing systems
+**レガシー対応戦略**:
+- ストラングラーパターン: 段階的置換による漸進的移行
+- ファサードパターン: 統一インターフェースによる複雑性の隠蔽
+- アダプターパターン: 既存システムとの橋渡し
 
-**New Development Strategies**:
-- Feature-driven Development: Vertical implementation prioritizing user value
-- Foundation-driven Development: Foundation-first construction prioritizing stability
-- Risk-driven Development: Prioritize addressing maximum risk elements
+**新規開発戦略**:
+- 機能駆動開発: ユーザー価値重視の縦断実装
+- 基盤駆動開発: 安定性重視の基盤優先構築
+- リスク駆動開発: 最大リスク要素から優先的に対処
 
-**Integration/Migration Strategies**:
-- Proxy Pattern: Transparent feature extension
-- Decorator Pattern: Phased enhancement of existing features
-- Bridge Pattern: Flexibility through abstraction
+**統合・移行戦略**:
+- プロキシパターン: 透過的な機能拡張
+- デコレーターパターン: 既存機能の段階的強化
+- ブリッジパターン: 抽象化による柔軟性確保
 
-**Important**: The optimal solution is discovered through creative thinking according to each project's context.
+**重要**: 最適解は各プロジェクトの文脈に応じた創造的思考により発見される。
 
-### Phase 3: Risk Assessment and Control
+### Phase 3: リスク評価とコントロール
 
-**Core Question**: "What risks arise when applying this to existing implementation, and what's the best way to control them?"
+**核心質問**: 「既存の実装にそれを当てはめた時にどういうリスクが発生し、それをどうコントロールするのが最良なのか？」
 
-#### Risk Analysis Matrix
+#### リスク分析マトリクス
 ```yaml
-Technical Risks: System impact, data consistency, performance degradation, integration complexity
-Operational Risks: Service availability, deployment downtime, process changes, rollback procedures
-Project Risks: Schedule delays, learning costs, quality achievement, team coordination
+技術的リスク: 既存システム影響、データ整合性、パフォーマンス劣化、統合複雑性
+運用リスク: サービス可用性、デプロイダウンタイム、運用プロセス変更、切り戻し手順
+プロジェクトリスク: スケジュール遅延、技術習得コスト、品質達成度、チーム連携
 ```
 
-#### Risk Control Strategies
+#### リスクコントロール戦略
 ```yaml
-Preventive Measures: Phased migration, parallel operation verification, integration/regression tests, monitoring setup
-Incident Response: Rollback procedures, log/metrics preparation, communication system, service continuation procedures
+予防的対策: 段階的移行、並行動作検証、統合・回帰テスト追加、監視設定
+発生時対応: 切り戻し手順、ログ・メトリクス準備、連絡体制定義、サービス継続手順
 ```
 
-### Phase 4: Constraint Compatibility Verification
+### Phase 4: 制約適合性検証
 
-**Core Question**: "What are this project's constraints?"
+**核心質問**: 「このプロジェクトの制約は何か？」
 
-#### Constraint Checklist
+#### 制約チェックリスト
 ```yaml
-Technical Constraints: Library compatibility, resource capacity, mandatory requirements, numerical targets
-Temporal Constraints: Deadlines/priorities, dependencies, milestones, learning periods
-Resource Constraints: Team/skills, work hours/systems, budget, external contracts
-Business Constraints: Market launch timing, customer impact, regulatory compliance
+技術的制約: ライブラリ互換性、リソース容量、義務要件、数値目標
+時間的制約: 期限・優先度、依存関係、マイルストーン、学習期間
+リソース制約: チーム・スキル、作業時間・体制、予算、外部契約
+ビジネス制約: 市場投入時期、顧客影響、法規制・標準
 ```
 
-### Phase 5: Implementation Approach Decision
+### Phase 5: 実装アプローチ決定
 
-Select optimal solution from basic implementation approaches (creative combinations encouraged):
+基本的な実装アプローチから最適解を選択（創造的組み合わせも推奨）：
 
-#### Vertical Slice (Feature-driven)
-**Characteristics**: Vertical implementation across all layers by feature unit
-**Application Conditions**: Low inter-feature dependencies, output in user-usable form, changes needed across all architecture layers
-**Verification Method**: End-user value delivery at each feature completion
+#### 垂直スライス（機能駆動）
+**特徴**: 機能単位で全層を縦断実装
+**適用条件**: 機能間の依存が少ない、ユーザーが利用可能な形で出力、アーキテクチャ全層への変更が必要
+**確認方法**: 各機能完成時のエンドユーザー価値提供
 
-#### Horizontal Slice (Foundation-driven)
-**Characteristics**: Phased construction by architecture layer
-**Application Conditions**: Foundation system stability important, multiple features depend on common foundation, layer-by-layer verification effective
-**Verification Method**: Integrated operation verification when all foundation layers complete
+#### 水平スライス（基盤駆動）
+**特徴**: アーキテクチャ層別の段階的構築
+**適用条件**: 基盤システムの安定性が重要、複数機能が共通基盤に依存、層別の段階的確認が有効
+**確認方法**: 全基盤層完成時の統合動作確認
 
-#### Hybrid (Creative Combination)
-**Characteristics**: Flexible combination according to project characteristics
-**Application Conditions**: Unclear requirements, need to change approach per phase, transition from prototyping to full implementation
-**Verification Method**: Verify at appropriate L1/L2/L3 levels according to each phase's goals
+#### ハイブリッド（創造的組み合わせ）
+**特徴**: プロジェクト特性に応じた柔軟な組み合わせ
+**適用条件**: 要件が明確でない、フェーズごとにアプローチ変更が必要、プロトタイピングから本格実装への移行
+**確認方法**: 各フェーズの目標に応じてL1/L2/L3の適切なレベルで確認
 
-### Phase 6: Decision Rationale Documentation
+### Phase 6: 判断根拠の文書化
 
-**Design Doc Documentation**: Clearly specify implementation strategy selection reasons and rationale.
+**Design Docでの記載**：実装戦略の選択理由と根拠を明記する。
 
-## Verification Level Definitions
+## 確認レベル定義
 
-Priority for completion verification of each task:
+各タスクの完了確認における優先順位：
 
-- **L1: Functional Operation Verification** - Operates as end-user feature (e.g., search executable)
-- **L2: Test Operation Verification** - New tests added and passing (e.g., type definition tests)
-- **L3: Build Success Verification** - No compile errors (e.g., interface definitions)
+- **L1: 機能動作確認** - エンドユーザー機能として動作（例：検索実行可能）
+- **L2: テスト動作確認** - 新規テストが追加されパス（例：型定義テスト）
+- **L3: ビルド成功確認** - コンパイルエラーなし（例：インターフェース定義）
 
-**Priority**: L1 > L2 > L3 in order of verifiability importance
+**優先順位**: L1 > L2 > L3 の順で確認可能性を重視
 
-## Integration Point Definitions
+## 統合ポイントの定義
 
-Define integration points according to selected strategy:
-- **Strangler-based**: When switching between old and new systems for each feature
-- **Feature-driven**: When users can actually use the feature
-- **Foundation-driven**: When all architecture layers are ready and E2E tests pass
-- **Hybrid**: When individual goals defined for each phase are achieved
+選択した戦略に応じて統合ポイントを定義：
+- **ストラングラー系**: 各機能の新旧システム切り替え時
+- **機能駆動**: ユーザーが実際に機能を利用可能になった時
+- **基盤駆動**: 全アーキテクチャ層が揃いE2Eテストが通った時
+- **ハイブリッド**: 各フェーズで定義した個別目標達成時
 
-## Anti-patterns
+## アンチパターン
 
-- **Pattern Fixation**: Selecting only from listed strategies without considering unique combinations
-- **Insufficient Analysis**: Skipping Phase 1 analysis framework before strategy selection
-- **Risk Neglect**: Starting implementation without Phase 3 risk analysis matrix
-- **Constraint Ignorance**: Deciding strategy without checking Phase 4 constraint checklist
-- **Rationale Omission**: Selecting strategy without using Phase 6 documentation template
+- **パターン固執**: リスト内の戦略のみで選択し、独自の組み合わせを検討しない
+- **分析不足**: Phase 1の分析フレームワークを飛ばして戦略選択
+- **リスク軽視**: Phase 3のリスク分析マトリクスを省略して実装着手
+- **制約無視**: Phase 4の制約チェックリストを確認せず戦略決定
+- **根拠省略**: Phase 6の文書化テンプレートを使用せず戦略選択
 
-## Guidelines for Meta-cognitive Execution
+## メタ認知的実行のための指針
 
-1. **Leverage Known Patterns**: Use as starting point, explore creative combinations
-2. **Active WebSearch Use**: Research implementation examples from similar tech stacks
-3. **Apply 5 Whys**: Pursue root causes to grasp essence
-4. **Multi-perspective Evaluation**: Comprehensively evaluate from each Phase 1-4 perspective
-5. **Creative Thinking**: Consider sequential application of multiple strategies and designs leveraging project-specific constraints
-6. **Clarify Decision Rationale**: Make strategy selection rationale explicit in design documents
+1. **既知パターンの活用**: 出発点として参考し、創造的組み合わせを探索
+2. **WebSearch積極活用**: 同種技術スタックの実装事例を調査
+3. **5 Whys適用**: 根本理由を追求し本質を把握
+4. **複数観点評価**: Phase 1-4の各観点から網羅的に評価
+5. **創造的思考**: 複数戦略の順序適用やプロジェクト固有の制約を活かした設計を検討
+6. **判断根拠明示**: 設計ドキュメントでの戦略選択根拠を明示化

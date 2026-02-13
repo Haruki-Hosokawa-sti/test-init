@@ -1,38 +1,38 @@
-# Task: [Task Name]
+# タスク: [タスク名]
 
-Metadata:
-- Dependencies: task-01 -> Deliverable: docs/plans/analysis/research-results.md
-- Provides: docs/plans/analysis/api-spec.md (for research/design tasks)
-- Size: Small (1-2 files)
+メタデータ:
+- 依存関係: task-01 → 成果物: docs/plans/analysis/research-results.md
+- 提供物: docs/plans/analysis/api-spec.md（調査・設計タスクの場合）
+- サイズ: 小規模（1-2ファイル）
 
-## Implementation Content
-[What this task will achieve]
-*Reference dependency deliverables if applicable
+## 実装内容
+[このタスクで達成すること]
+*依存関係の成果物を参照する場合は明記
 
-## Target Files
-- [ ] [Implementation file path]
-- [ ] [Test file path]
+## 対象ファイル
+- [ ] [実装ファイルパス]
+- [ ] [テストファイルパス]
 
-## Implementation Steps (TDD: Red-Green-Refactor)
-### 1. Red Phase
-- [ ] Review dependency deliverables (if any)
-- [ ] Verify/create contract definitions
-- [ ] Write failing tests
-- [ ] Run tests and confirm failure
+## 実装ステップ（TDD: Red-Green-Refactor）
+### 1. Redフェーズ
+- [ ] 依存関係の成果物を確認（ある場合）
+- [ ] 契約定義を確認・作成
+- [ ] 失敗するテストを書く
+- [ ] テストを実行し失敗を確認
 
-### 2. Green Phase
-- [ ] Add minimal implementation to pass tests
-- [ ] Run only added tests and confirm they pass
+### 2. Greenフェーズ
+- [ ] テストをパスする最小限の実装を追加
+- [ ] 追加したテストのみ実行しパスを確認
 
-### 3. Refactor Phase
-- [ ] Improve code (maintain passing tests)
-- [ ] Confirm added tests still pass
+### 3. Refactorフェーズ
+- [ ] コードを改善（テストはパス状態を維持）
+- [ ] 追加したテストが引き続きパスすることを確認
 
-## Completion Criteria
-- [ ] All added tests pass
-- [ ] Operation verified (select L1/L2/L3, per implementation-approach skill)
-- [ ] Deliverables created (for research/design tasks)
+## 完了条件
+- [ ] 追加した全テストがパス
+- [ ] 動作確認完了（L1/L2/L3を選択、implementation-approachスキル参照）
+- [ ] 成果物作成完了（調査・設計タスクの場合）
 
-## Notes
-- Impact scope: [Areas where changes may propagate]
-- Constraints: [Areas not to be modified]
+## 備考
+- 影響範囲: [変更が波及する可能性のある領域]
+- 制約: [変更してはいけない領域]

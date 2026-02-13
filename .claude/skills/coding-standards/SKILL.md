@@ -1,246 +1,246 @@
 ---
 name: coding-standards
-description: Detects code smells, anti-patterns, and readability issues. Use when implementing features, reviewing code, or refactoring.
+description: コードの品質問題、アンチパターン、可読性を検査。機能実装、コードレビュー、リファクタリング時に使用。
 ---
 
-# Universal Coding Standards
+# 普遍的コーディング規約
 
-## Technical Anti-patterns (Red Flag Patterns)
+## 技術的アンチパターン（赤信号パターン）
 
-Immediately stop and reconsider design when detecting the following patterns:
+以下のパターンを検出したら即座に停止し、設計を見直すこと：
 
-### Code Quality Anti-patterns
-1. **Writing similar code 3 or more times** - Violates Rule of Three
-2. **Multiple responsibilities mixed in a single file** - Violates Single Responsibility Principle (SRP)
-3. **Defining same content in multiple files** - Violates DRY principle
-4. **Making changes without checking dependencies** - Potential for unexpected impacts
-5. **Disabling code with comments** - Should use version control
-6. **Error suppression** - Hiding problems creates technical debt
-7. **Excessive use of type assertions (as)** - Abandoning type safety
+### コード品質のアンチパターン
+1. **同じようなコードを3回以上書いた** - Rule of Threeに違反
+2. **単一ファイルに複数の責務が混在** - 単一責任原則（SRP）違反
+3. **同じ内容を複数ファイルで定義** - DRY原則違反
+4. **依存関係を確認せずに変更** - 予期しない影響の可能性
+5. **コメントアウトでコード無効化** - バージョン管理を活用すべき
+6. **エラーの握りつぶし** - 問題の隠蔽は技術的負債
+7. **型アサーション（as）の多用** - 型安全性の放棄
 
-### Design Anti-patterns
-- **"Make it work for now" thinking** - Accumulation of technical debt
-- **Patchwork implementation** - Unplanned additions to existing code
-- **Optimistic implementation of uncertain technology** - Designing unknown elements assuming "it'll probably work"
-- **Symptomatic fixes** - Surface-level fixes that don't solve root causes
-- **Unplanned large-scale changes** - Lack of incremental approach
+### 設計のアンチパターン
+- **「一旦動くように」という思考** - 技術的負債の蓄積
+- **継ぎ足し実装** - 既存コードへの無計画な追加
+- **不確実技術の楽観的実装** - 未知要素を「たぶん動く」前提で設計
+- **対処療法的修正** - 根本原因を解決しない表面的な修正
+- **無計画な大規模変更** - 段階的アプローチの欠如
 
-## Basic Principles
+## 基本原則
 
-- **Aggressive Refactoring** - Prevent technical debt and maintain health
-- **No Unused "Just in Case" Code** - Violates YAGNI principle (Kent Beck)
+- **積極的なリファクタリング** - 技術的負債を防ぎ、健全性を維持
+- **使われない「念のため」のコード禁止** - YAGNI原則（Kent Beck）に反する
 
-## Comment Writing Rules
+## コメント記述ルール
 
-- **Function Description Focus**: Describe what the code "does"
-- **No Historical Information**: Do not record development history
-- **Timeless**: Write only content that remains valid whenever read
-- **Conciseness**: Keep explanations to necessary minimum
+- **機能説明重視**: コードが「何をするか」を記述
+- **履歴情報禁止**: 開発履歴は記載しない
+- **タイムレス**: いつ読んでも有効な内容のみ記述
+- **簡潔性**: 必要最小限の説明にとどめる
 
-## Error Handling Fundamentals
+## エラーハンドリングの基本原則
 
-### Fail-Fast Principle
-Fail quickly on errors to prevent processing continuation in invalid states. Error suppression is prohibited.
+### Fail-Fast原則
+エラー時は速やかに失敗させ、不正な状態での処理継続を防ぐ。エラーの握りつぶしは禁止。
 
-For detailed implementation methods (Result type, custom error classes, layered error handling, etc.), refer to language and framework-specific rules.
+詳細な実装方法（Result型、カスタムエラークラス、層別エラー処理など）は各言語・フレームワークのルールを参照。
 
-## Rule of Three - Criteria for Code Duplication
+## Rule of Three - コード重複の判断基準
 
-How to handle duplicate code based on Martin Fowler's "Refactoring":
+Martin Fowler「Refactoring」に基づく重複コードの扱い方：
 
-| Duplication Count | Action | Reason |
-|-------------------|--------|--------|
-| 1st time | Inline implementation | Cannot predict future changes |
-| 2nd time | Consider future consolidation | Pattern beginning to emerge |
-| 3rd time | Implement commonalization | Pattern established |
+| 重複回数 | 対応 | 理由 |
+|---------|------|------|
+| 1回目 | インライン実装 | 将来の変化が予測できない |
+| 2回目 | 将来の統合を意識 | パターンが見え始める |
+| 3回目 | 共通化実施 | パターンが確立された |
 
-### Criteria for Commonalization
+### 共通化の判断基準
 
-**Cases for Commonalization**
-- Business logic duplication
-- Complex processing algorithms
-- Areas likely requiring bulk changes
-- Validation rules
+**共通化すべきケース**
+- ビジネスロジックの重複
+- 複雑な処理アルゴリズム
+- 一括変更が必要になる可能性が高い箇所
+- バリデーションルール
 
-**Cases to Avoid Commonalization**
-- Accidental matches (coincidentally same code)
-- Possibility of evolving in different directions
-- Significant readability decrease from commonalization
-- Simple helpers in test code
+**共通化を避けるべきケース**
+- 偶然の一致（たまたま同じコード）
+- 将来異なる方向に進化する可能性
+- 共通化により可読性が著しく低下
+- テストコード内の簡単なヘルパー
 
-## Common Failure Patterns and Avoidance Methods
+## よくある失敗パターンと回避方法
 
-### Pattern 1: Error Fix Chain
-**Symptom**: Fixing one error causes new errors
-**Cause**: Surface-level fixes without understanding root cause
-**Avoidance**: Identify root cause with 5 Whys before fixing
+### パターン1: エラー修正の連鎖
+**症状**: エラーを修正すると新しいエラーが発生
+**原因**: 根本原因を理解せずに表面的な修正
+**回避方法**: 5 Whysで根本原因を特定してから修正
 
-### Pattern 2: Abandoning Type Safety
-**Symptom**: Excessive use of any type or as
-**Cause**: Impulse to avoid type errors
-**Avoidance**: Handle safely with unknown type and type guards
+### パターン2: 型安全性の放棄
+**症状**: any型やasの多用
+**原因**: 型エラーを回避したい衝動
+**回避方法**: unknown型と型ガードで安全に処理
 
-### Pattern 3: Implementation Without Sufficient Testing
-**Symptom**: Many bugs after implementation
-**Cause**: Ignoring Red-Green-Refactor process
-**Avoidance**: Always start with failing tests
+### パターン3: テスト不足での実装
+**症状**: 実装後にバグ多発
+**原因**: Red-Green-Refactorプロセスの無視
+**回避方法**: 必ず失敗するテストから開始
 
-### Pattern 4: Ignoring Technical Uncertainty
-**Symptom**: Frequent unexpected errors when introducing new technology
-**Cause**: Assuming "it should work according to official documentation" without prior investigation
-**Avoidance**:
-- Record certainty evaluation at the beginning of task files
-- For low certainty cases, create minimal verification code first
+### パターン4: 技術的不確実性の無視
+**症状**: 新技術導入時の想定外エラー多発
+**原因**: 事前調査なしで「公式ドキュメント通りなら動くはず」
+**回避方法**:
+- タスクファイル冒頭に確実性評価を記載
+- 確実性lowの場合、最初に最小限の動作確認コードを作成
 
-### Pattern 5: Insufficient Existing Code Investigation
-**Symptom**: Duplicate implementations, architecture inconsistency, integration failures
-**Cause**: Insufficient understanding of existing code before implementation
-**Avoidance Methods**:
-- Before implementation, always search for similar functionality (using domain, responsibility, configuration patterns as keywords)
-- Similar functionality found -> Use that implementation (do not create new implementation)
-- Similar functionality is technical debt -> Create ADR improvement proposal before implementation
-- No similar functionality exists -> Implement new functionality following existing design philosophy
-- Record all decisions and rationale in "Existing Codebase Analysis" section of Design Doc
+### パターン5: 既存コード調査不足
+**症状**: 重複実装、アーキテクチャ不整合、結合時の障害
+**原因**: 実装前の既存コード理解不足
+**回避方法**:
+- 実装前に類似機能の存在を必ず検索（同じドメイン、責務、設定パターンをキーワードに）
+- 類似機能を発見 → その実装を使用する（新規実装は行わない）
+- 類似機能が技術的負債 → ADRで改善提案を作成してから実装
+- 類似機能が存在しない → 既存の設計思想に沿って新規実装
+- すべての判断と根拠をDesign Docの「既存コードベース分析」セクションに記録
 
-## Debugging Techniques
+## デバッグ手法
 
-### 1. Error Analysis Procedure
-1. Read error message (first line) accurately
-2. Focus on first and last of stack trace
-3. Identify first line where your code appears
+### 1. エラー分析手順
+1. エラーメッセージ（最初の行）を正確に読む
+2. スタックトレースの最初と最後に注目
+3. 自分のコードが現れる最初の行を特定
 
-### 2. 5 Whys - Root Cause Analysis
+### 2. 5 Whys - 根本原因分析
 ```
-Symptom: Build error
-Why1: Type definitions don't match -> Why2: Interface was updated
-Why3: Dependency change -> Why4: Package update impact
-Why5: Major version upgrade with breaking changes
-Root cause: Inappropriate version specification
+症状: TypeScriptのビルドエラー
+Why1: 型定義が一致しない → Why2: インターフェースが更新された
+Why3: 依存関係の変更 → Why4: パッケージ更新の影響
+Why5: 破壊的変更を含むメジャーバージョンアップ
+根本原因: package.jsonでのバージョン指定が不適切
 ```
 
-### 3. Minimal Reproduction Code
-To isolate problems, attempt reproduction with minimal code:
-- Remove unrelated parts
-- Replace external dependencies with mocks
-- Create minimal configuration that reproduces problem
+### 3. 最小再現コード
+問題を切り分けるため、最小限のコードで再現を試みる：
+- 関連のない部分を削除
+- モックで外部依存を置き換え
+- 問題が再現する最小構成を作成
 
-## Type Safety Fundamentals
+## 型安全性の基礎
 
-**Type Safety Principle**: Use `unknown` type with type guards. `any` type disables type checking and causes runtime errors.
+**型安全の原則**: `unknown`型と型ガードを使用する。`any`型は型チェックを無効化し、実行時エラーの原因となる。
 
-**any Type Alternatives (Priority Order)**
-1. **unknown Type + Type Guards**: Use for validating external input
-2. **Generics**: When type flexibility is needed
-3. **Union Types/Intersection Types**: Combinations of multiple types
-4. **Type Assertions (Last Resort)**: Only when type is certain
+**any型の代替手段（優先順位順）**
+1. **unknown型 + 型ガード**: 外部入力の検証に使用
+2. **ジェネリクス**: 型の柔軟性が必要な場合
+3. **ユニオン型・インターセクション型**: 複数の型の組み合わせ
+4. **型アサーション（最終手段）**: 型が確実な場合のみ
 
-**Type Guard Implementation Pattern**
+**型ガードの実装パターン**
 ```typescript
 function isUser(value: unknown): value is User {
   return typeof value === 'object' && value !== null && 'id' in value && 'name' in value
 }
 ```
 
-**Type Complexity Management**
-- Field Count: Up to 20 (split by responsibility if exceeded, external API types are exceptions)
-- Optional Ratio: Up to 30% (separate required/optional if exceeded)
-- Nesting Depth: Up to 3 levels (flatten if exceeded)
-- Type Assertions: Review design if used 3+ times
-- **External API Types**: Relax constraints and define according to reality (convert appropriately internally)
+**型の複雑性管理**
+- フィールド数: 20個まで（超えたら責務で分割、外部API型は例外）
+- オプショナル率: 30%まで（超えたら必須/任意で分離）
+- ネスト深さ: 3階層まで（超えたらフラット化）
+- 型アサーション: 3回以上使用したら設計見直し
+- **外部API型の扱い**: 制約を緩和し、実態に合わせて定義（内部では適切に変換）
 
-## Refactoring Techniques
+## リファクタリング手法
 
-**Basic Policy**
-- Small Steps: Maintain always-working state through gradual improvements
-- Safe Changes: Minimize the scope of changes at once
-- Behavior Guarantee: Ensure existing behavior remains unchanged while proceeding
+**基本方針**
+- 小さなステップ: 段階的改善により、常に動作する状態を維持
+- 安全な変更: 一度に変更する範囲を最小限に抑制
+- 動作保証: 既存の動作を変えないことを確認しながら進める
 
-**Implementation Procedure**: Understand Current State -> Gradual Changes -> Behavior Verification -> Final Validation
+**実施手順**: 現状把握 → 段階的変更 → 動作確認 → 最終検証
 
-**Priority**: Duplicate Code Removal > Large Function Division > Complex Conditional Branch Simplification > Type Safety Improvement
+**優先順位**: 重複コード削除 > 長大な関数分割 > 複雑な条件分岐簡素化 > 型安全性向上
 
-## Implementation Completeness Assurance
+## 実装作業の完全性担保
 
-### Required Procedure for Impact Analysis
+### 影響範囲調査の必須手順
 
-**Completion Criteria**: Complete all 3 stages
+**完了定義**: 以下3段階すべての完了
 
-#### 1. Discovery
+#### 1. 検索（Discovery）
 ```bash
 Grep -n "TargetClass\|TargetMethod" -o content
 Grep -n "DependencyClass" -o content
 Grep -n "targetData\|SetData\|UpdateData" -o content
 ```
 
-#### 2. Understanding
-**Mandatory**: Read all discovered files and include necessary parts in context:
-- Caller's purpose and context
-- Dependency direction
-- Data flow: generation -> modification -> reference
+#### 2. 読解（Understanding）
+**必須**: 発見した全ファイルを読み込み、作業に必要な部分をコンテキストに含める：
+- 呼び出し元の目的と文脈
+- 依存関係の方向
+- データフロー: 生成→変更→参照
 
-#### 3. Identification
-Structured impact report (mandatory):
+#### 3. 特定（Identification）
+影響範囲の構造化報告（必須）：
 ```
-## Impact Analysis
-### Direct Impact: ClassA, ClassB (with reasons)
-### Indirect Impact: SystemX, ComponentY (with integration paths)
-### Processing Flow: Input -> Process1 -> Process2 -> Output
+## 影響範囲分析
+### 直接影響: ClassA、ClassB（理由明記）
+### 間接影響: SystemX、PrefabY（連携経路明記）
+### 処理フロー: 入力→処理1→処理2→出力
 ```
 
-**Important**: Do not stop at search; execute all 3 stages
+**重要**: 検索のみで完了とせず、3段階すべてを実行すること
 
-### Unused Code Deletion Rule
+### 未使用コード削除ルール
 
-When unused code is detected -> Will it be used?
-- Yes -> Implement immediately (no deferral allowed)
-- No -> Delete immediately (remains in Git history)
+未使用コード検出時 → 使用予定？
+- Yes → 即実装（保留禁止）
+- No → 即削除（Git履歴に残る）
 
-Target: Code, documentation, configuration files
+対象: コード・ドキュメント・設定ファイル
 
-## Red-Green-Refactor Process (Test-First Development)
+## Red-Green-Refactorプロセス（テストファースト開発）
 
-**Recommended Principle**: Always start code changes with tests
+**推奨原則**: コード変更は必ずテストから始める
 
-**Development Steps**:
-1. **Red**: Write test for expected behavior (it fails)
-2. **Green**: Pass test with minimal implementation
-3. **Refactor**: Improve code while maintaining passing tests
+**開発ステップ**:
+1. **Red**: 期待する動作のテストを書く（失敗する）
+2. **Green**: 最小限の実装でテストを通す
+3. **Refactor**: テストが通る状態を維持しながらコード改善
 
-**NG Cases (Test-first not required)**:
-- Pure configuration file changes (.env, config, etc.)
-- Documentation-only updates (README, comments, etc.)
-- Emergency production incident response (post-incident tests mandatory)
+**NGケース（テストファースト不要）**:
+- 純粋な設定ファイル変更（.env、config等）
+- ドキュメントのみの更新（README、コメント等）
+- 緊急本番障害対応（ただし事後テスト必須）
 
-## Test Design Principles
+## テスト設計原則
 
-### Test Case Structure
-- Tests consist of three stages: "Arrange," "Act," "Assert"
-- Clear naming that shows purpose of each test
-- One test case verifies only one behavior
+### テストケースの構造
+- テストは「準備（Arrange）」「実行（Act）」「検証（Assert）」の3段階で構成
+- 各テストの目的が明確に分かる命名
+- 1つのテストケースでは1つの振る舞いのみを検証
 
-### Test Data Management
-- Manage test data in dedicated directories
-- Define test-specific environment variable values
-- Always mock sensitive information
-- Keep test data minimal, using only data directly related to test case verification purposes
+### テストデータ管理
+- テストデータは専用ディレクトリで管理
+- 環境変数はテスト用の値を定義
+- 機密情報は必ずモック化
+- テストデータは最小限に保ち、テストケースの検証目的に直接関連するデータのみ使用
 
-### Mock and Stub Usage Policy
+### モックとスタブの使用方針
 
-**Recommended: Mock external dependencies in unit tests**
-- Merit: Ensures test independence and reproducibility
-- Practice: Mock DB, API, file system, and other external dependencies
+**推奨: 単体テストでの外部依存モック化**
+- メリット: テストの独立性と再現性を確保
+- 実践: DB、API、ファイルシステム等の外部依存をモック化
 
-**Avoid: Actual external connections in unit tests**
-- Reason: Slows test speed and causes environment-dependent problems
+**避けるべき: 単体テストでの実際の外部接続**
+- 理由: テスト速度が遅くなり、環境依存の問題が発生するため
 
-### Test Failure Response Decision Criteria
+### テスト失敗時の対応判断基準
 
-**Fix tests**: Wrong expected values, references to non-existent features, dependence on implementation details, implementation only for tests
-**Fix implementation**: Valid specifications, business logic, important edge cases
-**When in doubt**: Confirm with user
+**テストを修正**: 間違った期待値、存在しない機能参照、実装詳細への依存、テストのためだけの実装
+**実装を修正**: 妥当な仕様、ビジネスロジック、重要なエッジケース
+**判断に迷ったら**: ユーザーに確認
 
-## Test Granularity Principles
+## テストの粒度原則
 
-### Core Principle: Observable Behavior Only
-**MUST Test**: Public APIs, return values, exceptions, external calls, persisted state
-**MUST NOT Test**: Private methods, internal state, algorithm implementation details
+### 原則：観測可能な振る舞いのみ
+**テスト対象**：公開API、戻り値、例外、外部呼び出し、永続化された状態
+**テスト対象外**：privateメソッド、内部状態、アルゴリズム詳細

@@ -1,130 +1,130 @@
-# Work Plan: [Title]
+# 作業計画書: [タイトル]
 
-Created Date: YYYY-MM-DD
-Type: feature|fix|refactor
-Estimated Impact: X files
-Related Issue/PR: #XXX (if any)
+作成日: YYYY-MM-DD
+種別: feature|fix|refactor
+想定影響範囲: Xファイル
+関連Issue/PR: #XXX（該当する場合）
 
-## Related Documents
-- Design Doc: [docs/design/XXX.md]
-- ADR: [docs/adr/ADR-XXXX.md] (if any)
-- PRD: [docs/prd/XXX.md] (if any)
+## 関連ドキュメント
+- 設計書: [docs/design/XXX.md]
+- ADR: [docs/adr/ADR-XXXX.md]（該当する場合）
+- PRD: [docs/prd/XXX.md]（該当する場合）
 
-## Objective
-[Why this change is necessary, what problem it solves]
+## 目的
+[なぜこの変更が必要か、何を解決するか]
 
-## Impact Scope
-### Target Files
+## 影響範囲
+### 対象ファイル
 - [ ] src/domain/xxx
 - [ ] src/application/xxx
 - [ ] src/infrastructure/xxx
 - [ ] src/presentation/xxx
 
-### Test Files
+### テストファイル
 - [ ] __tests__/xxx.test.ts
 - [ ] __tests__/xxx.test.ts
 
-### Documentation
-- [ ] ADR creation needed (for architecture changes)
-- [ ] Design Doc update needed
-- [ ] README update needed
+### ドキュメント
+- [ ] ADR作成が必要（アーキテクチャ変更の場合）
+- [ ] 設計書更新が必要
+- [ ] README更新が必要
 
-## Implementation Plan
+## 実装計画
 
-(Note: Phase structure is determined based on Design Doc technical dependencies and implementation approach)
+（注: フェーズ構成はDesign Docの技術的依存関係と実装アプローチに基づいて決定）
 
-### Phase 1: [Phase Name] (Estimated commits: X)
-**Purpose**: [What this phase aims to achieve]
+### Phase 1: [フェーズ名]（想定コミット数: X）
+**目的**: [このフェーズで達成すること]
 
-#### Tasks
-- [ ] Task 1: Specific work content
-- [ ] Task 2: Specific work content
-- [ ] Quality check: Implement staged quality checks (refer to technical-spec skill)
-- [ ] Unit tests: All related tests pass
+#### タスク
+- [ ] タスク1: 具体的な作業内容
+- [ ] タスク2: 具体的な作業内容
+- [ ] 品質チェック: 段階的品質チェック実施（technical-specスキル参照）
+- [ ] 単体テスト: 関連する全テストがパス
 
-#### Phase Completion Criteria
-- [ ] [Functional completion criteria]
-- [ ] [Quality completion criteria]
+#### フェーズ完了条件
+- [ ] [機能完了条件]
+- [ ] [品質完了条件]
 
-#### Operational Verification Procedures
-1. [Operation verification steps]
-2. [Expected result verification]
-3. [Performance verification (when applicable)]
+#### 動作確認手順
+1. [動作確認ステップ]
+2. [期待結果の確認]
+3. [パフォーマンス確認（該当する場合）]
 
-### Phase 2: [Phase Name] (Estimated commits: X)
-**Purpose**: [What this phase aims to achieve]
+### Phase 2: [フェーズ名]（想定コミット数: X）
+**目的**: [このフェーズで達成すること]
 
-#### Tasks
-- [ ] Task 1: Specific work content
-- [ ] Task 2: Specific work content
-- [ ] Quality check: Implement staged quality checks (refer to technical-spec skill)
-- [ ] Integration tests: Verify overall feature functionality
+#### タスク
+- [ ] タスク1: 具体的な作業内容
+- [ ] タスク2: 具体的な作業内容
+- [ ] 品質チェック: 段階的品質チェック実施（technical-specスキル参照）
+- [ ] 統合テスト: 機能全体の動作確認
 
-#### Phase Completion Criteria
-- [ ] [Functional completion criteria]
-- [ ] [Quality completion criteria]
+#### フェーズ完了条件
+- [ ] [機能完了条件]
+- [ ] [品質完了条件]
 
-#### Operational Verification Procedures
-1. [Operation verification steps]
-2. [Expected result verification]
-3. [Performance verification (when applicable)]
+#### 動作確認手順
+1. [動作確認ステップ]
+2. [期待結果の確認]
+3. [パフォーマンス確認（該当する場合）]
 
-### Phase 3: [Phase Name] (Estimated commits: X)
-**Purpose**: [What this phase aims to achieve]
+### Phase 3: [フェーズ名]（想定コミット数: X）
+**目的**: [このフェーズで達成すること]
 
-#### Tasks
-- [ ] Task 1: Specific work content
-- [ ] Task 2: Specific work content
-- [ ] Quality check: Implement staged quality checks (refer to technical-spec skill)
-- [ ] Integration tests: Verify component coordination
+#### タスク
+- [ ] タスク1: 具体的な作業内容
+- [ ] タスク2: 具体的な作業内容
+- [ ] 品質チェック: 段階的品質チェック実施（technical-specスキル参照）
+- [ ] 統合テスト: コンポーネント連携の検証
 
-#### Phase Completion Criteria
-- [ ] [Functional completion criteria]
-- [ ] [Quality completion criteria]
+#### フェーズ完了条件
+- [ ] [機能完了条件]
+- [ ] [品質完了条件]
 
-#### Operational Verification Procedures
-[Copy relevant integration point E2E verification from Design Doc]
+#### 動作確認手順
+[Design Docの該当する統合ポイントE2E確認をコピー]
 
-### Final Phase: Quality Assurance (Required) (Estimated commits: 1)
-**Purpose**: Overall quality assurance and Design Doc consistency verification
+### 最終Phase: 品質保証（必須）（想定コミット数: 1）
+**目的**: 全体品質保証とDesign Doc整合性検証
 
-#### Tasks
-- [ ] Verify all Design Doc acceptance criteria achieved
-- [ ] Quality checks (types, lint, format)
-- [ ] Execute all tests
-- [ ] Coverage 70%+
-- [ ] Document updates
+#### タスク
+- [ ] Design Docの全受入条件達成を確認
+- [ ] 品質チェック（型、lint、format）
+- [ ] 全テスト実行
+- [ ] カバレッジ70%以上
+- [ ] ドキュメント更新
 
-#### Operational Verification Procedures
-[Copy E2E verification procedures from Design Doc]
+#### 動作確認手順
+[Design DocからE2E確認手順をコピー]
 
-### Quality Assurance
-- [ ] Implement staged quality checks (details: refer to technical-spec skill)
+### 品質保証
+- [ ] 段階的品質チェック実施（詳細: technical-specスキル参照）
 
-## Risks and Countermeasures
-| Risk | Countermeasure |
-|------|----------------|
-| [Expected risk] | [How to address it] |
+## リスクと対策
+| リスク | 対策 |
+|-------|-----|
+| [想定されるリスク] | [対処方法] |
 
-## Completion Criteria
-- [ ] All phases completed
-- [ ] Each phase's operational verification procedures executed
-- [ ] Design Doc acceptance criteria satisfied
-- [ ] Staged quality checks completed (zero errors)
-- [ ] All tests pass
-- [ ] Necessary documentation updated
-- [ ] User review approval obtained
+## 完了条件
+- [ ] 全フェーズ完了
+- [ ] 各フェーズの動作確認手順を実施
+- [ ] Design Docの受入条件を満たす
+- [ ] 段階的品質チェック完了（エラー0件）
+- [ ] 全テストパス
+- [ ] 必要なドキュメント更新
+- [ ] ユーザーレビュー承認取得
 
-## Progress Tracking
+## 進捗記録
 ### Phase 1
-- Start: YYYY-MM-DD HH:MM
-- Complete: YYYY-MM-DD HH:MM
-- Notes: [Any special remarks]
+- 開始: YYYY-MM-DD HH:MM
+- 完了: YYYY-MM-DD HH:MM
+- 備考: [特記事項]
 
 ### Phase 2
-- Start: YYYY-MM-DD HH:MM
-- Complete: YYYY-MM-DD HH:MM
-- Notes: [Any special remarks]
+- 開始: YYYY-MM-DD HH:MM
+- 完了: YYYY-MM-DD HH:MM
+- 備考: [特記事項]
 
-## Notes
-[Special notes, reference information, important points, etc.]
+## 備考
+[特記事項、参考情報、注意点など]

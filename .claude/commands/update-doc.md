@@ -1,178 +1,178 @@
 ---
-description: Update existing design documents (Design Doc / PRD / ADR) with review
+description: 既存設計ドキュメント（Design Doc / PRD / ADR）をレビュー付きで更新
 ---
 
-**Command Context**: This command is dedicated to updating existing design documents.
+**コマンドコンテキスト**: このコマンドは既存設計ドキュメントの更新専用です。
 
-## Orchestrator Definition
+## オーケストレーター定義
 
-**Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
+**コアアイデンティティ**: 「私は作業者ではない。オーケストレーターである。」（subagents-orchestration-guideスキル参照）
 
-**First Action**: Register Steps 1-6 to TodoWrite before any execution.
+**初期アクション**: 実行前にステップ1-6をTodoWriteに登録する。
 
-**Execution Protocol**:
-1. **Delegate all work** to sub-agents (NEVER edit documents yourself)
-2. **Execute update flow**:
-   - Identify target → Clarify changes → Update document → Review → Consistency check
-   - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
-3. **Scope**: Complete when updated document receives approval
+**実行プロトコル**:
+1. **全作業をサブエージェントに委譲**（自分でドキュメントを編集しない）
+2. **更新フローを実行**:
+   - 対象特定 → 変更内容確認 → ドキュメント更新 → レビュー → 整合性チェック
+   - **`[停止: ...]`マーカーで必ず停止** → 次に進む前にユーザー承認を待つ
+3. **スコープ**: 更新されたドキュメントが承認されたら完了
 
-**CRITICAL**: NEVER skip document-reviewer or stopping points.
+**重要**: document-reviewerと停止ポイントは必ず実行する。
 
-## Workflow Overview
+## ワークフロー概要
 
 ```
-Target document → [Stop: Confirm changes]
+対象ドキュメント → [停止: 変更内容確認]
                         ↓
-              technical-designer / prd-creator (update mode)
+              technical-designer / prd-creator（updateモード）
                         ↓
-              document-reviewer → [Stop: Review approval]
-                        ↓ (Design Doc only)
-              design-sync → [Stop: Final approval]
+              document-reviewer → [停止: レビュー承認]
+                        ↓（Design Docのみ）
+              design-sync → [停止: 最終承認]
 ```
 
-## Scope Boundaries
+## スコープ境界
 
-**Included in this command**:
-- Existing document identification and selection
-- Change content clarification with user
-- Document update with appropriate agent (update mode)
-- Document review with document-reviewer
-- Consistency verification with design-sync (Design Doc only)
+**実行内容**:
+- 既存ドキュメントの特定と選択
+- ユーザーとの変更内容確認
+- 適切なエージェントによるドキュメント更新（updateモード）
+- document-reviewerによるドキュメントレビュー
+- design-syncによる整合性検証（Design Docのみ）
 
-**NOT included**:
-- New requirement analysis (use /design for new documents)
-- Work planning or implementation (use /plan or /task after this command)
+**実行しない**:
+- 新規要件分析（新規ドキュメントには/designを使用）
+- 作業計画や実装（本コマンド後に/planまたは/taskを使用）
 
-**Responsibility Boundary**: This command completes with updated document approval.
+**責務境界**: このコマンドは更新されたドキュメントの承認で責務完了。
 
-Target document: $ARGUMENTS
+対象ドキュメント: $ARGUMENTS
 
-## Execution Flow
+## 実行フロー
 
-### Step 1: Target Document Identification
+### ステップ1: 対象ドキュメントの特定
 
 ```bash
-# Check existing documents
+# 既存ドキュメントを確認
 ls docs/design/*.md docs/prd/*.md docs/adr/*.md 2>/dev/null | grep -v template
 ```
 
-**Decision flow**:
+**判断フロー**:
 
-| Situation | Action |
-|-----------|--------|
-| $ARGUMENTS specifies a path | Use specified document |
-| $ARGUMENTS describes a topic | Search documents matching the topic |
-| Multiple candidates found | Present options with AskUserQuestion |
-| No documents found | Report and end (suggest /design instead) |
+| 状況 | アクション |
+|------|-----------|
+| $ARGUMENTSがパスを指定 | 指定ドキュメントを使用 |
+| $ARGUMENTSがトピックを記述 | トピックに合致するドキュメントを検索 |
+| 複数の候補が見つかった | AskUserQuestionで選択肢を提示 |
+| ドキュメントが見つからない | 報告して終了（代わりに/designを推奨） |
 
-### Step 2: Document Type Determination
+### ステップ2: ドキュメントタイプの判定
 
-Determine type from document path:
+ドキュメントパスからタイプを判定:
 
-| Path Pattern | Type | Update Agent | Notes |
-|-------------|------|--------------|-------|
+| パスパターン | タイプ | 更新エージェント | 備考 |
+|-------------|--------|-----------------|------|
 | `docs/design/*.md` | Design Doc | technical-designer | - |
 | `docs/prd/*.md` | PRD | prd-creator | - |
-| `docs/adr/*.md` | ADR | technical-designer | Minor changes: update existing file; Major changes: create new ADR file |
+| `docs/adr/*.md` | ADR | technical-designer | 軽微な変更: 既存ファイルを更新、大きな変更: 元を置き換える新ADRを作成 |
 
-**ADR Update Guidance**:
-- **Minor changes** (clarification, typo fix, small scope adjustment): Update the existing ADR file
-- **Major changes** (decision reversal, significant scope change): Create a new ADR that supersedes the original
+**ADR更新ガイダンス**:
+- **軽微な変更**（明確化、誤字修正、小規模なスコープ調整）: 既存ADRファイルを更新
+- **大きな変更**（決定の変更、大規模なスコープ変更）: 元のADRを置き換える新しいADRを作成
 
-### Step 3: Change Content Clarification [Stop]
+### ステップ3: 変更内容の確認 [停止]
 
-Use AskUserQuestion to clarify what changes are needed:
-- What sections need updating
-- Reason for the change (bug fix findings, spec change, review feedback, etc.)
-- Expected outcome after the update
+AskUserQuestionで必要な変更を確認:
+- どのセクションの更新が必要か
+- 変更の理由（バグ修正の発見、仕様変更、レビューフィードバック等）
+- 更新後の期待される結果
 
-Confirm understanding of changes with user before proceeding.
+変更内容の理解をユーザーと確認してから進む。
 
-### Step 4: Document Update
+### ステップ4: ドキュメント更新
 
-Invoke the update agent determined in Step 2:
+ステップ2で決定した更新エージェントを呼び出す:
 ```
-subagent_type: [Update Agent from Step 2]
-description: "Update [Type from Step 2]"
+subagent_type: [ステップ2の更新エージェント]
+description: "[ステップ2のタイプ]を更新"
 prompt: |
-  Operation Mode: update
-  Existing Document: [path from Step 1]
+  動作モード: update
+  既存ドキュメント: [ステップ1のパス]
 
-  ## Changes Required
-  [Changes clarified in Step 3]
+  ## 必要な変更
+  [ステップ3で確認した変更内容]
 
-  Update the document to reflect the specified changes.
-  Add change history entry.
+  指定された変更を反映するようドキュメントを更新する。
+  変更履歴エントリを追加する。
 ```
 
-### Step 5: Document Review [Stop]
+### ステップ5: ドキュメントレビュー [停止]
 
-Invoke document-reviewer:
+document-reviewerを呼び出す:
 ```
 subagent_type: document-reviewer
-description: "Review updated document"
+description: "更新されたドキュメントをレビュー"
 prompt: |
-  Review the following updated document.
+  以下の更新されたドキュメントをレビューする。
 
   doc_type: [Design Doc / PRD / ADR]
-  target: [path from Step 1]
+  target: [ステップ1のパス]
   mode: standard
 
-  Focus on:
-  - Consistency of updated sections with rest of document
-  - No contradictions introduced by changes
-  - Completeness of change history
+  注力ポイント:
+  - 更新セクションとドキュメント全体の整合性
+  - 変更による矛盾が発生していないこと
+  - 変更履歴の完全性
 ```
 
-**On review result**:
-- Approved → Proceed to Step 6
-- Needs revision → Return to Step 4 with reviewer feedback (max 2 iterations)
-- **After 2 rejections** → Flag for human review, present accumulated feedback to user and end
+**レビュー結果に基づく対応**:
+- 承認 → ステップ6へ進む
+- 要修正 → レビュアーフィードバックを持ってステップ4に戻る（最大2回）
+- **2回のリジェクト後** → 人間レビュー用にフラグ、蓄積されたフィードバックをユーザーに提示して終了
 
-Present review result to user for approval.
+レビュー結果をユーザーに提示して承認を得る。
 
-### Step 6: Consistency Verification (Design Doc only) [Stop]
+### ステップ6: 整合性検証（Design Docのみ） [停止]
 
-**Skip condition**: Document type is PRD or ADR → Proceed to completion.
+**スキップ条件**: ドキュメントタイプがPRDまたはADR → 完了へ進む。
 
-For Design Doc, invoke design-sync:
+Design Docの場合、design-syncを呼び出す:
 ```
 subagent_type: design-sync
-description: "Verify consistency"
+description: "整合性を検証"
 prompt: |
-  Verify consistency of the updated Design Doc with other design documents.
+  更新されたDesign Docと他の設計ドキュメントとの整合性を検証する。
 
-  Updated document: [path from Step 1]
+  更新されたドキュメント: [ステップ1のパス]
 ```
 
-**On consistency result**:
-- No conflicts → Present result to user for final approval
-- Conflicts detected → Present conflicts to user with AskUserQuestion:
-  - A: Return to Step 4 to resolve conflicts in this document
-  - B: End command and address conflicts separately
+**整合性結果に基づく対応**:
+- 矛盾なし → 結果をユーザーに提示して最終承認を得る
+- 矛盾を検出 → AskUserQuestionで矛盾をユーザーに提示:
+  - A: このドキュメントの矛盾を解決するためステップ4に戻る
+  - B: コマンドを終了し、矛盾は別途対応する
 
-## Error Handling
+## エラーハンドリング
 
-| Error | Action |
-|-------|--------|
-| Target document not found | Report and end (suggest /design instead) |
-| Sub-agent update fails | Log failure, present error to user, retry once |
-| Review rejects after 2 revisions | Stop loop, flag for human intervention |
-| design-sync detects conflicts | Present to user for resolution decision |
+| エラー | アクション |
+|--------|-----------|
+| 対象ドキュメントが見つからない | 報告して終了（代わりに/designを推奨） |
+| サブエージェントの更新が失敗 | 失敗をログ、エラーをユーザーに提示、1回リトライ |
+| 2回の修正後もレビューがリジェクト | ループを停止、人間介入用にフラグ |
+| design-syncが矛盾を検出 | 解決判断のためユーザーに提示 |
 
-## Completion Criteria
+## 完了条件
 
-- [ ] Identified target document
-- [ ] Clarified change content with user
-- [ ] Updated document with appropriate agent (update mode)
-- [ ] Executed document-reviewer and addressed feedback
-- [ ] Executed design-sync for consistency verification (Design Doc only)
-- [ ] Obtained user approval for updated document
+- [ ] 対象ドキュメントを特定した
+- [ ] ユーザーと変更内容を確認した
+- [ ] 適切なエージェントでドキュメントを更新した（updateモード）
+- [ ] document-reviewerを実行しフィードバックに対応した
+- [ ] design-syncで整合性検証を実行した（Design Docのみ）
+- [ ] 更新されたドキュメントのユーザー承認を取得した
 
-## Output Example
-Document update completed.
-- Updated document: docs/design/[document-name].md
-- Approval status: User approved
+## 出力例
+ドキュメント更新が完了しました。
+- 更新されたドキュメント: docs/design/[ドキュメント名].md
+- 承認ステータス: ユーザー承認済み
 
-**Important**: This command ends with document approval. Does not propose transition to next phase.
+**重要**: 本コマンドはドキュメント承認で終了。次フェーズへの移行提案は行わない。

@@ -1,14 +1,14 @@
 ---
-description: Execute tasks following appropriate skills
+description: タスクを適切なスキルに従って実行
 ---
 
-Task: $ARGUMENTS
+タスク: $ARGUMENTS
 
-**Pre-execution Checklist** (MUST clarify BEFORE starting):
+実行前に、以下を明確にしてください：
 
-1. **Task Essence**: What problem is this task really trying to solve?
-2. **Applicable Skills**: Which skills apply to this task?
-3. **Initial Action**: Based on the skills, what is the FIRST step?
-4. **Scope Boundary**: What are the completion criteria and scope of responsibility?
+1. **タスクの本質**: このタスクが本当に解決しようとしている問題は？
+2. **適用スキル**: このタスクに該当するスキルは？
+3. **初動**: スキルに基づく最初のアクションは？
+4. **スコープ境界**: このタスクの完了条件と責務範囲は？
 
-Proceed with the task ONLY AFTER making the above explicit.
+上記を明示してから作業を開始します。

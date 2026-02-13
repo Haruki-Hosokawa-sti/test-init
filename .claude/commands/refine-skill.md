@@ -1,84 +1,84 @@
 ---
-description: Implement user skill change requests with maximum precision optimization
+description: ユーザーのスキル変更要求を精度最大化して実装
 ---
 
-**Command Context**: Workflow for understanding skill file change requests and implementing with maximum precision
+**コマンドコンテキスト**: スキルファイルの変更要求を理解し、精度最大化して実装するワークフロー
 
-Change request: $ARGUMENTS
+変更要求: $ARGUMENTS
 
-## Execution Process
+## 実行プロセス
 
-Register the following steps in TodoWrite and proceed systematically.
+以下のステップをTodoWriteに登録し、順番に進行する。
 
-### Step 1: Understand the Request
+### Step 1: 変更要求の理解
 
-If unspecified, use AskUserQuestion to clarify:
-- Which skill to modify (e.g., typescript-rules / coding-standards)
-- Change type: Add new criteria / Modify existing criteria / Delete criteria
-- Specific changes
+未指定時はAskUserQuestionで確認：
+- どのスキルを変更するか（例: typescript-rules / coding-standards）
+- 変更種別: 新基準追加 / 既存基準修正 / 基準削除
+- 具体的な変更内容
 
-Target file identification:
-- Skill name provided → Read: `.claude/skills/{skill-name}/SKILL.md`
-- Partial name known → Glob: `.claude/skills/*{keyword}*/SKILL.md`
-- Unknown → Glob: `.claude/skills/*/SKILL.md` for full scan → Confirm selection with user
+対象ファイル特定：
+- スキル名が明示 → Read: `.claude/skills/{スキル名}/SKILL.md`
+- 部分的に判明 → Glob: `.claude/skills/*{キーワード}*/SKILL.md`
+- 不明 → Glob: `.claude/skills/*/SKILL.md` で全件確認 → ユーザーに選択
 
-### Step 2: Create Design Proposal
+### Step 2: 変更設計案の作成
 
-Present before/after comparison of current state and proposed change:
+現状と変更案のbefore/afterを提示：
 
 ```
-【Current】
-"Handle errors appropriately" (ambiguous: "appropriately" undefined)
+【現状】
+"エラーは適切に処理する"（曖昧：「適切」の基準不明）
 
-【Proposal】
-"Error handling implementation criteria:
-1. try-catch required for: external API calls, file I/O, JSON.parse, etc.
-2. Required error log items: error.name, error.stack, timestamp"
+【変更案】
+"エラーハンドリング実装基準：
+1. try-catch必須条件：外部API呼び出し、ファイルI/O、JSON.parse等
+2. エラーログ必須項目：error.name、error.stack、タイムスタンプ"
 
-Proceed with this design? (y/n)
+この設計で進めますか？ (y/n)
 ```
 
-**Design 9-Point Checklist**:
-1. Maximum accuracy with minimal description (context efficiency)
-2. Deduplication within and across skill files
-3. Group related content in single file (minimize read operations)
-4. Measurable decision criteria (if-then format)
-5. Transform NG examples to recommendation format (background: including NG examples)
-6. Consistent notation
-7. Make implicit prerequisites explicit
-8. Description order: most important first, exceptions last
-9. Clear scope boundaries: what's covered vs what's not
+**設計の9観点チェックリスト**:
+1. 最小記述で最大精度（コンテキスト効率）
+2. スキルファイル内・間の重複排除
+3. 関連内容は1ファイルに集約（読み込み回数最小化）
+4. 測定可能な判断基準（if-then形式）
+5. NG例は背景情報として推奨形式に変換
+6. 一貫した表記
+7. 暗黙前提を明示化
+8. 記述順序: 冒頭＝最重要、末尾＝例外
+9. スコープ境界: 扱う/扱わない範囲を明示
 
-### Step 3: Three-Pass Review Process
+### Step 3: 3回見直しプロセス
 
-1. **Addition Mode**: Ambiguous expressions → measurable criteria, implicit prerequisites → explicit conditions, edge case definitions (minimum 5 additions)
-2. **Critical Modification Mode**: Consolidate duplicates, simplify excessive detail, replace overlap with other skills → references (record before/after diffs)
-3. **Restoration Decision Mode**: Deletions with accuracy risk → restore, valid deletions → keep
+1. **追記モード**: 曖昧表現→測定可能基準、暗黙前提→明示条件、エッジケース定義（最低5項目追記）
+2. **批判的修正モード**: 重複統合、過度な詳細を簡潔化、他スキルとの重複→参照に置換（修正前後の差分を記録）
+3. **復元判定モード**: 精度低下リスクがある削除→復元、妥当な削除→維持
 
-Final check: "Are necessary and sufficient conditions present for accurate implementation of user requirements?"
+最終確認：「ユーザーの変更要求を正確に実装するための必要十分条件が揃っているか？」
 
-### Step 4: Approval and Implementation
+### Step 4: 承認取得と実装
 
-1. Present before/after comparison to user and obtain approval
-2. Apply changes with appropriate tool
-3. Verify with git diff
-4. Suggest `/sync-skills` execution
+1. 変更前後の比較をユーザーに提示し承認を取得
+2. 適切なツールで変更適用
+3. git diffで変更内容を最終確認
+4. `/sync-skills` 実行を提案
 
-## Completion Criteria
+## 完了条件
 
-- [ ] Identified target skill and understood current state
-- [ ] Reviewed design proposal against 9-point checklist
-- [ ] Completed three-pass review process
-- [ ] Obtained user approval
-- [ ] Applied changes and verified with git diff
-- [ ] Suggested /sync-skills execution
+- [ ] 対象スキルを特定し現状を把握した
+- [ ] 変更設計案を9観点でレビューした
+- [ ] 3回見直しプロセスを完了した
+- [ ] ユーザー承認を取得した
+- [ ] 変更を適用しgit diffで確認した
+- [ ] /sync-skills実行を提案した
 
-## Error Handling
+## エラーハンドリング
 
-| Error | Action |
-|-------|--------|
-| Skill not found | Display available skill list |
-| Large change detected (50%+) | Suggest phased implementation |
-| Responsibility overlap with other skills | Confirm boundaries and defer to user judgment |
+| エラー | アクション |
+|--------|-----------|
+| スキル未発見 | 利用可能なスキル一覧を表示 |
+| 大規模変更検出（50%以上） | 段階的実施を提案 |
+| 他スキルとの責務重複 | 責務境界を確認しユーザーに判断を委ねる |
 
-**Scope**: Understanding user change requests and implementing with maximum precision. Through /sync-skills coordination.
+**スコープ**: ユーザーの変更要求理解と精度最大化実装。/sync-skills連携まで。

@@ -1,75 +1,75 @@
 ---
-description: Execute from requirement analysis to design document creation
+description: 要件分析から設計書作成まで実行
 ---
 
-**Command Context**: This command is dedicated to the design phase.
+**コマンドコンテキスト**: このコマンドは設計フェーズ専用です。
 
-## Orchestrator Definition
+## オーケストレーター定義
 
-**Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
+**コアアイデンティティ**: 「私は作業者ではない。オーケストレーターである。」（subagents-orchestration-guideスキル参照）
 
-**Execution Protocol**:
-1. **Delegate all work** to sub-agents (NEVER investigate/analyze yourself)
-2. **Follow subagents-orchestration-guide skill design flow exactly**:
-   - Execute: requirement-analyzer → technical-designer → document-reviewer → design-sync
-   - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
-3. **Scope**: Complete when design documents receive approval
+**実行プロトコル**:
+1. **全作業をサブエージェントに委譲**（自分で調査・分析しない）
+2. **subagents-orchestration-guideスキルの設計フローに厳密に従う**:
+   - 実行: requirement-analyzer → technical-designer → document-reviewer → design-sync
+   - **`[停止: ...]`マーカーで必ず停止** → 次に進む前にユーザー承認を待つ
+3. **スコープ**: 設計書が承認されたら完了
 
-**CRITICAL**: NEVER skip document-reviewer, design-sync, or stopping points defined in subagents-orchestration-guide skill flows.
+**重要**: document-reviewer、design-sync、subagents-orchestration-guideスキルで定義された停止ポイントは必ず実行する。
 
-## Workflow Overview
+## ワークフロー概要
 
 ```
-Requirements → requirement-analyzer → [Stop: Scale determination]
-                                           ↓
-                                   technical-designer → document-reviewer
-                                           ↓
-                                      design-sync → [Stop: Design approval]
+要件 → requirement-analyzer → [停止: 規模判定]
+                                    ↓
+                            technical-designer → document-reviewer
+                                    ↓
+                               design-sync → [停止: 設計承認]
 ```
 
-Requirements: $ARGUMENTS
+要件: $ARGUMENTS
 
-Considering the deep impact on design, first engage in dialogue to understand the background and purpose of requirements:
-- What problems do you want to solve?
-- Expected outcomes and success criteria
-- Relationship with existing systems
+設計への影響を深く考慮し、まず要件の背景と目的を理解するため対話を行い:
+- どのような問題を解決したいか
+- 期待される成果と成功基準
+- 既存システムとの関係性
 
-Once requirements are moderately clarified, analyze with requirement-analyzer and create appropriate design documents according to scale.
+適度に要件が明確になったら、requirement-analyzerで分析し、規模に応じた適切な設計書を作成します。
 
-Clearly present design alternatives and trade-offs.
+設計の代替案とトレードオフを明確に提示します。
 
-## Scope Boundaries
+## スコープ境界
 
-**Included in this command**:
-- Requirement analysis with requirement-analyzer
-- ADR creation (if architecture changes, new technology, or data flow changes)
-- Design Doc creation with technical-designer
-- Document review with document-reviewer
-- Design Doc consistency verification with design-sync
+**実行内容**:
+- requirement-analyzerによる要件分析
+- ADR作成（アーキテクチャ変更、新技術、データフロー変更がある場合）
+- technical-designerによるDesign Doc作成
+- document-reviewerによるドキュメントレビュー
+- design-syncによるDesign Doc間整合性検証
 
-**Responsibility Boundary**: This command completes with design document approval.
+**責務境界**: このコマンドは設計書承認で責務完了。
 
-## Execution Flow
+## 実行フロー
 
-1. requirement-analyzer → Requirement analysis
-2. technical-designer → Design Doc creation
-3. document-reviewer → Single document quality check
-4. User approval (WAIT for approval)
-5. design-sync → Design Doc consistency verification
-   - IF conflicts found → Report to user → Wait for fix instructions → Fix with technical-designer(update)
-   - IF no conflicts → End
+1. requirement-analyzer → 要件分析
+2. technical-designer → Design Doc作成
+3. document-reviewer → 単一ドキュメント品質チェック
+4. ユーザー承認（承認を待つ）
+5. design-sync → Design Doc間整合性検証
+   - 矛盾あり → ユーザーに報告 → 修正指示待ち → technical-designer(update)で修正
+   - 矛盾なし → 終了
 
-## Completion Criteria
+## 完了条件
 
-- [ ] Executed requirement-analyzer and determined scale
-- [ ] Created appropriate design document (ADR or Design Doc) with technical-designer
-- [ ] Executed document-reviewer and addressed feedback
-- [ ] Executed design-sync for consistency verification
-- [ ] Obtained user approval for design document
+- [ ] requirement-analyzerを実行し規模を判定した
+- [ ] technical-designerで適切な設計書（ADRまたはDesign Doc）を作成した
+- [ ] document-reviewerを実行しフィードバックに対応した
+- [ ] design-syncで整合性検証を実行した
+- [ ] ユーザーから設計書の承認を取得した
 
-## Output Example
-Design phase completed.
-- Design document: docs/design/[document-name].md
-- Consistency: No conflicts with other Design Docs (or fixes completed)
+## 出力例
+設計フェーズが完了しました。
+- 設計書: docs/design/[ドキュメント名].md
+- 整合性: 他Design Docと矛盾なし（または修正完了）
 
-**Important**: This command ends with design approval + consistency verification. Does not propose transition to next phase.
+**重要**: 本コマンドは設計承認＋整合性確認で終了。次フェーズへの移行提案は行わない。

@@ -1,95 +1,95 @@
 ---
 name: frontend/typescript-testing
-description: Designs tests with React Testing Library and MSW. Applies component testing patterns.
+description: React Testing LibraryとMSWでテストを設計。コンポーネントテストパターンを適用。
 ---
 
-# TypeScript Testing Rules (Frontend)
+# TypeScript テストルール（フロントエンド）
 
-## Test Framework
-- **Vitest**: This project uses Vitest
-- **React Testing Library**: For component testing
-- **MSW (Mock Service Worker)**: For API mocking
-- Test imports: `import { describe, it, expect, beforeEach, vi } from 'vitest'`
-- Component test imports: `import { render, screen, fireEvent } from '@testing-library/react'`
-- Mock creation: Use `vi.mock()`
+## テストフレームワーク
+- **Vitest**: このプロジェクトではVitestを使用
+- **React Testing Library**: コンポーネントテスト用
+- **MSW (Mock Service Worker)**: APIモック用
+- テストのインポート: `import { describe, it, expect, beforeEach, vi } from 'vitest'`
+- コンポーネントテストのインポート: `import { render, screen, fireEvent } from '@testing-library/react'`
+- モックの作成: `vi.mock()` を使用
 
-## Basic Testing Policy
+## テストの基本方針
 
-### Quality Requirements
-- **Coverage**: Unit test coverage must be 60% or higher (Frontend standard 2025)
-- **Independence**: Each test can run independently without depending on other tests
-- **Reproducibility**: Tests are environment-independent and always return the same results
-- **Readability**: Test code maintains the same quality as production code
+### 品質要件
+- **カバレッジ**: 単体テストのカバレッジは60%以上を必須（フロントエンド標準 2025）
+- **独立性**: 各テストは他のテストに依存せず実行可能
+- **再現性**: テストは環境に依存せず、常に同じ結果を返す
+- **可読性**: テストコードも製品コードと同様の品質を維持
 
-### Coverage Requirements (ADR-0002 Compliant)
-**Mandatory**: Unit test coverage must be 60% or higher
-**Component-specific targets**:
-- Atoms (Button, Text, etc.): 70% or higher
-- Molecules (FormField, etc.): 65% or higher
-- Organisms (Header, Footer, etc.): 60% or higher
-- Custom Hooks: 65% or higher
-- Utils: 70% or higher
+### カバレッジ要件
+**必須**: 単体テストのカバレッジは60%以上
+**コンポーネント別目標**:
+- Atoms（Button、Text等）: 70%以上
+- Molecules（FormField等）: 65%以上
+- Organisms（Header、Footer等）: 60%以上
+- Custom Hooks: 65%以上
+- Utils: 70%以上
 
-**Metrics**: Statements, Branches, Functions, Lines
+**指標**: Statements（文）、Branches（分岐）、Functions（関数）、Lines（行）
 
-### Test Types and Scope
-1. **Unit Tests (React Testing Library)**
-   - Verify behavior of individual components or functions
-   - Mock all external dependencies
-   - Most numerous, implemented with fine granularity
-   - Focus on user-observable behavior
+### テストの種類と範囲
+1. **単体テスト（React Testing Library）**
+   - 個々のコンポーネントや関数の動作を検証
+   - 外部依存はすべてモック化
+   - 最も数が多く、細かい粒度で実施
+   - ユーザーから観測可能な振る舞いに焦点を当てる
 
-2. **Integration Tests (React Testing Library + MSW)**
-   - Verify coordination between multiple components
-   - Mock APIs with MSW (Mock Service Worker)
-   - No actual DB connections (backend manages DB)
-   - Verify major functional flows
+2. **統合テスト（React Testing Library + MSW）**
+   - 複数のコンポーネントの連携を検証
+   - MSW（Mock Service Worker）でAPIをモック
+   - 実際のDB接続なし（DBはバックエンドが管理）
+   - 主要な機能フローの検証
 
-3. **Cross-functional Verification in E2E Tests**
-   - Mandatory verification of impact on existing features when adding new features
-   - Cover integration points with "High" and "Medium" impact levels from Design Doc's "Integration Point Map"
-   - Verification pattern: Existing feature operation -> Enable new feature -> Verify continuity of existing features
-   - Success criteria: No change in displayed content, rendering time within 5 seconds
-   - Designed for automatic execution in CI/CD pipelines
+3. **E2Eテストでの機能横断検証**
+   - 新機能追加時、既存機能への影響を必ず検証
+   - Design Docの「統合ポイントマップ」で影響度「高」「中」の箇所をカバー
+   - 検証パターン: 既存機能動作 → 新機能有効化 → 既存機能の継続性確認
+   - 判定基準: 表示内容の変化なし、レンダリング時間5秒以内
+   - CI/CDでの自動実行を前提とした設計
 
-## Test Implementation Conventions
+## テストの実装規約
 
-### Directory Structure (Co-location Principle)
+### ディレクトリ構造（Co-location原則）
 ```
 src/
 └── components/
     └── Button/
         ├── Button.tsx
-        ├── Button.test.tsx  # Co-located with component
+        ├── Button.test.tsx  # コンポーネントと同じ場所に配置
         └── index.ts
 ```
 
-**Rationale**:
-- React Testing Library best practice
-- ADR-0002 Co-location principle
-- Easy to find and maintain tests alongside implementation
+**理由**:
+- React Testing Libraryのベストプラクティス
+- ADR-0002 Co-location原則
+- 実装と一緒にテストを見つけやすく、保守しやすい
 
-### Naming Conventions
-- Test files: `{ComponentName}.test.tsx`
-- Integration test files: `{FeatureName}.integration.test.tsx`
-- Test suites: Names describing target components or features
-- Test cases: Names describing expected behavior from user perspective
+### 命名規則
+- テストファイル: `{ComponentName}.test.tsx`
+- 統合テストファイル: `{FeatureName}.integration.test.tsx`
+- テストスイート: 対象のコンポーネントや機能を説明する名前
+- テストケース: ユーザー視点から期待される動作を説明する名前
 
-### Test Code Quality Rules
+### テストコードの品質ルール
 
-**Recommended: Keep all tests always active**
-- Merit: Guarantees test suite completeness
-- Practice: Fix problematic tests and activate them
+**推奨: すべてのテストを常に有効に保つ**
+- メリット: テストスイートの完全性を保証
+- 実践: 問題があるテストは修正して有効化
 
-**Avoid: test.skip() or commenting out**
-- Reason: Creates test gaps and incomplete quality checks
-- Solution: Completely delete unnecessary tests
+**避けるべき: test.skip()やコメントアウト**
+- 理由: テストの穴が生まれ、品質チェックが不完全になる
+- 対処: 不要なテストは完全に削除する
 
-## Mock Type Safety Enforcement
+## モックの型安全性の徹底
 
-### MSW (Mock Service Worker) Setup
+### MSW（Mock Service Worker）セットアップ
 ```typescript
-// Type-safe MSW handler
+// 型安全なMSWハンドラー
 import { rest } from 'msw'
 
 const handlers = [
@@ -99,19 +99,19 @@ const handlers = [
 ]
 ```
 
-### Component Mock Type Safety
+### コンポーネントモックの型安全性
 ```typescript
-// Only required parts
+// 必要な部分のみ
 type TestProps = Pick<ButtonProps, 'label' | 'onClick'>
 const mockProps: TestProps = { label: 'Click', onClick: vi.fn() }
 
-// Only when absolutely necessary, with clear justification
+// やむを得ない場合のみ、理由明記
 const mockRouter = {
   push: vi.fn()
-} as unknown as Router // Complex router type structure
+} as unknown as Router // 複雑なRouter型構造のため
 ```
 
-## Basic React Testing Library Example
+## React Testing Libraryの基本例
 
 ```typescript
 import { describe, it, expect, vi } from 'vitest'
@@ -125,5 +125,88 @@ describe('Button', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Click me' }))
     expect(onClick).toHaveBeenCalledOnce()
   })
+})
+```
+
+## テスト品質基準
+
+### 境界値・異常系の網羅
+正常系に加え、境界値と異常系を含める。
+```typescript
+it('renders empty state for empty array', () => {
+  render(<UserList users={[]} />)
+  expect(screen.getByText('ユーザーがいません')).toBeInTheDocument()
+})
+
+it('displays error message on API failure', async () => {
+  server.use(rest.get('/api/users', (req, res, ctx) => res(ctx.status(500))))
+  render(<UserList />)
+  expect(await screen.findByText('エラーが発生しました')).toBeInTheDocument()
+})
+```
+
+### ユーザー中心のクエリ
+
+```typescript
+// 良い: アクセシブルなクエリ
+screen.getByRole('button', { name: 'Submit' })
+screen.getByLabelText('Email')
+screen.getByText('Welcome')
+
+// 悪い: 実装詳細への依存
+screen.getByTestId('submit-btn')
+container.querySelector('.btn-primary')
+```
+
+### 非同期処理のテスト
+
+```typescript
+it('loads and displays user data', async () => {
+  render(<UserProfile userId="1" />)
+
+  // ローディング状態を確認
+  expect(screen.getByText('Loading...')).toBeInTheDocument()
+
+  // データ表示を待機
+  expect(await screen.findByText('John Doe')).toBeInTheDocument()
+
+  // ローディングが消えていることを確認
+  expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
+})
+```
+
+### フォームテスト
+
+```typescript
+it('submits form with valid data', async () => {
+  const onSubmit = vi.fn()
+  render(<LoginForm onSubmit={onSubmit} />)
+
+  await userEvent.type(screen.getByLabelText('Email'), 'test@example.com')
+  await userEvent.type(screen.getByLabelText('Password'), 'password123')
+  await userEvent.click(screen.getByRole('button', { name: 'Login' }))
+
+  expect(onSubmit).toHaveBeenCalledWith({
+    email: 'test@example.com',
+    password: 'password123'
+  })
+})
+```
+
+## アンチパターン
+
+```typescript
+// 悪い: 実装詳細のテスト
+it('calls setState', () => {
+  const setState = vi.spyOn(React, 'useState')
+  render(<Counter />)
+  // ...
+})
+
+// 良い: ユーザーが見る結果をテスト
+it('increments count when clicked', () => {
+  render(<Counter />)
+  fireEvent.click(screen.getByRole('button', { name: '+' }))
+  expect(screen.getByText('Count: 1')).toBeInTheDocument()
 })
 ```

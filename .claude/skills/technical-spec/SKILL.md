@@ -1,86 +1,86 @@
 ---
 name: technical-spec
-description: Defines environment variables, architecture design, and build/test commands. Use when configuring environment or designing architecture.
+description: 環境変数、アーキテクチャ設計、ビルド・テストコマンドを定義。環境設定、アーキテクチャ設計時に使用。
 ---
 
-# Technical Design Rules
+# 技術設計ルール
 
-## Basic Technology Stack Policy
-TypeScript-based application implementation. Architecture patterns should be selected according to project requirements and scale.
+## 技術スタックの基本方針
+TypeScriptをベースとしたアプリケーション実装。アーキテクチャパターンはプロジェクトの要件と規模に応じて選択すること。
 
-## Environment Variable Management and Security
+## 環境変数管理とセキュリティ
 
-### Environment Variable Management
-- Centrally manage environment variables and build mechanisms to ensure type safety
-- Avoid direct references to `process.env`, obtain through configuration management layer
-- Properly implement default value settings and mandatory checks
+### 環境変数管理
+- 環境変数は一元管理し、型安全性を確保する仕組みを構築すること
+- `process.env` の直接参照は避け、設定管理層を通じて取得すること
+- デフォルト値の設定や必須チェックを適切に実装すること
 
-### Security
-- Do not include `.env` files in Git
-- Always manage API keys and secrets as environment variables
-- Prohibit logging of sensitive information
-- Do not include sensitive information in error messages
+### セキュリティ
+- `.env`ファイルはGitに含めない
+- APIキーやシークレットは必ず環境変数として管理
+- 機密情報のログ出力は禁止
+- エラーメッセージに機密情報を含めない
 
-## Architecture Design
+## アーキテクチャ設計
 
-### Architecture Design Principles
-Select appropriate architecture for each project and define clearly:
+### アーキテクチャ設計の原則
+プロジェクトごとに適切なアーキテクチャを選択し、明確に定義すること：
 
-- **Separation of Responsibilities**: Clearly define responsibilities for each layer and module, and maintain boundaries
+- **責務の分離**: 各層やモジュールの責務を明確に定義し、境界を守ること
 
-## Unified Data Flow Principles
+## データフロー統一原則
 
-#### Basic Principles
-1. **Single Data Source**: Store the same information in only one place
-2. **Structured Data Priority**: Use parsed objects rather than JSON strings
-3. **Clear Responsibility Separation**: Clearly define responsibilities for each layer
+#### 基本原則
+1. **単一データソース**: 同じ情報は1箇所にのみ保存する
+2. **構造化データ優先**: JSON文字列ではなくパース済みオブジェクトを使用
+3. **明確な責務分離**: 各層の責務を明確に定義
 
-#### Data Flow Best Practices
-- **Validation at Input**: Validate data at input layer and pass internally in type-safe form
-- **Centralized Transformation**: Consolidate data transformation logic in dedicated utilities
-- **Structured Logging**: Output structured logs at each stage of data flow
+#### データフローのベストプラクティス
+- **入力時点での検証**: データは入力層で検証し、型安全な形で内部に渡す
+- **変換の一元化**: データ変換ロジックは専用のユーティリティに集約
+- **ログの構造化**: データフローの各段階で構造化ログを出力
 
-## Build and Testing
-Use the appropriate run command based on the `packageManager` field in package.json.
+## ビルドとテスト
+package.jsonの`packageManager`フィールドに応じた実行コマンドを使用すること。
 
-### Build Commands
-- `build` - TypeScript build
-- `type-check` - Type check (no emit)
+### ビルドコマンド
+- `build` - TypeScriptビルド
+- `type-check` - 型チェック（emit なし）
 
-### Testing Commands
-- `test` - Run tests
-- `test:coverage` - Run tests with coverage
-- `test:coverage:fresh` - Run tests with coverage (fresh cache)
-- `test:safe` - Safe test execution (with auto cleanup)
-- `cleanup:processes` - Cleanup Vitest processes
+### テストコマンド
+- `test` - テスト実行
+- `test:coverage` - カバレッジ測定
+- `test:coverage:fresh` - カバレッジ測定（キャッシュクリア）
+- `test:safe` - 安全なテスト実行（自動クリーンアップ付き）
+- `cleanup:processes` - Vitestプロセスのクリーンアップ
 
-### Quality Check Requirements
+### 品質チェック要件
 
-Quality checks are mandatory upon implementation completion:
+品質チェックは実装完了時に必須：
 
-**Phase 1-3: Code Quality Checks**
-- `check` - Biome (lint + format)
-- `check:unused` - Detect unused exports
-- `check:deps` - Detect circular dependencies
-- `build` - TypeScript build
+**Phase 1-3: コード品質チェック**
+- `check` - Biome（lint + format）
+- `check:unused` - 未使用エクスポートの検出
+- `check:deps` - 循環依存の検出
+- `build` - TypeScriptビルド
 
-**Phase 4: Tests**
-- `test` - Test execution
+**Phase 4: テスト**
+- `test` - テスト実行
 
-**Phase 5: Code Quality Re-verification**
-- `check:code` - Re-verify code quality (clean up side effects from test fixes in Phase 4)
+**Phase 5: コード品質再検証**
+- `check:code` - コード品質の再検証（Phase 4でのテスト修正による副作用を清掃）
 
-### Auxiliary Commands
-- `check:all` - Overall integrated check (check:code + test) *for manual batch verification
-- `open coverage/index.html` - Check coverage report
-- `format` - Format fixes
-- `lint:fix` - Lint fixes
+### 補助コマンド
+- `check:all` - 全体統合チェック（check:code + test）※手動一括確認用
+- `open coverage/index.html` - カバレッジレポート確認
+- `format` - フォーマット修正
+- `lint:fix` - Lint修正
 
-### Troubleshooting
-- **Port in use error**: Run the `cleanup:processes` script
-- **Cache issues**: Run the `test:coverage:fresh` script
-- **Dependency errors**: Clean reinstall dependencies
+### トラブルシューティング
+- **ポート使用中エラー**: `cleanup:processes` スクリプトを実行
+- **キャッシュ問題**: `test:coverage:fresh` スクリプトを実行
+- **依存関係エラー**: 依存関係のクリーンインストールを実行
 
-### Coverage Requirements
-- **MANDATORY**: Unit test coverage MUST be 70% or higher
-- **Metrics**: Statements, Branches, Functions, Lines
+### カバレッジ要件
+- **必須**: ユニットテストカバレッジは70%以上
+- **メトリクス**: Statements、Branches、Functions、Lines

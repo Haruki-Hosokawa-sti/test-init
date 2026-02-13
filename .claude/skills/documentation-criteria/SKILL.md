@@ -1,189 +1,200 @@
 ---
 name: documentation-criteria
-description: Guides PRD, ADR, Design Doc, and Work Plan creation with templates and decision matrix.
+description: PRD、ADR、Design Doc、作業計画書の作成を支援。テンプレートと作成判定マトリクスを提供。
 ---
 
-# Documentation Creation Criteria
+# ドキュメント作成基準
 
-## Creation Decision Matrix
+## 作成判定マトリクス
 
-| Condition | Required Documents | Creation Order |
-|-----------|-------------------|----------------|
-| New Feature Addition | PRD -> [ADR] -> Design Doc -> Work Plan | After PRD approval |
-| ADR Conditions Met (see below) | ADR -> Design Doc -> Work Plan | Start immediately |
-| 6+ Files | ADR -> Design Doc -> Work Plan (Required) | Start immediately |
-| 3-5 Files | Design Doc -> Work Plan (Recommended) | Start immediately |
-| 1-2 Files | None | Direct implementation |
+| 条件 | 必要ドキュメント | 作成順序 |
+|-----|--------------|---------|
+| 新機能追加 | PRD → [ADR] → Design Doc → 作業計画書 | PRD承認後 |
+| ADR条件該当（下記参照） | ADR → Design Doc → 作業計画書 | 即座に開始 |
+| 6ファイル以上 | ADR → Design Doc → 作業計画書（必須） | 即座に開始 |
+| 3-5ファイル | Design Doc → 作業計画書（推奨） | 即座に開始 |
+| 1-2ファイル | なし | 直接実装 |
 
-## ADR Creation Conditions (Required if Any Apply)
+## ADR作成条件（いずれか該当で必須）
 
-### 1. Type System Changes
-- **Adding nested types with 3+ levels**: `type A = { b: { c: { d: T } } }`
-  - Rationale: Deep nesting has high complexity and wide impact scope
-- **Changing/deleting types used in 3+ locations**
-  - Rationale: Multiple location impacts require careful consideration
-- **Type responsibility changes** (e.g., DTO->Entity)
-  - Rationale: Conceptual model changes affect design philosophy
+### 1. 型システム変更
+- **3階層以上のネスト型追加**: `type A = { b: { c: { d: T } } }`
+  - 判断理由: 深いネストは複雑性が高く、影響範囲が広い
+- **3箇所以上で使用される型の変更・削除**
+  - 判断理由: 複数箇所への影響は慎重な判断が必要
+- **型の責務変更**（例: DTO→Entity）
+  - 判断理由: 概念モデルの変更は設計思想に関わる
 
-### 2. Data Flow Changes
-- **Storage location changes** (DB->File, Memory->Cache)
-- **Processing order changes with 3+ steps**
-  - Example: "Input->Validation->Save" to "Input->Save->Async Validation"
-- **Data passing method changes** (props->Context, direct reference->events)
+### 2. データフロー変更
+- **保存場所変更**（DB→ファイル、メモリ→キャッシュ）
+- **3ステップ以上の処理順序変更**
+  - 例: 「入力→検証→保存」から「入力→保存→非同期検証」
+- **データ受け渡し方法変更**（props→Context、直接参照→イベント）
 
-### 3. Architecture Changes
-- Layer addition, responsibility changes, component relocation
+### 3. アーキテクチャ変更
+- レイヤー追加・責務変更・コンポーネント再配置
 
-### 4. External Dependency Changes
-- Library/framework/external API introduction or replacement
+### 4. 外部依存変更
+- ライブラリ・フレームワーク・外部API導入・置換
 
-### 5. Complex Implementation Logic (Regardless of Scale)
-- Managing 3+ states
-- Coordinating 5+ asynchronous processes
+### 5. 複雑な実装ロジック（規模に関わらず）
+- 3つ以上の状態を管理
+- 5つ以上の非同期処理の連携
 
-## Detailed Document Definitions
+## 各ドキュメントの詳細定義
 
-### PRD (Product Requirements Document)
+### PRD（Product Requirements Document）
 
-**Purpose**: Define business requirements and user value
+**目的**: ビジネス要件とユーザー価値を定義
 
-**Includes**:
-- Business requirements and user value
-- Success metrics and KPIs (measurable format)
-- User stories and use cases
-- MoSCoW prioritization (Must/Should/Could/Won't)
-- MVP and Future phase separation
-- User journey diagram (required)
-- Scope boundary diagram (required)
+**含むもの**:
+- ビジネス要件とユーザー価値
+- 成功指標とKPI（測定可能な形式）
+- ユーザーストーリーとユースケース
+- MoSCoW法による優先順位（Must/Should/Could/Won't）
+- MVPとFutureフェーズの分離
+- ユーザージャーニー図（必須）
+- スコープ境界図（必須）
 
-**Excludes**:
-- Technical implementation details (->Design Doc)
-- Technical selection rationale (->ADR)
-- **Implementation phases** (->Work Plan)
-- **Task breakdown** (->Work Plan)
+**含まないもの**:
+- 技術実装詳細（→Design Doc）
+- 技術選定理由（→ADR）
+- **実装フェーズ**（→作業計画書）
+- **タスク分解**（→作業計画書）
 
-### ADR (Architecture Decision Record)
+### ADR（Architecture Decision Record）
 
-**Purpose**: Record technical decision rationale and background
+**目的**: 技術的決定の理由と背景を記録
 
-**Includes**:
-- Decision (what was selected)
-- Rationale (why that selection was made)
-- Option comparison (minimum 3 options) and trade-offs
-- Architecture impact
-- Principled implementation guidelines (e.g., "Use dependency injection")
+**含むもの**:
+- 決定事項（何を選択したか）
+- 根拠（なぜその選択をしたか）
+- 選択肢の比較（最低3案）とトレードオフ
+- アーキテクチャへの影響
+- 実装への原則的な指針（例:「依存性注入を使用」）
 
-**Excludes**:
-- Implementation schedule, duration (->Work Plan)
-- Detailed implementation procedures (->Design Doc)
-- Specific code examples (->Design Doc)
-- Resource assignments (->Work Plan)
+**含まないもの**:
+- 実装スケジュール、期間（→作業計画書）
+- 実装手順の詳細（→Design Doc）
+- 具体的なコード例（→Design Doc）
+- 担当者の割り当て（→作業計画書）
 
 ### Design Document
 
-**Purpose**: Define technical implementation methods in detail
+**目的**: 技術的実装方法を詳細定義
 
-**Includes**:
-- **Existing codebase analysis** (required)
-  - Implementation path mapping (both existing and new)
-  - Integration point clarification (connection points with existing code even for new implementations)
-- Technical implementation approach (vertical/horizontal/hybrid)
-- **Technical dependencies and implementation constraints** (required implementation order)
-- Interface and type definitions
-- Data flow and component design
-- **E2E verification procedures at integration points**
-- **Acceptance criteria (EARS format: When/While/If-then/none)**
-- Change impact map (clearly specify direct impact/indirect impact/no ripple effect)
-- Complete enumeration of integration points
-- Data contract clarification
-- **Agreement checklist** (agreements with stakeholders)
-- **Code inspection evidence** (inspected files/functions during investigation)
-- **Field propagation map** (when fields cross component boundaries)
-- **Data representation decision** (when introducing new structures)
-- **Applicable standards** (explicit/implicit classification)
-- **Prerequisite ADRs** (including common ADRs)
+**含むもの**:
+- **既存コードベース分析**（必須）
+  - 実装パスマッピング（既存と新規の両方を記載）
+  - 統合点の明確化（新規実装でも既存との接続点を記載）
+- 技術的実装アプローチ（垂直/水平/ハイブリッド）
+- **技術的依存関係と実装制約**（実装の必要順序）
+- インターフェース定義と型定義
+- データフローとコンポーネント設計
+- **統合ポイントでのE2E確認手順**
+- **受入条件（EARS形式: When/While/If-then/無印）**
+- 変更影響マップ（直接影響/間接影響/波及なしを明記）
+- 統合点の完全な列挙
+- データ契約の明確化
+- **合意事項チェックリスト**（関係者との合意内容）
+- **コード調査エビデンス**（調査時に確認したファイル/関数）
+- **フィールド伝播マップ**（フィールドがコンポーネント境界を越える場合）
+- **データ構造の採用判断**（新規構造導入時）
+- **適用基準**（explicit/implicit分類）
+- **前提となるADR**（共通ADR含む）
 
-**Excludes**:
-- Why that technology was chosen (->Reference ADR)
-- When to implement, duration (->Work Plan)
-- Who will implement (->Work Plan)
+**必須構造要素**:
+```yaml
+変更影響マップ:
+  変更対象: [コンポーネント/機能]
+  直接影響: [ファイル/関数]
+  間接影響: [データ形式/処理時間]
+  波及なし: [影響を受けない機能]
 
-### Work Plan
+インターフェース変更マトリクス:
+  既存: [メソッド名]
+  新規: [メソッド名]
+  変換必要性: [あり/なし]
+  互換性確保: [方法]
+```
 
-**Purpose**: Implementation task management and progress tracking
+**含まないもの**:
+- なぜその技術を選んだか（→ADR参照）
+- いつ実装するか、期間（→作業計画書）
+- 誰が実装するか（→作業計画書）
 
-**Includes**:
-- Task breakdown and dependencies (maximum 2 levels)
-- Schedule and duration estimates
-- **Copy E2E verification procedures from Design Doc** (cannot delete, can add)
-- **Phase 4 Quality Assurance Phase (required)**
-- Progress records (checkbox format)
+### 作業計画書
 
-**Excludes**:
-- Technical rationale (->ADR)
-- Design details (->Design Doc)
+**目的**: 実装タスクの管理と進捗追跡
 
-**Phase Division Criteria**:
-1. **Phase 1: Foundation Implementation** - Type definitions, interfaces, test preparation
-2. **Phase 2: Core Feature Implementation** - Business logic, unit tests
-3. **Phase 3: Integration Implementation** - External connections, presentation layer
-4. **Phase 4: Quality Assurance (Required)** - Acceptance criteria achievement, all tests passing, quality checks
+**含むもの**:
+- **フェーズ構成**（Design Docの技術的依存関係を基に作成）
+- タスク分解と依存関係（最大2階層まで）
+- スケジュールと期間見積もり
+- **Design DocのE2E確認手順を各フェーズに配置**
+- **最終フェーズに品質保証を含む**（必須）
+- 進捗記録（チェックボックス形式）
 
-**Three Elements of Task Completion Definition**:
-1. **Implementation Complete**: Code is functional
-2. **Quality Complete**: Tests, type checks, linting pass
-3. **Integration Complete**: Verified connection with other components
+**含まないもの**:
+- 技術的な根拠（→ADR）
+- 設計の詳細（→Design Doc）
+- 技術的依存関係の決定（→Design Doc）
 
-## Creation Process
+**タスク完了定義の3要素**:
+1. **実装完了**: コードが動作する
+2. **品質完了**: テスト・型チェック・リントがパス
+3. **統合完了**: 他コンポーネントとの連携確認
 
-1. **Problem Analysis**: Change scale assessment, ADR condition check
-   - Identify explicit and implicit project standards before investigation
-2. **ADR Option Consideration** (ADR only): Compare 3+ options, specify trade-offs
-3. **Creation**: Use templates, include measurable conditions
-4. **Approval**: "Accepted" after review enables implementation
+## 作成プロセス
 
-## Storage Locations
+1. **問題分析**: 変更規模判定、ADR条件確認
+   - 調査開始前にプロジェクトのexplicit/implicit基準を特定
+2. **ADR選択肢検討**（ADR時のみ）: 3案以上比較、トレードオフ明記
+3. **作成**: テンプレート使用、測定可能な条件記載
+4. **承認**: レビュー後「Accepted」で実装可
 
-| Document | Path | Naming Convention | Template |
-|----------|------|------------------|----------|
-| PRD | `docs/prd/` | `[feature-name]-prd.md` | See prd-template.md |
-| ADR | `docs/adr/` | `ADR-[4-digits]-[title].md` | See adr-template.md |
-| Design Doc | `docs/design/` | `[feature-name]-design.md` | See design-template.md |
-| Work Plan | `docs/plans/` | `YYYYMMDD-{type}-{description}.md` | See plan-template.md |
-| Task File | `docs/plans/tasks/` | `{plan-name}-task-{number}.md` | See task-template.md |
+## 保存場所
 
-*Note: Work plans are excluded by `.gitignore`
+| ドキュメント | パス | 命名規則 | テンプレート |
+|------------|-----|---------|------------|
+| PRD | `docs/prd/` | `[機能名]-prd.md` | `prd-template.md` |
+| ADR | `docs/adr/` | `ADR-[4桁]-[タイトル].md` | `adr-template.md` |
+| Design Doc | `docs/design/` | `[機能名]-design.md` | `design-template.md` |
+| 作業計画書 | `docs/plans/` | `YYYYMMDD-{type}-{description}.md` | `plan-template.md` |
+| タスクファイル | `docs/plans/tasks/` | `{plan-name}-task-{number}.md` | `task-template.md` |
 
-## ADR Status
-`Proposed` -> `Accepted` -> `Deprecated`/`Superseded`/`Rejected`
+※作業計画書は`.gitignore`で除外
 
-## AI Automation Rules
-- 5+ files: Suggest ADR creation
-- Type/data flow change detected: ADR mandatory
-- Check existing ADRs before implementation
+## ADRステータス
+`Proposed` → `Accepted` → `Deprecated`/`Superseded`/`Rejected`
 
-## Diagram Requirements
+## AI自動化ルール
+- 5ファイル以上: ADR作成提案
+- 型・データフロー変更検出: ADR必須化
+- 既存ADR確認してから実装
 
-Required diagrams for each document (using mermaid notation):
+## 図表作成要件
 
-| Document | Required Diagrams | Purpose |
-|----------|------------------|---------|
-| PRD | User journey diagram, Scope boundary diagram | Clarify user experience and scope |
-| ADR | Option comparison diagram (when needed) | Visualize trade-offs |
-| Design Doc | Architecture diagram, Data flow diagram | Understand technical structure |
-| Work Plan | Phase structure diagram, Task dependency diagram | Clarify implementation order |
+各ドキュメントで必須の図表（mermaid記法使用）：
 
-## Common ADR Relationships
-1. **At creation**: Identify common technical areas (logging, error handling, async processing, etc.), reference existing common ADRs
-2. **When missing**: Consider creating necessary common ADRs
-3. **Design Doc**: Specify common ADRs in "Prerequisite ADRs" section
-4. **Compliance check**: Verify design aligns with common ADR decisions
+| ドキュメント | 必須図表 | 目的 |
+|------------|---------|-----|
+| PRD | ユーザージャーニー図、スコープ境界図 | ユーザー体験と範囲の明確化 |
+| ADR | 選択肢比較図（必要時） | トレードオフの視覚化 |
+| Design Doc | アーキテクチャ図、データフロー図 | 技術構造の理解 |
+| 作業計画書 | フェーズ構成図、タスク依存関係図 | 実装順序の明確化 |
 
-## Templates
+## 共通ADRとの関係性
+1. **作成時**: 共通技術領域（ログ、エラーハンドリング、非同期処理等）を特定し、既存共通ADRを参照
+2. **不足時**: 必要な共通ADRが存在しない場合は作成を検討
+3. **Design Doc**: 「前提となるADR」セクションで共通ADRを明記
+4. **準拠確認**: 設計が共通ADRの決定事項と整合しているかを検証
 
-Templates are available in the `references/` directory:
-- [Design Document template](references/design-template.md)
-- [Product Requirements Document template](references/prd-template.md)
-- [Work Plan template](references/plan-template.md)
-- [Architecture Decision Record template](references/adr-template.md)
-- [Task File template](references/task-template.md)
+## テンプレート
+
+テンプレートは`references/`ディレクトリにあります：
+- [Design Documentテンプレート](references/design-template.md)
+- [PRDテンプレート](references/prd-template.md)
+- [作業計画書テンプレート](references/plan-template.md)
+- [ADRテンプレート](references/adr-template.md)
+- [タスクファイルテンプレート](references/task-template.md)

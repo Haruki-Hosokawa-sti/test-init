@@ -1,115 +1,115 @@
 ---
-description: Execute frontend implementation in autonomous execution mode
+description: フロントエンド実装を自律実行モードで実行
 ---
 
-## Orchestrator Definition
+## オーケストレーター定義
 
-**Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
+**コアアイデンティティ**: 「私は作業者ではない。オーケストレーターである。」（subagents-orchestration-guideスキル参照）
 
-**Execution Method**:
-- Task decomposition → performed by task-decomposer
-- Frontend implementation → performed by task-executor-frontend
-- Quality checks and fixes → performed by quality-fixer-frontend
-- Commits → performed by orchestrator (Bash tool)
+**実行方法**:
+- タスク分解 → task-decomposer
+- フロントエンド実装 → task-executor-frontend
+- 品質チェックと修正 → quality-fixer-frontend
+- コミット → オーケストレーター（Bashツール）
 
-Orchestrator invokes sub-agents and passes structured JSON between them.
+オーケストレーターはサブエージェントを呼び出し、構造化JSONを渡します。
 
-**CRITICAL**: Run quality-fixer-frontend before every commit. Obtain batch approval before autonomous mode.
+**重要**: 全てのコミット前にquality-fixer-frontendを実行。自律実行モード前にバッチ承認を取得。
 
-Work plan: $ARGUMENTS
+作業計画: $ARGUMENTS
 
-## Pre-execution Prerequisites
+## 実行前提条件
 
-### Task File Existence Check
+### タスクファイル存在チェック
 ```bash
-# Check work plans
+# 作業計画書を確認
 ! ls -la docs/plans/*.md | grep -v template | tail -5
 
-# Check task files
-! ls docs/plans/tasks/*.md 2>/dev/null || echo "⚠️ No task files found"
+# タスクファイルを確認
+! ls docs/plans/tasks/*.md 2>/dev/null || echo "⚠️ タスクファイルが見つかりません"
 ```
 
-### Task Generation Decision Flow
+### タスク生成判定フロー
 
-Analyze task file existence state and determine the appropriate action:
+タスクファイルの存在状態を分析し、必要なアクションを決定:
 
-| State | Criteria | Next Action |
-|-------|----------|-------------|
-| Tasks exist | .md files in tasks/ directory | Proceed to autonomous execution |
-| No tasks + plan exists | Plan exists but no task files | Confirm with user → run task-decomposer |
-| Neither exists | No plan or task files | Error: Prerequisites not met |
+| 状態 | 基準 | 次のアクション |
+|------|------|--------------|
+| タスク存在 | tasks/ディレクトリに.mdファイルあり | 自律実行へ進む |
+| タスクなし+計画あり | 計画書は存在するがタスクファイルなし | ユーザー確認 → task-decomposer実行 |
+| どちらもなし | 計画書もタスクファイルもなし | エラー: 前提条件未達成 |
 
-## Task Decomposition Phase (Conditional)
+## タスク分解フェーズ（条件付き）
 
-When task files don't exist:
+タスクファイルが存在しない場合：
 
-### 1. User Confirmation
+### 1. ユーザー確認
 ```
-No task files found.
-Work plan: docs/plans/[plan-name].md
+タスクファイルが見つかりません。
+作業計画: docs/plans/[plan-name].md
 
-Generate tasks from the work plan? (y/n):
+作業計画からタスクを生成しますか？ (y/n):
 ```
 
-### 2. Task Decomposition (if approved)
+### 2. タスク分解（承認された場合）
 
-Invoke task-decomposer using Task tool:
+Taskツールでtask-decomposerを呼び出す:
 - `subagent_type`: "task-decomposer"
-- `description`: "Decompose work plan into tasks"
-- `prompt`: "Read work plan and decompose into atomic tasks. Input: docs/plans/[plan-name].md. Output: Individual task files in docs/plans/tasks/. Granularity: 1 task = 1 commit = independently executable"
+- `description`: "作業計画をタスクに分解"
+- `prompt`: "作業計画を読み込み、アトミックなタスクに分解。入力: docs/plans/[plan-name].md。出力: docs/plans/tasks/配下に個別タスクファイル。粒度: 1タスク = 1コミット = 独立実行可能"
 
-### 3. Verify Generation
+### 3. 生成確認
 ```bash
-# Verify generated task files
+# 生成されたタスクファイルを確認
 ! ls -la docs/plans/tasks/*.md | head -10
 ```
 
-✅ **Flow**: Task generation → Autonomous execution (in this order)
+✅ **フロー**: タスク生成 → 自律実行
 
-## Task Execution Cycle (4-Step Cycle) - Frontend Specialized
+## タスク実行サイクル（4ステップサイクル） - フロントエンド特化
 
-**MANDATORY EXECUTION CYCLE**: `task-executor-frontend → escalation check → quality-fixer-frontend → commit`
+**必須実行サイクル**: `task-executor-frontend → エスカレーションチェック → quality-fixer-frontend → commit`
 
-### Sub-agent Invocation Method
-Use Task tool to invoke sub-agents:
-- `subagent_type`: Agent name
-- `description`: Brief task description (3-5 words)
-- `prompt`: Specific instructions
+### サブエージェント呼び出し方法
+Taskツールを使用してサブエージェントを呼び出す：
+- `subagent_type`: エージェント名
+- `description`: タスクの簡潔な説明（3-5語）
+- `prompt`: 具体的な指示内容
 
-### Structured Response Specification
-Each sub-agent responds in JSON format:
+### 構造化レスポンス仕様
+各サブエージェントはJSON形式で応答：
 - **task-executor-frontend**: status, filesModified, testsAdded, readyForQualityCheck
 - **quality-fixer-frontend**: status, checksPerformed, fixesApplied, approved
 
-### Execution Flow for Each Task
+### 各タスクの実行フロー
 
-For EACH task, YOU MUST:
+各タスクで必須：
 
-1. **UPDATE TodoWrite**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity"
-2. **USE task-executor-frontend**: Execute frontend implementation
-   - Invocation example: `subagent_type: "task-executor-frontend"`, `description: "Task execution"`, `prompt: "Task file: docs/plans/tasks/[filename].md Execute implementation"`
-3. **CHECK ESCALATION**: Check task-executor-frontend status → If `status: "escalation_needed"` → STOP and escalate to user
-4. **PROCESS structured responses**: When `readyForQualityCheck: true` is detected → EXECUTE quality-fixer-frontend IMMEDIATELY
-5. **USE quality-fixer-frontend**: Execute all quality checks (Biome, TypeScript build, tests)
-   - Invocation example: `subagent_type: "quality-fixer-frontend"`, `description: "Quality check"`, `prompt: "Execute all frontend quality checks and fixes"`
-6. **EXECUTE commit**: After `approved: true` confirmation, execute git commit IMMEDIATELY
+1. **TodoWrite更新**: 作業ステップを登録。必ず含める: 最初に「スキル制約の確認」、最後に「スキル忠実度の検証」
+2. **task-executor-frontend使用**: フロントエンド実装を実行
+   - 呼び出し例: `subagent_type: "task-executor-frontend"`, `description: "タスク実行"`, `prompt: "タスクファイル: docs/plans/tasks/[ファイル名].md 実装を実行"`
+3. **エスカレーションチェック**: task-executor-frontendのステータス確認 → `status: "escalation_needed"` の場合 → 停止してユーザーにエスカレーション
+4. **構造化レスポンス処理**: `readyForQualityCheck: true` 検出時 → 即座にquality-fixer-frontend実行
+5. **quality-fixer-frontend使用**: 全品質チェック実行（Biome、TypeScriptビルド、テスト）
+   - 呼び出し例: `subagent_type: "quality-fixer-frontend"`, `description: "品質チェック"`, `prompt: "全てのフロントエンド品質チェックと修正を実行"`
+6. **コミット実行**: `approved: true`確認後、即座にgit commitを実行
 
-### Quality Assurance During Autonomous Execution (Details)
-- task-executor-frontend execution → escalation check → quality-fixer-frontend execution → **orchestrator executes commit** (using Bash tool)
-- After quality-fixer-frontend's `approved: true` confirmation, execute git commit IMMEDIATELY
-- Use `changeSummary` for commit message
+### 自律実行中の品質保証（詳細）
+- task-executor-frontend実行 → エスカレーションチェック → quality-fixer-frontend実行 → **オーケストレーターがコミット実行**（Bashツール使用）
+- quality-fixer-frontendの`approved: true`確認後、即座にgit commitを実行
+- `changeSummary`をコミットメッセージに使用
 
-**CRITICAL**: Monitor ALL structured responses WITHOUT EXCEPTION and ENSURE every quality gate is passed.
+**重要**: 例外なく全ての構造化レスポンスを監視し、全ての品質ゲートが通過することを確保。
 
 ! ls -la docs/plans/*.md | head -10
 
-Verify approval status before proceeding. Once confirmed, initiate autonomous execution mode. Stop immediately upon detecting any requirement changes.
+承認ステータスを確認してから進む。確認後、自律実行モードを開始。要件変更を検出したら即座に停止。
 
-## Output Example
-Frontend implementation phase completed.
-- Task decomposition: Generated under docs/plans/tasks/
-- Implemented tasks: [number] tasks
-- Quality checks: All passed (Biome, TypeScript build, tests)
-- Commits: [number] commits created
+## 出力例
+フロントエンド実装フェーズ完了。
+- タスク分解: docs/plans/tasks/ 配下に生成
+- 実装タスク: [件数] タスク
+- 品質チェック: 全てパス（Biome、TypeScriptビルド、テスト）
+- コミット: [件数] コミット作成
 
-**Important**: This command manages the entire autonomous execution flow for frontend implementation from task decomposition to completion. Automatically uses frontend-specialized agents (task-executor-frontend, quality-fixer-frontend).
+**重要**: このコマンドは、タスク分解から完了までのフロントエンド実装全体の自律実行フローを管理します。フロントエンド特化エージェント（task-executor-frontend、quality-fixer-frontend）を自動使用します。

@@ -1,64 +1,64 @@
-# [ADR Number] [Title]
+# [ADR番号] [タイトル]
 
-## Status
+## ステータス
 
 [Proposed | Accepted | Deprecated | Superseded]
 
-## Context
+## 経緯
 
-[Describe the background and reasons why this decision is needed. Include the essence of the problem, current challenges, and constraints]
+[この決定が必要になった背景と理由を説明。問題の本質、現在の課題、制約を含む]
 
-## Decision
+## 決定事項
 
-[Describe the actual decision made. Aim for specific and clear descriptions]
+[実際に行った決定を説明。具体的で明確な記述を心がける]
 
-### Decision Details
+### 決定の詳細
 
-| Item | Content |
-|------|---------|
-| **Decision** | [The decision in one sentence] |
-| **Why now** | [Why this needs to happen now (timing rationale)] |
-| **Why this** | [Why this option over alternatives (1-3 lines)] |
-| **Known unknowns** | [At least one uncertainty at this point] |
-| **Kill criteria** | [One signal that should trigger reversal of this decision] |
+| 項目 | 内容 |
+|-----|-----|
+| **決定** | [一文で決定内容] |
+| **なぜ今か** | [今このタイミングで必要な理由] |
+| **なぜこれか** | [代替案との比較理由（1-3行）] |
+| **既知の不確実性** | [現時点で少なくとも1つの不確実性] |
+| **撤回基準** | [この決定を見直すべきシグナル1つ] |
 
-## Rationale
+## 根拠
 
-[Explain why this decision was made and why it is the best option compared to alternatives]
+[なぜこの決定を行ったか、代替案と比較して最善である理由を説明]
 
-### Options Considered
+### 検討した選択肢
 
-1. **Option 1**: [Description]
-   - Pros: [List advantages]
-   - Cons: [List disadvantages]
+1. **選択肢1**: [説明]
+   - メリット: [利点をリストアップ]
+   - デメリット: [欠点をリストアップ]
 
-2. **Option 2**: [Description]
-   - Pros: [List advantages]
-   - Cons: [List disadvantages]
+2. **選択肢2**: [説明]
+   - メリット: [利点をリストアップ]
+   - デメリット: [欠点をリストアップ]
 
-3. **Option 3 (Selected)**: [Description]
-   - Pros: [List advantages]
-   - Cons: [List disadvantages]
+3. **選択肢3（採用）**: [説明]
+   - メリット: [利点をリストアップ]
+   - デメリット: [欠点をリストアップ]
 
-## Consequences
+## 影響
 
-### Positive Consequences
+### ポジティブな影響
 
-- [List positive impacts on the project or system]
+- [プロジェクトやシステムへの良い影響をリストアップ]
 
-### Negative Consequences
+### ネガティブな影響
 
-- [List negative impacts or trade-offs that need to be accepted]
+- [受け入れる必要のある負の影響やトレードオフをリストアップ]
 
-### Neutral Consequences
+### 中立的な影響
 
-- [List changes that are neither good nor bad]
+- [良くも悪くもない変化をリストアップ]
 
-## Implementation Guidance
+## 実装指針
 
-[Principled direction only. Implementation procedures go to Design Doc]
-Example: "Use dependency injection" ✓, "Implement in Phase 1" ✗
+[原則的な方向性のみ。実装手順はDesign Docへ]
+例: 「依存性注入を使用」✓、「Phase 1で実装」✗
 
-## Related Information
+## 関連情報
 
-- [Links to related ADRs, documents, issues, PRs, etc.]
+- [関連するADR、ドキュメント、Issue、PRなどへのリンク]

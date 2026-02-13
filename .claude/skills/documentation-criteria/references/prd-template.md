@@ -1,109 +1,109 @@
-# PRD: [Feature Name]
+# PRD: [機能名]
 
-## Overview
+## 概要
 
-### One-line Summary
-[Describe this feature in one line]
+### 一言まとめ
+[この機能を一言で説明]
 
-### Background
-[Why is this feature needed? What problem does it solve?]
+### 背景
+[なぜこの機能が必要か？どのような問題を解決するか？]
 
-## User Stories
+## ユーザーストーリー
 
-### Primary Users
-[Define the main target users]
+### 主要ユーザー
+[主なターゲットユーザーを定義]
 
-### User Stories
+### ユーザーストーリー
 ```
-As a [user type]
-I want to [goal/desire]
-So that [expected value/benefit]
+[ユーザー種別]として
+[目標/願望]をしたい
+なぜなら[期待する価値/メリット]だから
 ```
 
-### Use Cases
-1. [Specific usage scenario 1]
-2. [Specific usage scenario 2]
-3. [Specific usage scenario 3]
+### ユースケース
+1. [具体的な利用シナリオ1]
+2. [具体的な利用シナリオ2]
+3. [具体的な利用シナリオ3]
 
-## Functional Requirements
+## 機能要件
 
-### Must Have (MVP)
-- [ ] Requirement 1: [Detailed description]
-  - AC: [Acceptance criteria - Given/When/Then format or measurable standard]
-- [ ] Requirement 2: [Detailed description]
-  - AC: [Acceptance criteria]
-- [ ] Requirement 3: [Detailed description]
-  - AC: [Acceptance criteria]
+### Must Have（MVP）
+- [ ] 要件1: [詳細説明]
+  - AC: [受入条件 - Given/When/Then形式または測定可能な基準]
+- [ ] 要件2: [詳細説明]
+  - AC: [受入条件]
+- [ ] 要件3: [詳細説明]
+  - AC: [受入条件]
 
 ### Nice to Have
-- [ ] Requirement 1: [Detailed description]
-- [ ] Requirement 2: [Detailed description]
+- [ ] 要件1: [詳細説明]
+- [ ] 要件2: [詳細説明]
 
-### Out of Scope
-- Item 1: [Description and reason]
-- Item 2: [Description and reason]
+### スコープ外
+- 項目1: [説明と理由]
+- 項目2: [説明と理由]
 
-## Non-Functional Requirements
+## 非機能要件
 
-### Performance
-- Response Time: [Target value]
-- Throughput: [Target value]
-- Concurrency: [Target value]
+### パフォーマンス
+- レスポンス時間: [目標値]
+- スループット: [目標値]
+- 同時接続数: [目標値]
 
-### Reliability
-- Availability: [Target value]
-- Error Rate: [Target value]
+### 信頼性
+- 可用性: [目標値]
+- エラー率: [目標値]
 
-### Security
-- [Security requirements details]
+### セキュリティ
+- [セキュリティ要件の詳細]
 
-### Scalability
-- [Considerations for future scaling]
+### スケーラビリティ
+- [将来のスケーリングに関する考慮事項]
 
-## Success Criteria
+## 成功基準
 
-### Quantitative Metrics
-1. [Measurable success metric 1]
-2. [Measurable success metric 2]
-3. [Measurable success metric 3]
+### 定量的指標
+1. [測定可能な成功指標1]
+2. [測定可能な成功指標2]
+3. [測定可能な成功指標3]
 
-### Qualitative Metrics
-1. [User experience metric 1]
-2. [User experience metric 2]
+### 定性的指標
+1. [ユーザー体験の指標1]
+2. [ユーザー体験の指標2]
 
-## Technical Considerations
+## 技術的考慮事項
 
-### Dependencies
-- [Dependencies on existing systems]
-- [Dependencies on external services]
+### 依存関係
+- [既存システムへの依存]
+- [外部サービスへの依存]
 
-### Constraints
-- [Technical constraints]
-- [Resource constraints]
+### 制約
+- [技術的な制約]
+- [リソースの制約]
 
-### Assumptions
-- [Prerequisite requiring validation 1]
-- [Prerequisite requiring validation 2]
+### 前提条件
+- [確認が必要な前提1]
+- [確認が必要な前提2]
 
-### Risks and Mitigation
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| [Risk 1] | High/Medium/Low | High/Medium/Low | [Countermeasure] |
-| [Risk 2] | High/Medium/Low | High/Medium/Low | [Countermeasure] |
+### リスクと対策
+| リスク | 影響度 | 発生確率 | 対策 |
+|-------|-------|---------|-----|
+| [リスク1] | 高/中/低 | 高/中/低 | [対策] |
+| [リスク2] | 高/中/低 | 高/中/低 | [対策] |
 
-## Undetermined Items
+## 未決定事項
 
-- [ ] [Question 1]: [Description of options or impacts]
-- [ ] [Question 2]: [Description of options or impacts]
+- [ ] [質問1]: [選択肢や影響の説明]
+- [ ] [質問2]: [選択肢や影響の説明]
 
-*Discuss with user until this section is empty, then delete after confirmation*
+*このセクションが空になるまでユーザーと議論し、確認後に削除*
 
-## Appendix
+## 付録
 
-### References
-- [Related document 1]
-- [Related document 2]
+### 参考資料
+- [関連ドキュメント1]
+- [関連ドキュメント2]
 
-### Glossary
-- **Term 1**: [Definition]
-- **Term 2**: [Definition]
+### 用語集
+- **用語1**: [定義]
+- **用語2**: [定義]

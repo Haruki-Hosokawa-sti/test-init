@@ -1,76 +1,74 @@
 ---
-description: Execute decomposed tasks in autonomous execution mode
+description: 分解済みタスクを自律実行モードで実装
 ---
 
-Follow subagents-orchestration-guide skill strictly and act as the **orchestrator**.
+subagents-orchestration-guideスキルの指針に従い、**オーケストレーター**として振る舞います。
 
-Work plan: $ARGUMENTS
+作業計画書: $ARGUMENTS
 
-## 📋 Pre-execution Prerequisites
+## 📋 実行前の前提確認
 
-### Task File Existence Check
+### タスクファイル存在チェック
 ```bash
-# Check work plans
+# 計画書の確認
 ! ls -la docs/plans/*.md | grep -v template | tail -5
 
-# Check task files
-! ls docs/plans/tasks/*.md 2>/dev/null || echo "⚠️ No task files found"
+# タスクファイルの確認
+! ls docs/plans/tasks/*.md 2>/dev/null || echo "⚠️ タスクファイルが見つかりません"
 ```
 
-### Task Generation Decision Flow
+### タスク生成判定フロー
 
-Analyze task file existence state and determine the appropriate action:
+タスクファイルの存在状態を確認し、適切な対応を決定:
 
-| State | Criteria | Next Action |
-|-------|----------|-------------|
-| Tasks exist | .md files in tasks/ directory | Proceed to autonomous execution |
-| No tasks + plan exists | Plan exists but no task files | Confirm with user → run task-decomposer |
-| Neither exists | No plan or task files | Error: Prerequisites not met |
+| 状態 | 判定基準 | 次のアクション |
+|------|---------|--------------|
+| タスク存在 | tasks/ディレクトリに.mdファイルあり | 自律実行モードへ移行 |
+| タスクなし＋計画書あり | 計画書は存在するがタスクファイルなし | ユーザーに確認 → task-decomposer実行 |
+| 両方なし | 計画書もタスクファイルもなし | エラー：実行条件を満たさない |
 
-## 🔄 Task Decomposition Phase (Conditional)
+## 🔄 タスク分解フェーズ（条件付き実行）
 
-When task files don't exist:
+タスクファイルが存在しない場合の処理：
 
-### 1. User Confirmation
+### 1. ユーザー確認
 ```
-No task files found.
-Work plan: docs/plans/[plan-name].md
+タスクファイルが見つかりません。
+作業計画書: docs/plans/[計画書名].md
 
-Generate tasks from the work plan? (y/n):
+計画書からタスクを分解して生成しますか？ (y/n): 
 ```
 
-### 2. Task Decomposition (if approved)
+### 2. タスク分解実行（承認時）
 
-Invoke task-decomposer using Task tool:
+Taskツールでtask-decomposerを呼び出す:
 - `subagent_type`: "task-decomposer"
-- `description`: "Decompose work plan into tasks"
-- `prompt`: "Read work plan and decompose into atomic tasks. Input: docs/plans/[plan-name].md. Output: Individual task files in docs/plans/tasks/. Granularity: 1 task = 1 commit = independently executable"
+- `description`: "作業計画をタスクに分解"
+- `prompt`: "作業計画書を読み込み、1コミット粒度の独立したタスクに分解。入力: docs/plans/[計画書名].md。出力: docs/plans/tasks/配下に個別タスクファイル生成。粒度: 1タスク = 1コミット = 独立して実行可能"
 
-### 3. Verify Generation
+### 3. 生成確認
 ```bash
-# Verify generated task files
+# 生成されたタスクファイルを確認
 ! ls -la docs/plans/tasks/*.md | head -10
 ```
 
-✅ **Recommended**: After task generation, automatically proceed to autonomous execution
-❌ **Avoid**: Starting implementation without task generation
+✅ **推奨**: タスク生成完了後、自動的に自律実行モードへ移行
+❌ **避ける**: タスク未生成のまま実装を開始
 
-## 🧠 Task Execution Flow
-Following "Autonomous Execution Task Management" in subagents-orchestration-guide skill, manage 4 steps with TodoWrite. Always include: first "Confirm skill constraints", final "Verify skill fidelity":
-1. task-executor execution
-2. Escalation judgment and follow-up
-3. quality-fixer execution
+## 🧠 タスク実行フロー
+subagents-orchestration-guideスキルの「自律実行中のタスク管理」に従い、TodoWriteで4ステップを管理。最初に「スキル制約の確認」、最後に「スキル忠実度の検証」を必ず含める：
+1. task-executor実行
+2. エスカレーション判定・フォローアップ
+3. quality-fixer実行
 4. git commit
 
-After approval confirmation, start autonomous execution mode. Stop immediately when requirement changes detected.
+承認確認後、自律実行モードを開始。要件変更検知時は即座に停止。
 
-## Output Example
-Implementation phase completed.
-- Task decomposition: Generated under docs/plans/tasks/ (if executed)
-- Implemented tasks: [number] tasks
-- Quality checks: All passed
-- Commits: [number] commits created
+## 出力例
+実装フェーズが完了しました。
+- タスク分解: docs/plans/tasks/ 配下に生成（実行時のみ）
+- 実装されたタスク: [タスク数]件
+- 品質チェック: すべて通過
+- コミット: [コミット数]件作成
 
-**Responsibility Boundary**:
-- IN SCOPE: Task decomposition to implementation completion
-- OUT OF SCOPE: Design phase, planning phase
+**責務境界**: 本コマンドはタスク分解から実装完了まで担当。

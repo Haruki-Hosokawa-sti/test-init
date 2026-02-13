@@ -1,99 +1,99 @@
 ---
 name: typescript-testing
-description: Applies Vitest test design and quality standards. Provides coverage requirements and mock usage guides. Use when writing unit tests.
+description: Vitestテスト設計と品質基準を適用。カバレッジ要件とモック使用ガイドを提供。ユニットテスト作成時に使用。
 ---
 
-# TypeScript Testing Rules
+# TypeScript テストルール
 
-## Test Framework
+## テストフレームワーク
 
-- **Vitest**: This project uses Vitest
-- Test imports: `import { describe, it, expect, beforeEach, vi } from 'vitest'`
-- Mock creation: Use `vi.mock()`
+- **Vitest**: このプロジェクトではVitestを使用
+- テストのインポート: `import { describe, it, expect, beforeEach, vi } from 'vitest'`
+- モックの作成: `vi.mock()` を使用
 
-## Basic Testing Policy
+## テストの基本方針
 
-### Quality Requirements
-- **Coverage**: Unit test coverage must be 70% or higher
-- **Independence**: Each test can run independently without depending on other tests
-- **Reproducibility**: Tests are environment-independent and always return the same results
-- **Readability**: Test code maintains the same quality as production code
+### 品質要件
+- **カバレッジ**: 単体テストのカバレッジは70%以上を必須
+- **独立性**: 各テストは他のテストに依存せず実行可能
+- **再現性**: テストは環境に依存せず、常に同じ結果を返す
+- **可読性**: テストコードも製品コードと同様の品質を維持
 
-### Coverage Requirements
-**Mandatory**: Unit test coverage must be 70% or higher
-**Metrics**: Statements, Branches, Functions, Lines
+### カバレッジ要件
+**必須**: 単体テストのカバレッジは70%以上
+**指標**: Statements（文）、Branches（分岐）、Functions（関数）、Lines（行）
 
-### Test Types and Scope
-1. **Unit Tests**
-   - Verify behavior of individual functions or classes
-   - Mock all external dependencies
-   - Most numerous, implemented with fine granularity
+### テストの種類と範囲
+1. **単体テスト（Unit Tests）**
+   - 個々の関数やクラスの動作を検証
+   - 外部依存はすべてモック化
+   - 最も数が多く、細かい粒度で実施
 
-2. **Integration Tests**
-   - Verify coordination between multiple components
-   - Use actual dependencies (DB, API, etc.)
-   - Verify major functional flows
+2. **統合テスト（Integration Tests）**
+   - 複数のコンポーネントの連携を検証
+   - 実際の依存関係を使用（DBやAPI等）
+   - 主要な機能フローの検証
 
-3. **Cross-functional Verification in E2E Tests**
-   - Mandatory verification of impact on existing features when adding new features
-   - Cover integration points with "High" and "Medium" impact levels from Design Doc's "Integration Point Map"
-   - Verification pattern: Existing feature operation -> Enable new feature -> Verify continuity of existing features
-   - Success criteria: No change in response content, processing time within 5 seconds
-   - Designed for automatic execution in CI/CD pipelines
+3. **E2Eテストでの機能横断検証**
+   - 新機能追加時、既存機能への影響を必ず検証
+   - Design Docの「統合ポイントマップ」で影響度「高」「中」の箇所をカバー
+   - 検証パターン: 既存機能動作 → 新機能有効化 → 既存機能の継続性確認
+   - 判定基準: レスポンス内容の変化なし、処理時間5秒以内
+   - CI/CDでの自動実行を前提とした設計
 
-## Test Implementation Conventions
+## テストの実装規約
 
-### Directory Structure
+### ディレクトリ構造
 ```
 src/
 └── application/
     └── services/
         ├── __tests__/
-        │   ├── service.test.ts      # Unit tests
-        │   └── service.int.test.ts  # Integration tests
+        │   ├── service.test.ts      # 単体テスト
+        │   └── service.int.test.ts  # 統合テスト
         └── service.ts
 ```
 
-### Naming Conventions
-- Test files: `{target-file-name}.test.ts`
-- Integration test files: `{target-file-name}.int.test.ts`
-- Test suites: Names describing target features or situations
-- Test cases: Names describing expected behavior
+### 命名規則
+- テストファイル: `{対象ファイル名}.test.ts`
+- 統合テストファイル: `{対象ファイル名}.int.test.ts`
+- テストスイート: 対象の機能や状況を説明する名前
+- テストケース: 期待される動作を説明する名前
 
-### Test Code Quality Rules
+### テストコードの品質ルール
 
-**Recommended: Keep all tests always active**
-- Merit: Guarantees test suite completeness
-- Practice: Fix problematic tests and activate them
+**推奨: すべてのテストを常に有効に保つ**
+- メリット: テストスイートの完全性を保証
+- 実践: 問題があるテストは修正して有効化
 
-**Avoid: test.skip() or commenting out**
-- Reason: Creates test gaps and incomplete quality checks
-- Solution: Completely delete unnecessary tests
+**避けるべき: test.skip()やコメントアウト**
+- 理由: テストの穴が生まれ、品質チェックが不完全になる
+- 対処: 不要なテストは完全に削除する
 
-## Test Quality Criteria
+## テスト品質基準
 
-### Boundary and Error Case Coverage
-Include boundary values and error cases alongside happy paths.
+### 境界値・異常系の網羅
+正常系に加え、境界値と異常系を含める。
 ```typescript
 it('returns 0 for empty array', () => expect(calc([])).toBe(0))
 it('throws on negative price', () => expect(() => calc([{price: -1}])).toThrow())
 ```
 
-### Literal Expected Values
-Use literal values for assertions. Do not replicate implementation logic.
-**Valid test**: Expected value != Mock return value (implementation transforms/processes data)
+### 期待値の直接記述
+期待値はリテラルで記述。実装ロジックを再現しない。
+**有効なテスト**: 期待値 ≠ モック戻り値（実装による変換・処理がある）
 ```typescript
 expect(calcTax(100)).toBe(10)  // not: 100 * TAX_RATE
 ```
 
-### Result-Based Verification
-Verify results, not invocation order or count.
+### 結果ベースの検証
+呼び出し順序・回数ではなく結果を検証。
 ```typescript
 expect(mock).toHaveBeenCalledWith('a')  // not: toHaveBeenNthCalledWith
 ```
 
-### Meaningful Assertions
-Each test must include at least one verification.
+### 意味あるアサーション
+各テストに最低1つの検証を含める。
 ```typescript
 it('creates user', async () => {
   const user = await createUser({name: 'test'})
@@ -101,14 +101,14 @@ it('creates user', async () => {
 })
 ```
 
-### Appropriate Mock Scope
-Mock only direct external I/O dependencies. Use real implementations for indirect dependencies.
+### 適切なモック範囲
+直接依存の外部I/Oのみモック。間接依存は実物使用。
 ```typescript
-vi.mock('./database')  // external I/O only
+vi.mock('./database')  // 外部I/Oのみ
 ```
 
-### Property-based Testing (fast-check)
-Use fast-check when verifying invariants or properties.
+### Property-based Testing（fast-check）
+不変条件やプロパティを検証する場合はfast-checkを使用。
 ```typescript
 import fc from 'fast-check'
 
@@ -119,23 +119,23 @@ it('reverses twice equals original', () => {
 })
 ```
 
-**Usage condition**: Use when Property annotations are assigned to ACs in Design Doc.
+**使用条件**: Design DocのACにProperty注釈が付与されている場合に使用。
 
-## Mock Type Safety Enforcement
+## モックの型安全性
 
-### Minimal Type Definition Requirements
+### 必要最小限の型定義
 ```typescript
-// Only required parts
+// 必要な部分のみ
 type TestRepo = Pick<Repository, 'find' | 'save'>
 const mock: TestRepo = { find: vi.fn(), save: vi.fn() }
 
-// Only when absolutely necessary, with clear justification
+// やむを得ない場合のみ、理由明記
 const sdkMock = {
   call: vi.fn()
-} as unknown as ExternalSDK // Complex external SDK type structure
+} as unknown as ExternalSDK // 外部SDKの複雑な型のため
 ```
 
-## Basic Vitest Example
+## Vitestの基本例
 
 ```typescript
 import { describe, it, expect, vi } from 'vitest'

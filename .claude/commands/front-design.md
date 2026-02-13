@@ -1,61 +1,61 @@
 ---
-description: Execute from requirement analysis to frontend design document creation
+description: 要件分析からフロントエンド設計ドキュメント作成まで実行
 ---
 
-**Command Context**: This command is dedicated to the frontend design phase.
+**コマンドコンテキスト**: このコマンドはフロントエンド設計フェーズ専用です。
 
-## Orchestrator Definition
+## オーケストレーター定義
 
-**Role**: Orchestrator
+**Role**: オーケストレーター
 
-**Execution Method**:
-- Requirement analysis → performed by requirement-analyzer
-- Design document creation → performed by technical-designer-frontend
-- Document review → performed by document-reviewer
+**実行方法**:
+- 要件分析 → requirement-analyzerが実行
+- 設計書作成 → technical-designer-frontendが実行
+- ドキュメントレビュー → document-reviewerが実行
 
-Orchestrator invokes sub-agents and passes structured JSON between them.
+オーケストレーターはサブエージェントを呼び出し、構造化JSONを渡します。
 
-## Scope Boundaries
+## スコープ境界
 
-**Included in this command**:
-- Requirement analysis with requirement-analyzer
-- ADR creation (if architecture changes, new technology, or data flow changes)
-- Design Doc creation with technical-designer-frontend
-- Document review with document-reviewer
+**実行内容**:
+- requirement-analyzerによる要件分析
+- ADR作成（アーキテクチャ変更、新技術、データフロー変更がある場合）
+- technical-designer-frontendによるDesign Doc作成
+- document-reviewerによるドキュメントレビュー
 
-**Responsibility Boundary**: This command completes with design document approval.
+**責務境界**: このコマンドは設計書承認で責務完了。
 
-Requirements: $ARGUMENTS
+要件: $ARGUMENTS
 
-## Execution Flow
+## 実行フロー
 
-### 1. Requirement Analysis Phase
-Considering the deep impact on design, first engage in dialogue to understand the background and purpose of requirements:
-- What problems do you want to solve?
-- Expected outcomes and success criteria
-- Relationship with existing systems
+### 1. 要件分析フェーズ
+設計への影響が深いことを考慮し、まず対話により要件の背景と目的を理解:
+- 何の問題を解決したいか
+- 期待する成果と成功基準
+- 既存システムとの関係
 
-Once requirements are moderately clarified:
-- Invoke **requirement-analyzer** using Task tool
+要件がある程度明確になったら:
+- Taskツールで**requirement-analyzer**を呼び出す
   - `subagent_type: "requirement-analyzer"`
-  - `description: "Requirement analysis"`
-  - `prompt: "Requirements: [user requirements] Execute requirement analysis and scale determination"`
-- **[STOP]**: Review requirement analysis results and address question items
+  - `description: "要件分析"`
+  - `prompt: "要件: [ユーザー要件] 要件分析と規模判定を実施してください"`
+- **[停止]**: 要件分析結果を確認し、質問事項に対応
 
-### 2. Design Document Creation Phase
-Create appropriate design documents according to scale determination:
-- Invoke **technical-designer-frontend** using Task tool
-  - For ADR: `subagent_type: "technical-designer-frontend"`, `description: "ADR creation"`, `prompt: "Create ADR for [technical decision]"`
-  - For Design Doc: `subagent_type: "technical-designer-frontend"`, `description: "Design Doc creation"`, `prompt: "Create Design Doc based on requirements"`
-- Invoke **document-reviewer** to verify consistency
-  - `subagent_type: "document-reviewer"`, `description: "Document review"`, `prompt: "Review [document path] for consistency and completeness"`
-- **[STOP]**: Present design alternatives and trade-offs, obtain user approval
+### 2. 設計ドキュメント作成フェーズ
+規模判定に応じて適切な設計ドキュメントを作成:
+- Taskツールで**technical-designer-frontend**を呼び出す
+  - ADRの場合: `subagent_type: "technical-designer-frontend"`, `description: "ADR作成"`, `prompt: "[技術決定]のADRを作成"`
+  - Design Docの場合: `subagent_type: "technical-designer-frontend"`, `description: "Design Doc作成"`, `prompt: "要件に基づいてDesign Docを作成"`
+- Taskツールで**document-reviewer**を呼び出して整合性検証
+  - `subagent_type: "document-reviewer"`, `description: "ドキュメントレビュー"`, `prompt: "[ドキュメントパス]の整合性と完成度をレビュー"`
+- **[停止]**: 設計の選択肢とトレードオフを提示し、ユーザー承認を取得
 
-**Scope**: Up to frontend design document (ADR/Design Doc) approval. Work planning and beyond are outside the scope of this command.
+**スコープ**: フロントエンド設計ドキュメント（ADR/Design Doc）の承認まで。作業計画以降はこのコマンドの範囲外。
 
-## Output Example
-Frontend design phase completed.
-- Design document: docs/design/[document-name].md or docs/adr/[document-name].md
-- Approval status: User approved
+## 出力例
+フロントエンド設計フェーズ完了。
+- 設計ドキュメント: docs/design/[ドキュメント名].md または docs/adr/[ドキュメント名].md
+- 承認ステータス: ユーザー承認済み
 
-**Important**: This command ends with design approval. Does not propose transition to next phase.
+**重要**: このコマンドは設計承認で終了。次フェーズへの移行は提案しません。

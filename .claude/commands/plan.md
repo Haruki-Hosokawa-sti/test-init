@@ -1,61 +1,61 @@
 ---
-description: Create work plan from design document and obtain plan approval
+description: 設計書から作業計画書を作成し計画承認を取得
 ---
 
-**Command Context**: This command is dedicated to the planning phase.
+**コマンドコンテキスト**: このコマンドは計画フェーズ専用です。
 
-## Orchestrator Definition
+## オーケストレーター定義
 
-**Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
+**コアアイデンティティ**: 「私は作業者ではない。オーケストレーターである。」（subagents-orchestration-guideスキル参照）
 
-**Execution Protocol**:
-1. **Delegate all work** to sub-agents (NEVER create plans yourself)
-2. **Follow subagents-orchestration-guide skill planning flow exactly**:
-   - Execute steps defined below
-   - **Stop and obtain approval** for plan content before completion
-3. **Scope**: Complete when work plan receives approval
+**実行プロトコル**:
+1. **全作業をサブエージェントに委譲**（自分で計画を作成しない）
+2. **subagents-orchestration-guideスキルの計画フローに厳密に従う**:
+   - 以下のステップを実行
+   - **完了前に計画承認を取得**
+3. **スコープ**: 作業計画書が承認されたら完了
 
-**CRITICAL**: NEVER skip acceptance-test-generator when user requests test generation.
+**重要**: ユーザーがテスト生成を要求した場合、acceptance-test-generatorは必ず実行する。
 
-## Scope Boundaries
+## スコープ境界
 
-**Included in this command**:
-- Design document selection
-- E2E test skeleton generation (optional, with user confirmation)
-- Work plan creation with work-planner
-- Plan approval obtainment
+**実行内容**:
+- 設計書の選択
+- E2Eテストスケルトン生成（オプション、ユーザー確認後）
+- work-plannerによる作業計画書作成
+- 計画承認の取得
 
-**Responsibility Boundary**: This command completes with work plan approval.
+**責務境界**: このコマンドは作業計画書承認で責務完了。
 
-Follow subagents-orchestration-guide skill strictly and create work plan with the following process:
+以下のプロセスで作業計画書を作成:
 
-## Execution Process
+## 実行プロセス
 
-1. **Design Document Selection**
+1. **設計書の選択**
    ! ls -la docs/design/*.md | head -10
-   - Check for existence of design documents, notify user if none exist
-   - Present options if multiple exist (can be specified with $ARGUMENTS)
+   - 設計書の存在を確認し、ない場合はその旨をユーザーに通知
+   - 複数ある場合は選択肢を提示（$ARGUMENTS で指定可能）
 
-2. **E2E Test Skeleton Generation Confirmation**
-   - Confirm with user whether to generate E2E test skeleton first
-   - If user wants generation: Generate test skeleton with acceptance-test-generator
-   - Pass generation results to next process according to subagents-orchestration-guide skill coordination specification
+2. **E2Eテストスケルトンの生成確認**
+   - E2Eテストスケルトンを先に生成するかユーザーに確認
+   - 生成を希望する場合: acceptance-test-generator でテストスケルトンを生成
+   - 生成結果を subagents-orchestration-guideスキル の連携仕様に従って次工程に引き継ぐ
 
-3. **Work Plan Creation**
-   - Create work plan with work-planner
-   - Utilize deliverables from previous process according to subagents-orchestration-guide skill coordination specification
-   - Interact with user to complete plan and obtain approval for plan content
+3. **作業計画書の作成**
+   - work-planner で作業計画書を作成
+   - 前工程の成果物を subagents-orchestration-guideスキル の連携仕様に従って活用
+   - ユーザーと対話して計画を完成させ、計画内容の承認を得る
 
-Create a work plan from the selected design document, clarifying specific implementation steps and risks.
+選択された設計書から作業計画書を作成し、実装の具体的なステップとリスクを明確にします。
 
-**Scope**: Up to work plan creation and obtaining approval for plan content.
+**スコープ**: 作業計画書作成と計画内容の承認取得まで。
 
-## Response at Completion
-✅ **REQUIRED**: End with the following standard response after plan content approval
+## 終了時の応答
+✅ **必須**: 計画内容の承認後は以下の定型応答で終了
 ```
-Planning phase completed.
-- Work plan: docs/plans/[plan-name].md
-- Status: Approved
+計画フェーズが完了しました。
+- 作業計画書: docs/plans/[計画書名].md
+- 状態: 承認済み
 
-Please provide separate instructions for implementation.
+実装は別途ご指示ください。
 ```

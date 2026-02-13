@@ -1,281 +1,281 @@
-# [Feature Name] Design Document
+# [機能名] 設計書
 
-## Overview
+## 概要
 
-[Explain the purpose and overview of this feature in 2-3 sentences]
+[この機能の目的と概要を2-3文で説明]
 
-## Design Summary (Meta)
+## 設計サマリー（メタ）
 
 ```yaml
-design_type: "new_feature|extension|refactoring"
-risk_level: "low|medium|high"
-complexity_level: "low|medium|high"
-complexity_rationale: "[Required if medium/high: (1) which requirements/ACs necessitate this complexity, (2) which constraints/risks it addresses]"
+design_type: "新機能|拡張|リファクタリング"
+risk_level: "低|中|高"
+complexity_level: "低|中|高"
+complexity_rationale: "[中/高の場合必須: (1)この複雑性を必要とする要件/AC、(2)対処する制約/リスク]"
 main_constraints:
-  - "[constraint 1]"
-  - "[constraint 2]"
+  - "[制約1]"
+  - "[制約2]"
 biggest_risks:
-  - "[risk 1]"
-  - "[risk 2]"
+  - "[リスク1]"
+  - "[リスク2]"
 unknowns:
-  - "[uncertainty 1]"
-  - "[uncertainty 2]"
+  - "[不確実性1]"
+  - "[不確実性2]"
 ```
 
-## Background and Context
+## 背景と経緯
 
-### Prerequisite ADRs
+### 前提となるADR
 
-- [ADR File Name]: [Related decision items]
-- Reference common technical ADRs when applicable
+- [ADRファイル名]: [関連する決定事項]
+- 共通技術ADRも該当する場合は参照
 
-### Agreement Checklist
+### 合意事項チェックリスト
 
-#### Scope
-- [ ] [Features/components to change]
-- [ ] [Features to add]
+#### スコープ
+- [ ] [変更対象の機能/コンポーネント]
+- [ ] [追加する機能]
 
-#### Non-Scope (Explicitly not changing)
-- [ ] [Features/components not to change]
-- [ ] [Existing logic to preserve]
+#### スコープ外（明示的に変更しないもの）
+- [ ] [変更しない機能/コンポーネント]
+- [ ] [維持する既存ロジック]
 
-#### Constraints
-- [ ] Parallel operation: [Yes/No]
-- [ ] Backward compatibility: [Required/Not required]
-- [ ] Performance measurement: [Required/Not required]
+#### 制約
+- [ ] 並行運用: [する/しない]
+- [ ] 後方互換性: [必要/不要]
+- [ ] パフォーマンス計測: [必要/不要]
 
-#### Applicable Standards
-- [Standard/convention] `[explicit]` — Source: [config / rule file / doc path]
-- [Observed pattern] `[implicit]` — Evidence: [file paths] — Confirmed: [Yes/No]
+#### 適用基準
+- [基準/規約] `[explicit]` — 出典: [設定ファイル / ルールファイル / ドキュメントパス]
+- [観察されたパターン] `[implicit]` — 根拠: [ファイルパス] — 確認: [済/未]
 
-### Problem to Solve
+### 解決すべき課題
 
-[Specific problems or challenges this feature aims to address]
+[この機能が解決しようとする具体的な問題や課題]
 
-### Current Challenges
+### 現状の課題
 
-[Current system issues or limitations]
+[現在のシステムの問題点や制限事項]
 
-### Requirements
+### 要件
 
-#### Functional Requirements
+#### 機能要件
 
-- [List mandatory functional requirements]
+- [必須の機能要件をリストアップ]
 
-#### Non-Functional Requirements
+#### 非機能要件
 
-- **Performance**: [Response time, throughput requirements]
-- **Scalability**: [Requirements for handling increased load]
-- **Reliability**: [Error rate, availability requirements]
-- **Maintainability**: [Code readability and changeability]
+- **パフォーマンス**: [レスポンス時間、スループットの要件]
+- **スケーラビリティ**: [負荷増大時の対応要件]
+- **信頼性**: [エラー率、可用性の要件]
+- **保守性**: [コードの可読性、変更容易性]
 
-## Acceptance Criteria (AC) - EARS Format
+## 受入条件（AC）- EARS形式
 
-Each AC is written in EARS format. Keywords determine test type.
+各ACはEARS形式で記述。キーワードがテストタイプを決定。
 
-### [Functional Requirement 1]
+### [機能要件1]
 
-- [ ] **When** user clicks login button with valid credentials, the system shall authenticate and redirect to dashboard
-- [ ] **If** credentials are invalid, **then** the system shall display error message "Invalid credentials"
-- [ ] **While** user is logged in, the system shall maintain the session for 60 minutes
+- [ ] **When** ユーザーが有効な認証情報でログインボタンをクリックすると、システムは認証を行いダッシュボードにリダイレクトする
+- [ ] **If** 認証情報が無効な場合、**then** システムはエラーメッセージ「認証情報が無効です」を表示する
+- [ ] **While** ユーザーがログインしている間、システムはセッションを60分間維持する
 
-### [Functional Requirement 2]
+### [機能要件2]
 
-- [ ] The system shall display data list with pagination of 10 items per page
-- [ ] **When** input is entered in search field, the system shall apply real-time filtering
+- [ ] システムはデータリストを1ページ10件のページネーション付きで表示する
+- [ ] **When** 検索フィールドに入力すると、システムはリアルタイムでフィルタリングを適用する
   - **Property**: `filtered.every(item => item.name.includes(query))`
 
-## Existing Codebase Analysis
+## 既存コードベース分析
 
-### Implementation Path Mapping
-| Type | Path | Description |
-|------|------|-------------|
-| Existing | src/[actual-path] | [Current implementation] |
-| New | src/[planned-path] | [Planned new creation] |
+### 実装パスマッピング
+| 種別 | パス | 説明 |
+|-----|-----|-----|
+| 既存 | src/[実際のパス] | [現在の実装] |
+| 新規 | src/[計画パス] | [新規作成予定] |
 
-### Integration Points (Include even for new implementations)
-- **Integration Target**: [What to connect with]
-- **Invocation Method**: [How it will be invoked]
+### 統合ポイント（新規実装でも記載）
+- **統合先**: [何と連携するか]
+- **呼び出し方式**: [どのように呼び出されるか]
 
-### Code Inspection Evidence
-- [path:function] — [relevance: similar functionality / integration point / pattern reference]
+### コード調査エビデンス
+- [パス:関数] — [関連性: 類似機能 / 統合点 / パターン参照]
 
-## Design
+## 設計
 
-### Change Impact Map
+### 変更影響マップ
 
 ```yaml
-Change Target: [Component/feature to change]
-Direct Impact:
-  - [Files/functions requiring direct changes]
-  - [Interface change points]
-Indirect Impact:
-  - [Data format changes]
-  - [Processing time changes]
-No Ripple Effect:
-  - [Explicitly specify unaffected features]
+変更対象: [変更するコンポーネント/機能]
+直接影響:
+  - [直接変更が必要なファイル/関数]
+  - [インターフェース変更箇所]
+間接影響:
+  - [データ形式の変更]
+  - [処理時間の変化]
+波及なし:
+  - [明示的に影響を受けない機能]
 ```
 
-### Architecture Overview
+### アーキテクチャ概要
 
-[How this feature is positioned within the overall system]
+[この機能がシステム全体の中でどのように位置づけられるか]
 
-### Data Flow
+### データフロー
 
 ```
-[Express data flow using diagrams or pseudo-code]
+[図やシュードコードでデータの流れを表現]
 ```
 
-### Integration Points List
+### 統合ポイント一覧
 
-| Integration Point | Location | Old Implementation | New Implementation | Switching Method |
-|-------------------|----------|-------------------|-------------------|------------------|
-| Integration Point 1 | [Class/Function] | [Existing Process] | [New Process] | [DI/Factory etc.] |
-| Integration Point 2 | [Another Location] | [Existing] | [New] | [Method] |
+| 統合ポイント | 箇所 | 旧実装 | 新実装 | 切替方式 |
+|------------|-----|-------|-------|---------|
+| 統合ポイント1 | [クラス/関数] | [既存処理] | [新処理] | [DI/Factoryなど] |
+| 統合ポイント2 | [別の箇所] | [既存] | [新規] | [方式] |
 
-### Main Components
+### 主要コンポーネント
 
-#### Component 1
+#### コンポーネント1
 
-- **Responsibility**: [Scope of responsibility for this component]
-- **Interface**: [APIs and type definitions provided]
-- **Dependencies**: [Relationships with other components]
+- **責務**: [このコンポーネントの責務範囲]
+- **インターフェース**: [提供するAPIや型定義]
+- **依存関係**: [他のコンポーネントとの関係]
 
-#### Component 2
+#### コンポーネント2
 
-- **Responsibility**: [Scope of responsibility for this component]
-- **Interface**: [APIs and type definitions provided]
-- **Dependencies**: [Relationships with other components]
+- **責務**: [このコンポーネントの責務範囲]
+- **インターフェース**: [提供するAPIや型定義]
+- **依存関係**: [他のコンポーネントとの関係]
 
-### Data Representation Decision (When Introducing New Structures)
-Evaluate existing structures: semantic fit, responsibility fit, lifecycle fit, boundary/interop cost.
-- All fit → reuse existing
-- 1-2 fail → extend with adapter
-- 3+ fail → new structure justified
+### データ構造の採用判断（新規構造導入時）
+既存構造を評価: 意味的適合、責務適合、ライフサイクル適合、境界/相互運用コスト。
+- 全適合 → 既存を再利用
+- 1-2不適合 → アダプターで拡張
+- 3以上不適合 → 新規構造を正当化
 
-**Decision**: [reuse / extend / new] — [rationale]
+**判断**: [再利用 / 拡張 / 新規] — [根拠]
 
-### Type Definitions
+### 型定義
 
 ```typescript
-// Record major type definitions here
+// 主要な型定義をここに記載
 ```
 
-### Data Contract
+### データ契約
 
-#### Component 1
+#### コンポーネント1
 
 ```yaml
-Input:
-  Type: [TypeScript type definition]
-  Preconditions: [Required items, format constraints]
-  Validation: [Validation method]
+入力:
+  型: [TypeScript型定義]
+  前提条件: [必須項目、形式の制約]
+  バリデーション: [検証方法]
 
-Output:
-  Type: [TypeScript type definition]
-  Guarantees: [Conditions that must always be met]
-  On Error: [Exception/null/default value]
+出力:
+  型: [TypeScript型定義]
+  保証: [常に満たされる条件]
+  エラー時: [例外/null/デフォルト値]
 
-Invariants:
-  - [Conditions that remain unchanged before and after processing]
+不変条件:
+  - [処理前後で変わらない条件]
 ```
 
-### Field Propagation Map (When Fields Cross Boundaries)
-- [field]: [ComponentA → B] — preserved / transformed / dropped — [reason]
+### フィールド伝播マップ（フィールドが境界を越える場合）
+- [フィールド名]: [コンポーネントA → B] — preserved / transformed / dropped — [理由]
 
-### State Transitions and Invariants
+### 状態遷移と不変条件
 
-[If the feature involves state management, describe state transitions and invariants here]
+[機能が状態管理を含む場合、状態遷移と不変条件をここに記述]
 
 ```
-[State A] ---(event 1)---> [State B]
-[State B] ---(event 2)---> [State C]
+[状態A] ---(イベント1)---> [状態B]
+[状態B] ---(イベント2)---> [状態C]
 ```
 
-**Invariants**:
-- [Condition that must always hold true]
-- [Constraints on valid state transitions]
+**不変条件**:
+- [常に成立しなければならない条件]
+- [有効な状態遷移の制約]
 
-### Error Handling
+### エラーハンドリング
 
-[Types of errors and how to handle them]
+[エラーの種類とその処理方法]
 
-### Logging and Monitoring
+### ロギングとモニタリング
 
-[What to record in logs and how to monitor]
+[ログに記録する内容とモニタリング方法]
 
-## Implementation Plan
+## 実装計画
 
-### Implementation Approach
+### 実装アプローチ
 
-**Selected Approach**: [Approach name or combination]
-**Selection Reason**: [Reason considering project constraints and technical dependencies]
+**選択したアプローチ**: [アプローチ名または組み合わせ]
+**選択理由**: [プロジェクト制約と技術的依存関係を考慮した理由]
 
-### Technical Dependencies and Implementation Order
+### 技術的依存関係と実装順序
 
-#### Required Implementation Order
-1. **[Component/Feature A]**
-   - Technical Reason: [Why this needs to be implemented first]
-   - Dependent Elements: [Other components that depend on this]
+#### 必要な実装順序
+1. **[コンポーネント/機能A]**
+   - 技術的理由: [なぜ先に実装する必要があるか]
+   - 依存要素: [これに依存する他のコンポーネント]
 
-2. **[Component/Feature B]**
-   - Technical Reason: [Technical necessity to implement after A]
-   - Prerequisites: [Required pre-implementations]
+2. **[コンポーネント/機能B]**
+   - 技術的理由: [Aの後に実装する技術的必要性]
+   - 前提条件: [事前に必要な実装]
 
-### Integration Points
-Each integration point requires E2E verification:
+### 統合ポイント
+各統合ポイントでE2E確認が必要：
 
-**Integration Point 1: [Name]**
-- Components: [Component A] -> [Component B]
-- Verification: [How to verify integration works]
+**統合ポイント1: [名称]**
+- コンポーネント: [コンポーネントA] -> [コンポーネントB]
+- 確認方法: [統合が動作することの検証方法]
 
-### Migration Strategy
+### 移行戦略
 
-[Technical migration approach, ensuring backward compatibility]
+[技術的な移行アプローチ、後方互換性の確保方法]
 
-## Test Strategy
+## テスト戦略
 
-### Unit Tests
+### 単体テスト
 
-[Unit testing policy and coverage goals]
-- Verify individual elements of functional acceptance criteria
+[単体テストの方針とカバレッジ目標]
+- 機能受入条件の個別要素を検証
 
-### Integration Tests
+### 統合テスト
 
-[Integration testing policy and important test cases]
-- Verify combined operations of functional acceptance criteria
+[統合テストの方針と重要なテストケース]
+- 機能受入条件の組み合わせ動作を検証
 
-### E2E Tests
+### E2Eテスト
 
-[E2E testing policy]
-- Verify entire scenarios of acceptance criteria
-- Confirm functional operation from user perspective
+[E2Eテストの方針]
+- 受入条件のシナリオ全体を検証
+- ユーザー視点での機能動作を確認
 
-## Security Considerations
+## セキュリティ考慮事項
 
-[Security concerns and countermeasures]
+[セキュリティ上の懸念点と対策]
 
-## Alternative Solutions
+## 代替案
 
-### Alternative 1
+### 代替案1
 
-- **Overview**: [Description of alternative solution]
-- **Advantages**: [Advantages]
-- **Disadvantages**: [Disadvantages]
-- **Reason for Rejection**: [Why it wasn't adopted]
+- **概要**: [代替案の説明]
+- **メリット**: [利点]
+- **デメリット**: [欠点]
+- **不採用理由**: [採用しなかった理由]
 
-## Risks and Mitigation
+## リスクと対策
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| [Risk 1] | High/Medium/Low | High/Medium/Low | [Countermeasure] |
+| リスク | 影響度 | 発生確率 | 対策 |
+|-------|-------|---------|-----|
+| [リスク1] | 高/中/低 | 高/中/低 | [対策] |
 
-## References
+## 参考資料
 
-- [Related documentation and links]
+- [関連するドキュメントやリンク]
 
-## Update History
+## 更新履歴
 
-| Date | Version | Changes | Author |
-|------|---------|---------|--------|
-| YYYY-MM-DD | 1.0 | Initial version | [Name] |
+| 日付 | バージョン | 変更内容 | 作成者 |
+|-----|-----------|---------|-------|
+| YYYY-MM-DD | 1.0 | 初版作成 | [名前] |

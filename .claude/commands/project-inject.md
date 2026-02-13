@@ -1,86 +1,86 @@
 ---
-description: Inject project-specific context into project-context skill
+description: プロジェクト固有のコンテキストをproject-contextスキルに注入
 ---
 
-**Command Context**: Collect project-specific prerequisites that improve AI execution accuracy and update project-context SKILL.md.
+**コマンドコンテキスト**: AIの実行精度を高めるプロジェクト固有の前提情報を収集し、project-context SKILL.mdを更新する。
 
-## Why This Matters
+## なぜ必要か
 
-CLAUDE.md's Session Initialization reads `project-context` skill at the start of every session. The information collected here directly affects AI decision-making accuracy across all tasks.
+CLAUDE.mdのセッション初期化で`project-context`スキルが毎セッション読み込まれる。ここで収集した情報が、全タスクにおけるAIの判断精度に直接影響する。
 
-**Collect only what improves AI execution accuracy.**
+**AIの実行精度に寄与する情報のみ収集する。**
 
-## Execution Process
+## 実行プロセス
 
-Register the following steps in TodoWrite and proceed systematically.
+以下のステップをTodoWriteに登録し、順番に進行する。
 
-### Step 1: Understand Current State
+### Step 1: 現状把握
 
-Read the current project-context skill and package.json:
+現在のproject-contextスキルとpackage.jsonを読む：
 - `.claude/skills/project-context/SKILL.md`
-- `package.json` (name, description)
+- `package.json`（name、description）
 
-If project-context is already configured (no "Not configured" marker), confirm with user whether to overwrite or update.
+project-contextが設定済み（「未設定」マーカーがない）の場合、上書きか更新かをユーザーに確認する。
 
-### Step 2: Collect Project Context
+### Step 2: プロジェクトコンテキストの収集
 
-Use AskUserQuestion to collect information in stages.
+AskUserQuestionで段階的に収集する。
 
-**Round 1: Project essence**
-- What does this project do? (1-2 sentences)
-- What domain does it belong to? (e.g., fintech, healthcare, developer tools, e-commerce)
+**ラウンド1: プロジェクトの本質**
+- このプロジェクトは何をするものか？（1-2文）
+- どのドメインに属するか？（例：金融、ヘルスケア、開発者ツール、EC）
 
-**Round 2: Domain constraints** (based on Round 1 answers)
-- Are there domain-specific rules that AI must follow? Adapt examples to the domain from Round 1 (e.g., for fintech: "all mutations require audit logs"; for healthcare: "log output uses anonymized patient IDs").
-- Maximum 3 constraints. Only include what would cause bugs or compliance issues if AI ignores them.
+**ラウンド2: ドメイン制約**（ラウンド1の回答に基づいて質問）
+- AIが必ず守るべきドメイン固有のルールはあるか？ラウンド1のドメインに応じた例を提示する（例：金融なら「全ての変更操作に監査ログ必須」、ヘルスケアなら「ログ出力は匿名化された患者IDを使用」）。
+- 最大3つ。AIが無視するとバグやコンプライアンス違反になるもののみ。
 
-**Round 3: Development context**
-- Development phase: Prototype / Production / In operation
-- Are there directory conventions or file placement rules AI should follow? (skip if none)
+**ラウンド3: 開発コンテキスト**
+- 開発フェーズ：プロトタイプ / 本番開発 / 運用中
+- AIが従うべきディレクトリ規約やファイル配置ルールはあるか？（なければスキップ）
 
-### Step 3: Generate and Write
+### Step 3: 生成と書き込み
 
-From collected information, generate project-context SKILL.md following these principles:
+収集した情報からproject-context SKILL.mdを生成する。以下の原則に従う：
 
-**Writing principles:**
-1. AI-decidable: Use only measurable and verifiable criteria ("fast" → "within 5 seconds")
-2. Eliminate ambiguity: Include specific numbers, conditions, examples
-3. Positive form: "do this" rather than "don't do that"
-4. Minimal: Only what affects AI execution accuracy
+**記述の原則：**
+1. AI判断可能：測定・検証可能な基準のみ（「迅速に」→「5秒以内」）
+2. 曖昧さの排除：具体的な数値・条件・例示を含める
+3. 肯定形：「〜しない」より「〜する」の形で記述
+4. 最小限：AIの実行精度に影響するもののみ
 
-**Output targets** (update both):
-1. `.claude/skills/project-context/SKILL.md` (active, read by Claude)
-2. Corresponding `skills-{lang}/project-context/SKILL.md` (check `.claudelang` for current language)
+**出力先**（両方更新する）：
+1. `.claude/skills/project-context/SKILL.md`（アクティブ、Claudeが読む方）
+2. 対応する`skills-{lang}/project-context/SKILL.md`（`.claudelang`で現在の言語を確認）
 
-**Structure:**
+**構造：**
 ```markdown
 ---
 name: project-context
-description: Provides project-specific prerequisites for AI execution accuracy. Use when checking project structure.
+description: AIの実行精度に必要なプロジェクト固有の前提情報を提供。プロジェクト構成確認時に使用。
 ---
 
-# Project Context
+# プロジェクトコンテキスト
 
-## Project Overview
-- **What this project does**: [concise description]
-- **Domain**: [domain]
+## プロジェクト概要
+- **このプロジェクトが何をするか**: [簡潔な説明]
+- **ドメイン**: [ドメイン]
 
-## Domain Constraints
-1. [Measurable constraint that affects AI decisions]
-2. [Verifiable requirement]
+## ドメイン制約
+1. [AIの判断に影響する測定可能な制約]
+2. [検証可能な要件]
 
-## Development Phase
-- **Phase**: [current phase]
+## 開発フェーズ
+- **フェーズ**: [現在のフェーズ]
 
-## Directory Conventions
-[File placement rules, or "No specific conventions" if none]
+## ディレクトリ規約
+[ファイル配置ルール、またはなければ「特になし」]
 ```
 
-### Step 4: Verification
+### Step 4: 検証
 
-- [ ] Generated file contains no boilerplate placeholder text ("to be configured", etc.)
-- [ ] All domain constraints are measurable/verifiable (no vague statements)
-- [ ] No technology stack information included (that belongs in technical-spec skill)
-- [ ] No implementation principles included (that belongs in coding-standards skill)
-- [ ] Both output targets updated
-- [ ] Present result to user for confirmation
+- [ ] 生成ファイルにプレースホルダーテキスト（「要設定」等）が残っていないこと
+- [ ] 全てのドメイン制約が測定・検証可能であること（曖昧な記述がない）
+- [ ] 技術スタック情報が含まれていないこと（technical-specスキルの責務）
+- [ ] 実装原則が含まれていないこと（coding-standardsスキルの責務）
+- [ ] 両方の出力先が更新されていること
+- [ ] 結果をユーザーに提示して確認を得ること

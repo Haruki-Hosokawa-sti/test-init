@@ -1,21 +1,21 @@
 ---
 name: project-context
-description: Provides project-specific prerequisites for AI execution accuracy. Use when checking project structure.
+description: AIの実行精度に必要なプロジェクト固有の前提情報を提供。プロジェクト構成確認時に使用。
 ---
 
-# Project Context
+# プロジェクトコンテキスト
 
-> **Not configured.** Run `/project-inject` to set up project-specific context.
+> **未設定。** `/project-inject`を実行してプロジェクト固有のコンテキストを設定してください。
 
-## Project Overview
-- **What this project does**: (to be configured)
-- **Domain**: (to be configured)
+## プロジェクト概要
+- **このプロジェクトが何をするか**: （要設定）
+- **ドメイン**: （要設定）
 
-## Domain Constraints
-(Domain-specific rules that affect AI decision-making)
+## ドメイン制約
+（AIの判断に影響するドメイン固有のルール）
 
-## Development Phase
-- **Phase**: (Prototype / Production / In operation)
+## 開発フェーズ
+- **フェーズ**: （プロトタイプ / 本番開発 / 運用中）
 
-## Directory Conventions
-(File placement rules, if any)
+## ディレクトリ規約
+（ファイル配置ルールがあれば記載）

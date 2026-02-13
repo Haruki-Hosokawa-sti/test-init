@@ -1,80 +1,80 @@
 ---
-description: Orchestrate the complete implementation lifecycle from requirements to deployment
+description: オーケストレーターとして要件分析から実装まで完全サイクルを管理
 ---
 
-**Command Context**: Full-cycle implementation management (Requirements Analysis → Design → Planning → Implementation → Quality Assurance)
+**コマンドコンテキスト**: 実装の完全サイクル管理（要件分析→設計→計画→実装→品質保証）
 
-Strictly adhere to subagents-orchestration-guide skill and operate as an orchestrator.
+subagents-orchestration-guideスキルの指針に従い、オーケストレーターとして振る舞います。
 
-## Execution Decision Flow
+## 実行判断フロー
 
-### 1. Current Situation Assessment
-Instruction Content: $ARGUMENTS
+### 1. 現在状況の判定
+指示内容: $ARGUMENTS
 
-**Think deeply** Assess the current situation:
+**Think deeply** 現在の状況を判定：
 
-| Situation Pattern | Decision Criteria | Next Action |
-|------------------|------------------|-------------|
-| New Requirements | No existing work, new feature/fix request | Start with requirement-analyzer |
-| Flow Continuation | Existing docs/tasks present, continuation directive | Identify next step in subagents-orchestration-guide skill flow |
-| Quality Errors | Error detection, test failures, build errors | Execute quality-fixer |
-| Ambiguous | Intent unclear, multiple interpretations possible | Confirm with user |
+| 状況パターン | 判定基準 | 次のアクション |
+|------------|---------|-------------|
+| 新規要件 | 既存作業なし、新しい機能/修正依頼 | requirement-analyzerから開始 |
+| フロー継続 | 既存ドキュメント/タスクあり、継続指示 | subagents-orchestration-guideスキルのフローで次のステップを特定 |
+| 品質エラー | エラー検出、テスト失敗、ビルドエラー | quality-fixer実行 |
+| 不明瞭 | 意図が曖昧、複数の解釈が可能 | ユーザーに確認 |
 
-### 2. Progress Verification for Continuation
-When continuing existing flow, verify:
-- Latest artifacts (PRD/ADR/Design Doc/Work Plan/Tasks)
-- Current phase position (Requirements/Design/Planning/Implementation/QA)
-- Identify next step in subagents-orchestration-guide skill corresponding flow
+### 2. 継続時の進捗確認
+フロー継続の場合、以下を確認：
+- 最新の成果物（PRD/ADR/Design Doc/作業計画書/タスク）
+- 現在のフェーズ位置（要件/設計/計画/実装/品質保証）
+- subagents-orchestration-guideスキルの該当フローで次のステップを特定
 
-### 3. After requirement-analyzer [Stop]
+### 3. requirement-analyzer後に停止
 
-When user responds to questions:
-- If response matches any `scopeDependencies.question` → Check `impact` for scale change
-- If scale changes → Re-execute requirement-analyzer with updated context
-- If `confidence: "confirmed"` or no scale change → Proceed to next step
+ユーザーが質問に回答した時：
+- 回答が`scopeDependencies.question`のいずれかに該当 → `impact`で規模変更をチェック
+- 規模が変更 → 更新されたコンテキストでrequirement-analyzerを再実行
+- `confidence: "confirmed"` または規模変更なし → 次のステップへ進む
 
-### 4. After Scale Determination: Register All Flow Steps to TodoWrite (Required)
+### 4. 規模判定後：TodoWriteにフロー全ステップを登録（必須）
 
-After scale determination, **register all steps of the applicable subagents-orchestration-guide skill flow to TodoWrite**. Always include: first "Confirm skill constraints", final "Verify skill fidelity". After registration, proceed through the flow referencing TodoWrite.
+規模判定完了後、**subagents-orchestration-guideスキルの該当フロー全ステップをTodoWriteに登録**。最初に「スキル制約の確認」、最後に「スキル忠実度の検証」を必ず含める。登録後、TodoWriteを参照してフローを進める。
 
-### 5. Execute Next Action
+### 5. 次のアクション実行
 
-**Execute the next pending task in TodoWrite**.
+**TodoWriteの次のpendingタスクを実行**。
 
-## 📋 subagents-orchestration-guide skill Compliance Execution
+## 📋 subagents-orchestration-guideスキル準拠の実行
 
-**Pre-execution Checklist (Required)**:
-- [ ] Confirmed relevant subagents-orchestration-guide skill flow
-- [ ] Identified current progress position
-- [ ] Clarified next step
-- [ ] Recognized stopping points → **Use AskUserQuestion for confirmation at all Stop points**
-- [ ] Understood the 4-step cycle after task execution (task-executor → escalation judgment/follow-up → quality-fixer → commit)
+**実行前チェック（必須）**：
+- [ ] subagents-orchestration-guideスキルの該当フローを確認した
+- [ ] 現在の進捗位置を特定した
+- [ ] 次のステップを明確にした
+- [ ] 停止ポイントを認識した → **全ての停止ポイントでAskUserQuestionを使用**
+- [ ] タスク実行後の4ステップサイクル（task-executor → エスカレーション判定・フォローアップ → quality-fixer → commit）を理解した
 
-**Flow Adherence**: Follow "Autonomous Execution Task Management" in subagents-orchestration-guide skill, managing 4 steps with TodoWrite
+**フロー厳守**: subagents-orchestration-guideスキルの「自律実行中のタスク管理」に従い、TodoWriteで4ステップを管理する
 
-## 🚨 Sub-agent Invocation Constraints
+## 🚨 サブエージェント呼び出し時の制約
 
-Include the following at the end of prompts when invoking sub-agents, as rule-advisor invocation from sub-agents causes system crash:
+サブエージェントからrule-advisorを呼び出すとシステムクラッシュが発生するため、プロンプト末尾に以下を含める：
 ```
-[Constraint] rule-advisor can only be used by Main AI
+【制約】rule-advisorはメインAIのみが使用可能です
 ```
 
-## 🎯 Mandatory Orchestrator Responsibilities
+## 🎯 オーケストレーターとしての必須責務
 
-### Task Execution Flow
-Following "Autonomous Execution Task Management" in subagents-orchestration-guide skill, manage these 4 steps with TodoWrite:
-1. task-executor execution
-2. Escalation judgment and follow-up
-3. quality-fixer execution
+### タスク実行フロー
+subagents-orchestration-guideスキルの「自律実行中のタスク管理」に従い、TodoWriteで以下の4ステップを管理：
+1. task-executor実行
+2. エスカレーション判定・フォローアップ
+3. quality-fixer実行
 4. git commit
 
-### Test Information Communication
-After acceptance-test-generator execution, when calling work-planner, communicate:
-- Generated integration test file path
-- Generated E2E test file path
-- Explicit note that integration tests run with implementation, E2E tests run after all implementations
+### テスト情報の伝達
+acceptance-test-generator実行後、work-planner呼び出し時には以下を伝達：
+- 生成された統合テストファイルパス
+- 生成されたE2Eテストファイルパス
+- 統合テストは実装と同時、E2Eは全実装後に実行する旨の明示
 
-## Execution Method
+## 実行方法
 
-All work is executed through sub-agents.
-Sub-agent selection follows subagents-orchestration-guide skill.
+すべての作業はサブエージェント経由で実行する。
+サブエージェントの選択はsubagents-orchestration-guideスキルに従う。

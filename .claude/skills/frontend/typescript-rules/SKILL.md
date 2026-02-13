@@ -1,136 +1,315 @@
 ---
 name: frontend/typescript-rules
-description: Applies React/TypeScript type safety, component design, and state management rules. Use when implementing React components.
+description: React/TypeScriptの型安全性、コンポーネント設計、状態管理ルールを適用。Reactコンポーネント実装時に使用。
 ---
 
-# TypeScript Development Rules (Frontend)
+# TypeScript 開発ルール（フロントエンド）
 
-## Frontend-Specific Anti-patterns
+## 型システム
 
-In addition to universal anti-patterns in coding-standards skill, watch for these Frontend-specific issues:
+### 型安全性の原則
+- **strictモード必須**: tsconfig.jsonでstrict: trueを設定
+- **any型使用禁止**: コードベースでany型を使用しない
+- **as使用最小化**: 型キャストはやむを得ない場合のみ（理由をコメント）
+- **unknown優先**: any型が必要な場合はunknown + 型ガード
 
-- **Prop drilling through 3+ levels** - Should use Context API or state management
-- **Massive components (300+ lines)** - Split into smaller components
-
-## Type Safety in Frontend Implementation
-
-**Type Safety in Data Flow**
-- **Frontend -> Backend**: Props/State (Type Guaranteed) -> API Request (Serialization)
-- **Backend -> Frontend**: API Response (`unknown`) -> Type Guard -> State (Type Guaranteed)
-
-**Frontend-Specific Type Scenarios**:
-- **React Props/State**: TypeScript manages types, unknown unnecessary
-- **External API Responses**: Always receive as `unknown`, validate with type guards
-- **localStorage/sessionStorage**: Treat as `unknown`, validate
-- **URL Parameters**: Treat as `unknown`, validate
-- **Form Input (Controlled Components)**: Type-safe with React synthetic events
-
-**Type Complexity Management (Frontend)**
-- **Props Design**:
-  - Props count: 3-7 props ideal (consider component splitting if exceeds 10)
-  - Optional Props: 50% or less (consider default values or Context if excessive)
-  - Nesting: Up to 2 levels (flatten deeper structures)
-- Type Assertions: Review design if used 3+ times
-- **External API Types**: Relax constraints and define according to reality (convert appropriately internally)
-
-## Coding Conventions
-
-**Component Design Criteria**
-- **Function Components (Mandatory)**: Official React recommendation, optimizable by modern tooling
-- **Classes Prohibited**: Class components completely deprecated (Exception: Error Boundary)
-- **Custom Hooks**: Standard pattern for logic reuse
-
-**Function Design**
-- **0-2 parameters maximum**: Use object for 3+ parameters
-  ```typescript
-  // Object parameter
-  function createUser({ name, email, role }: CreateUserParams) {}
-  ```
-
-**Props Design (Props-driven Approach)**
-- Props are the interface: Define all necessary information as props
-- Avoid implicit dependencies: Do not depend on global state or context without necessity
-- Type-safe: Always define Props type explicitly
-
-**Environment Variables**
-- **Use build tool's environment variable system**: `process.env` does not work in browsers
-- **No secrets on client-side**: All frontend code is public, manage secrets in backend
-
-**Dependency Injection**
-- **Custom Hooks for dependency injection**: Ensure testability and modularity
-
-**Asynchronous Processing**
-- Promise Handling: Always use `async/await`
-- Error Handling: Always handle with `try-catch` or Error Boundary
-- Type Definition: Explicitly define return value types (e.g., `Promise<Result>`)
-
-**Format Rules**
-- Semicolon omission (follow Biome settings)
-- Types in `PascalCase`, variables/functions in `camelCase`
-- Imports use absolute paths (`src/`)
-
-**Clean Code Principles**
-- Delete unused code immediately
-- Delete debug `console.log()`
-- No commented-out code (manage history with version control)
-- Comments explain "why" (not "what")
-
-## Error Handling
-
-**Absolute Rule**: Error suppression prohibited. All errors must have log output and appropriate handling.
-
-**Fail-Fast Principle**: Fail quickly on errors to prevent continued processing in invalid states
 ```typescript
-// Prohibited: Unconditional fallback
-catch (error) {
-  return defaultValue // Hides error
+// 良い: 型ガード付きのunknown
+function processData(data: unknown): User {
+  if (!isUser(data)) throw new Error('Invalid user data')
+  return data
 }
 
-// Required: Explicit failure
-catch (error) {
-  logger.error('Processing failed', error)
-  throw error // Handle with Error Boundary or higher layer
+// 悪い: any型の使用
+function processData(data: any): User {
+  return data as User
 }
 ```
 
-**Result Type Pattern**: Express errors with types for explicit handling
-```typescript
-type Result<T, E> = { ok: true; value: T } | { ok: false; error: E }
+### 型定義のベストプラクティス
 
-// Example: Express error possibility with types
-function parseUser(data: unknown): Result<User, ValidationError> {
-  if (!isValid(data)) return { ok: false, error: new ValidationError() }
-  return { ok: true, value: data as User }
+#### オブジェクト型
+- **interface優先**: 拡張可能なオブジェクト型にはinterfaceを使用
+- **typeはunion/intersection用**: 複合型やユーティリティ型に使用
+- **readonlyの活用**: 不変なプロパティにはreadonlyを明示
+
+```typescript
+// 良い: 明確な型定義
+interface User {
+  readonly id: string
+  name: string
+  email: string
+}
+
+type UserWithRole = User & { role: 'admin' | 'user' }
+```
+
+#### 関数型
+- **戻り値型を明示**: 複雑なロジックを持つ関数
+- **ジェネリクスの活用**: 再利用可能な型安全な関数
+
+```typescript
+// 良い: 戻り値型を明示
+function calculateTotal(items: CartItem[]): number {
+  return items.reduce((sum, item) => sum + item.price, 0)
+}
+
+// 良い: ジェネリクスの活用
+function pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
+  // implementation
 }
 ```
 
-**Custom Error Classes**
+## Reactコンポーネント設計
+
+### Function Components必須
+
 ```typescript
-export class AppError extends Error {
-  constructor(message: string, public readonly code: string, public readonly statusCode = 500) {
-    super(message)
-    this.name = this.constructor.name
+// 良い: Function Component
+const UserCard: React.FC<UserCardProps> = ({ user, onSelect }) => {
+  return (
+    <div onClick={() => onSelect(user.id)}>
+      {user.name}
+    </div>
+  )
+}
+
+// 悪い: Class Component（非推奨）
+class UserCard extends React.Component<UserCardProps> { }
+```
+
+### Props型定義
+
+```typescript
+interface ButtonProps {
+  label: string
+  onClick: () => void
+  variant?: 'primary' | 'secondary'
+  disabled?: boolean
+}
+
+const Button: React.FC<ButtonProps> = ({
+  label,
+  onClick,
+  variant = 'primary',
+  disabled = false
+}) => {
+  // implementation
+}
+```
+
+### Children Props
+
+```typescript
+interface LayoutProps {
+  children: React.ReactNode
+  sidebar?: React.ReactNode
+}
+
+const Layout: React.FC<LayoutProps> = ({ children, sidebar }) => (
+  <div>
+    <main>{children}</main>
+    {sidebar && <aside>{sidebar}</aside>}
+  </div>
+)
+```
+
+## 状態管理
+
+### useState型定義
+
+```typescript
+// 良い: 明示的な型
+const [user, setUser] = useState<User | null>(null)
+const [items, setItems] = useState<Item[]>([])
+
+// 良い: 初期値から推論可能な場合
+const [count, setCount] = useState(0)
+```
+
+### useReducerの型安全性
+
+```typescript
+type Action =
+  | { type: 'SET_USER'; payload: User }
+  | { type: 'CLEAR_USER' }
+  | { type: 'SET_ERROR'; payload: string }
+
+interface State {
+  user: User | null
+  error: string | null
+}
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'SET_USER':
+      return { ...state, user: action.payload, error: null }
+    case 'CLEAR_USER':
+      return { ...state, user: null }
+    case 'SET_ERROR':
+      return { ...state, error: action.payload }
   }
 }
-// Purpose-specific: ValidationError(400), ApiError(502), NotFoundError(404)
 ```
 
-**Layer-Specific Error Handling (React)**
-- Error Boundary: Catch React component errors, display fallback UI
-- Custom Hook: Detect business rule violations, propagate AppError as-is
-- API Layer: Convert fetch errors to domain errors
+### Custom Hooks
 
-**Structured Logging and Sensitive Information Protection**
-Never include sensitive information (password, token, apiKey, secret, creditCard) in logs
+```typescript
+interface UseUserReturn {
+  user: User | null
+  loading: boolean
+  error: Error | null
+  refetch: () => Promise<void>
+}
 
-**Asynchronous Error Handling in React**
-- Error Boundary setup mandatory: Catch rendering errors
-- Use try-catch with all async/await in event handlers
-- Always log and re-throw errors or display error state
+function useUser(userId: string): UseUserReturn {
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
 
-## Performance Optimization
+  const refetch = useCallback(async () => {
+    setLoading(true)
+    try {
+      const data = await fetchUser(userId)
+      setUser(data)
+    } catch (e) {
+      setError(e instanceof Error ? e : new Error('Unknown error'))
+    } finally {
+      setLoading(false)
+    }
+  }, [userId])
 
-- Component Memoization: Use React.memo for expensive components
-- State Optimization: Minimize re-renders with proper state structure
-- Lazy Loading: Use React.lazy and Suspense for code splitting
-- Bundle Size: Monitor with the `build` script and keep under 500KB
+  useEffect(() => { refetch() }, [refetch])
+
+  return { user, loading, error, refetch }
+}
+```
+
+## エラーハンドリング
+
+### Error Boundary
+
+```typescript
+interface ErrorBoundaryProps {
+  children: React.ReactNode
+  fallback: React.ReactNode
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean
+}
+
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  state = { hasError: false }
+
+  static getDerivedStateFromError(): ErrorBoundaryState {
+    return { hasError: true }
+  }
+
+  render() {
+    if (this.state.hasError) return this.props.fallback
+    return this.props.children
+  }
+}
+```
+
+### APIエラーハンドリング
+
+```typescript
+interface ApiError {
+  code: string
+  message: string
+  details?: Record<string, string>
+}
+
+function isApiError(error: unknown): error is ApiError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    'message' in error
+  )
+}
+
+async function fetchWithErrorHandling<T>(url: string): Promise<T> {
+  const response = await fetch(url)
+
+  if (!response.ok) {
+    const error: unknown = await response.json()
+    if (isApiError(error)) {
+      throw new ApiError(error.code, error.message)
+    }
+    throw new Error('Unknown API error')
+  }
+
+  return response.json() as Promise<T>
+}
+```
+
+## イベントハンドリング
+
+### イベント型
+
+```typescript
+const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  e.preventDefault()
+  // handle click
+}
+
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value
+  // handle change
+}
+
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault()
+  // handle submit
+}
+```
+
+## コーディング規約
+
+### 命名規則
+- **コンポーネント**: PascalCase（例: `UserProfile`）
+- **フック**: camelCase + use接頭辞（例: `useUserData`）
+- **型/インターフェース**: PascalCase（例: `UserProps`）
+- **定数**: SCREAMING_SNAKE_CASE（例: `MAX_RETRY_COUNT`）
+- **ファイル名**: コンポーネントはPascalCase、その他はcamelCase
+
+### インポート順序
+1. React関連
+2. 外部ライブラリ
+3. 内部モジュール（絶対パス）
+4. 内部モジュール（相対パス）
+5. 型のみのインポート
+6. スタイル/アセット
+
+```typescript
+import { useState, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '@/lib/api'
+import { formatDate } from '../utils'
+import type { User } from '@/types'
+import styles from './Component.module.css'
+```
+
+## アンチパターン
+
+### 避けるべきパターン
+
+```typescript
+// 悪い: Propsのスプレッド展開
+const Button = (props: ButtonProps) => <button {...props} />
+
+// 良い: 明示的なPropsの受け渡し
+const Button = ({ label, onClick, disabled }: ButtonProps) => (
+  <button onClick={onClick} disabled={disabled}>{label}</button>
+)
+
+// 悪い: インラインでの複雑なロジック
+{items.filter(i => i.active).map(i => <Item key={i.id} {...i} />)}
+
+// 良い: 事前に変数として抽出
+const activeItems = items.filter(item => item.active)
+{activeItems.map(item => <Item key={item.id} item={item} />)}
+```
