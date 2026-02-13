@@ -27,7 +27,7 @@
   },
   "overrides": [
     {
-      "include": ["**/__tests__/**/*.ts", "**/*.test.ts", "**/*.spec.ts"],
+      "include": ["packages/*/**/__tests__/**/*.ts", "packages/*/**/*.test.ts", "packages/*/**/*.spec.ts"],
       "linter": {
         "rules": {
           "suspicious": {
@@ -45,7 +45,7 @@
     }
   },
   "files": {
-    "include": ["src/**/*.ts", "src/**/*.js"],
-    "ignore": ["node_modules/**", "dist/**"]
+    "include": ["packages/*/src/**/*.ts", "packages/*/src/**/*.tsx"],
+    "ignore": ["node_modules/**", "dist/**", "packages/front/.next/**"]
   }
 }

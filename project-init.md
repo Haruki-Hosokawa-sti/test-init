@@ -102,7 +102,7 @@ AskUserQuestion（multiSelect: true）で以下を選択:
 
 - `packages/front/`（front選択時）
 - `packages/back/`（back選択時）
-- `packages/shared/`（front + back両方選択時）
+- `packages/shared/`（front + back両方選択時、かつGraphQL/tRPC未選択の場合。GraphQL/tRPCはツール自体が型共有を解決するため不要）
 
 ### 3.3 ルート package.json に workspaces 追加
 
