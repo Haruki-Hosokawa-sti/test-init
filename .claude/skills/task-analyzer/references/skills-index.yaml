@@ -66,8 +66,8 @@ skills:
 
   technical-spec:
     skill: "technical-spec"
-    tags: [architecture, design, documentation, environment, data-flow, implementation, quality-commands, testing, build]
-    typical-use: "技術設計、環境設定、ドキュメント作成プロセス、実装方針決定、品質チェックコマンド、ビルドとテスト実行"
+    tags: [architecture, design, documentation, environment, data-flow, implementation, quality-commands, testing, build, docker, worktree]
+    typical-use: "技術設計、環境設定、ドキュメント作成プロセス、実装方針決定、品質チェックコマンド、ビルドとテスト実行、Docker Composeポート競合管理、WorkTree運用"
     size: medium
     key-references:
       - "ADRフォーマット - Michael Nygard"
@@ -76,21 +76,25 @@ skills:
       - "技術スタックの基本方針"
       - "環境変数管理とセキュリティ"
       - "アーキテクチャ設計"
-      - "パターン適用の一貫性"
       - "データフロー統一原則"
+      - "Docker Compose ポート競合管理ルール"
+      - "WorkTree 運用ルール"
       - "ビルドとテスト"
 
   project-context:
     skill: "project-context"
-    tags: [context, project-specific, implementation]
-    typical-use: "プロジェクト固有情報、実装原則の理解"
+    tags: [context, project-specific, implementation, monorepo, docker, worktree]
+    typical-use: "プロジェクト固有情報、ドメイン制約、開発フェーズ、ディレクトリ規約、Git WorkTree運用、Docker Compose構成"
     size: small
     key-references:
       - "プロジェクト固有（経験則）"
     sections:
-      - "基本設定"
-      - "実装原則"
-      - "カスタマイズガイド"
+      - "プロジェクト概要"
+      - "ドメイン制約"
+      - "開発フェーズ"
+      - "ディレクトリ規約"
+      - "Git WorkTree 運用"
+      - "Docker Compose 構成"
 
   documentation-criteria:
     skill: "documentation-criteria"
@@ -158,6 +162,7 @@ skills:
       - "ドキュメント要件"
       - "停止ポイント"
       - "自律実行モード"
+      - "関連スキル参照"
 
   # フロントエンド固有スキル
   frontend/typescript-rules:
@@ -191,6 +196,30 @@ skills:
       - "モックの型安全性の徹底"
       - "React Testing Libraryの基本例"
 
+  git-worktree-workflow:
+    skill: "git-worktree-workflow"
+    tags: [git, worktree, branching, pr, workflow]
+    typical-use: "新規要件時のGit WorkTree作成、ブランチ管理、PR作成フロー"
+    size: small
+    key-references:
+      - "Git Worktree - Git公式ドキュメント"
+    sections:
+      - "概要"
+      - "ワークフロー"
+      - "注意事項"
+
+  docker-compose-management:
+    skill: "docker-compose-management"
+    tags: [docker, docker-compose, port-management, container-lifecycle]
+    typical-use: "Docker Composeのポート競合管理、コンテナ起動・停止・再ビルド"
+    size: small
+    key-references:
+      - "Docker Compose公式ドキュメント"
+    sections:
+      - "ポート競合管理（ADR-0004準拠）"
+      - "コンテナ操作"
+
+  # フロントエンド固有スキル
   frontend/technical-spec:
     skill: "frontend/technical-spec"
     tags: [frontend, react, architecture, design, documentation, environment, data-flow, implementation, vite, security, client-side, state-management, context-api, hooks, lighthouse, bundle-size, non-functional-requirements]
