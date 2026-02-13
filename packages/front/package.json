@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "NODE_ENV=production next build",
     "start": "next start",
     "test": "vitest run"
   },
@@ -14,9 +14,11 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.0.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.0.0",
     "typescript": "^5.0.0"
   }
 }

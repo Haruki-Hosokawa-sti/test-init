@@ -77,9 +77,10 @@ acceptance-test-generator実行後、work-planner呼び出し時には以下を�
 ## Git WorkTree + PR ワークフロー
 
 新規要件の場合:
-1. git-worktree-workflow スキルに従い Worktree を作成
-2. 実装作業を実施（既存のタスク完了時commit動作を維持）
-3. 全タスク完了後、`gh pr create` で PR を作成
+1. AskUserQuestionでブランチ名・WorkTreeディレクトリ名を確認 **[停止: WorkTree作成承認]**
+2. git-worktree-workflow スキルに従い WorkTree + ブランチを同時作成
+3. 実装作業を実施（既存のタスク完了時commit動作を維持）
+4. 全タスク完了後、`gh pr create` で PR を作成
 
 ## Docker Compose ポート競合管理
 
