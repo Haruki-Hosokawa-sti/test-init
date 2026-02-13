@@ -19,3 +19,11 @@ description: AIの実行精度に必要なプロジェクト固有の前提情�
 
 ## ディレクトリ規約
 （ファイル配置ルールがあれば記載）
+
+## Git WorkTree 運用
+- 新規要件は `feature/<タスク概要>` ブランチで作業
+- `git worktree add` でWorktreeを作成し、作業完了後にPR作成
+
+## Docker Compose 構成
+- サービス: front (3000), back (4000), db (5432)
+- ポート競合チェック → 自動停止（同一プロジェクトのみ）→ 起動

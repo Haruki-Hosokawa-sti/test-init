@@ -74,6 +74,19 @@ acceptance-test-generator実行後、work-planner呼び出し時には以下を�
 - 生成されたE2Eテストファイルパス
 - 統合テストは実装と同時、E2Eは全実装後に実行する旨の明示
 
+## Git WorkTree + PR ワークフロー
+
+新規要件の場合:
+1. git-worktree-workflow スキルに従い Worktree を作成
+2. 実装作業を実施（既存のタスク完了時commit動作を維持）
+3. 全タスク完了後、`gh pr create` で PR を作成
+
+## Docker Compose ポート競合管理
+
+docker-compose 使用時:
+- docker-compose-management スキルに従いポート競合を管理
+- `docker compose up` 前に必ずポートチェックを実行
+
 ## 実行方法
 
 すべての作業はサブエージェント経由で実行する。

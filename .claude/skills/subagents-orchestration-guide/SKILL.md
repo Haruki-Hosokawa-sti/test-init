@@ -208,3 +208,8 @@ graph TD
 - **ADR作成→document-reviewer実行後**: 技術方針と整合性の確認
 - **Design Doc作成→document-reviewer実行後**: 設計内容と整合性の確認
 - **計画書作成後**: 実装フェーズ全体の一括承認
+
+## 関連スキル参照
+
+- **git-worktree-workflow**: 新規要件時のWorktree作成 + ブランチ管理 + PR作成フロー
+- **docker-compose-management**: Docker Composeのポート競合管理とコンテナライフサイクル管理
